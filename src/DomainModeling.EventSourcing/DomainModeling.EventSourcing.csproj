@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DomainModeling.Core\DomainModeling.Core.csproj" />
+    <ProjectReference Include="..\DomainModeling.EventRepository\DomainModeling.EventRepository.csproj" />
+  </ItemGroup>
+
+</Project>

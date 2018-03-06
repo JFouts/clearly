@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\DomainModeling.Core\DomainModeling.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\src\DomainModeling.EventRepository\DomainModeling.EventRepository.csproj" />
+    <ProjectReference Include="..\..\..\..\src\DomainModeling.EventSourcing\DomainModeling.EventSourcing.csproj" />
+    <ProjectReference Include="..\Questionable.Questions.Aggregates\Questionable.Questions.Aggregates.csproj" />
+    <ProjectReference Include="..\Questionable.Questions.Events\Questionable.Questions.Events.csproj" />
+  </ItemGroup>
+
+</Project>
