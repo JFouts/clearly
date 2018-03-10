@@ -16,17 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DomainModeling.Core\DomainModeling.Core.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventRepository.EventStore.AspNetCore\DomainModeling.EventRepository.EventStore.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventRepository.EventStore\DomainModeling.EventRepository.EventStore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventRepository.LocalMemory.AspNetCore\DomainModeling.EventRepository.LocalMemory.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventRepository.LocalMemory\DomainModeling.EventRepository.LocalMemory.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventRepository\DomainModeling.EventRepository.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventSourcing.AspNetCore\DomainModeling.EventSourcing.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventSourcing\DomainModeling.EventSourcing.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventSubscription.AspNetCore\DomainModeling.EventSubscription.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventSubscription.EventStore.AspNetCore\DomainModeling.EventSubscription.EventStore.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventSubscription.EventStore\DomainModeling.EventSubscription.EventStore.csproj" />
-    <ProjectReference Include="..\..\src\DomainModeling.EventSubscription\DomainModeling.EventSubscription.csproj" />
   </ItemGroup>
 
 </Project>
