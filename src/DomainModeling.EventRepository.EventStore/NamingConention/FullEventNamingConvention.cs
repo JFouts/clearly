@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Reflection;
 
 namespace DomainModeling.EventRepository.EventStore.NamingConention
 {
     public class FullEventNamingConvention : IEventNamingConvention
     {
+        private Assembly _typesAssembly = Assembly.Load("Questionable.Questions.Events");
+
         public string GetEventName<T>()
         {
             return typeof(T).FullName;
@@ -16,7 +19,12 @@ namespace DomainModeling.EventRepository.EventStore.NamingConention
 
         public Type GetEventType(string typeName)
         {
-            return Type.GetType(typeName);
+            return _typesAssembly.GetType(typeName);
+        }
+
+        public bool IsKnownEventName(string eventName)
+        {
+            return _typesAssembly.GetType(eventName) != null;
         }
     }
 }

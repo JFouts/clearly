@@ -29,6 +29,11 @@ namespace DomainModeling.EventRepository.EventStore.NamingConention
             return _nameMapping[typeName];
         }
 
+        public bool IsKnownEventName(string eventName)
+        {
+            return _nameMapping.ContainsKey(eventName);
+        }
+
         public void AddMap(Type eventType, string typeName)
         {
             _typeMapping[eventType] = typeName;

@@ -25,6 +25,11 @@ namespace DomainModeling.EventRepository.EventStore.NamingConention
             throw new UnmappedEventNameException(typeName);
         }
 
+        public bool IsKnownEventName(string eventName)
+        {
+            return _registeredTypes.ContainsKey(eventName);
+        }
+
         public void AddEventType<T>()
         {
             var type = typeof(T);

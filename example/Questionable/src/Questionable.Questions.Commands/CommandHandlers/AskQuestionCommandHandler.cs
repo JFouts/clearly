@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DomainModeling.Core.Interfaces;
@@ -22,27 +23,6 @@ namespace Questionable.Questions.Commands.CommandHandlers
             _date = date;
         }
 
-        /*
-        public async Task ExecuteAsync(AskQuestionCommand command)
-        {
-            var question = _aggregateRepository.Instantiate(command.QuestionId);
-
-            // TODO: Move this into model validation
-            if (!IsUnique(command.SubjectsTags))
-                //TODO: Custom exception for this
-                throw new Exception();
-
-            await question.FireEventAsync(new QuestionAskedEvent(command.QuestionId, command.UserId, command.Title, command.Description, command.OccurredAtUtc, DateTime.UtcNow));
-
-            foreach (var subjectTag in command.SubjectsTags)
-                await question.FireEventAsync(new QuestionTaggedEvent(command.QuestionId, subjectTag.SubjectTag, command.OccurredAtUtc, DateTime.UtcNow));
-
-            await question.SaveAsync();
-        }
-
-        
-        */
-
         public async Task ExecuteAsync(AskQuestionCommand command)
         {
             var processTimeUtc = _date.CurrentDateUtc();
@@ -57,6 +37,15 @@ namespace Questionable.Questions.Commands.CommandHandlers
                 command.Description,
                 command.OccurredAtUtc,
                 processTimeUtc));
+
+            foreach(var subjectTag in command.SubjectsTags)
+            {
+                await question.FireEventAsync(new QuestionTaggedEvent(
+                    Guid.NewGuid(),
+                    subjectTag.SubjectTag,
+                    command.OccurredAtUtc,
+                    processTimeUtc));
+            }
 
             await question.SaveAsync();
         }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Net;
 using System.Reflection;
 using AutoMapper;
 using DomainModeling.Core;
 using DomainModeling.Core.Interfaces;
-using DomainModeling.EventRepository.EventStore;
 using DomainModeling.EventRepository.EventStore.AspNetCore;
 using DomainModeling.EventSourcing;
 using DomainModeling.EventSourcing.AspNetCore;
@@ -36,8 +34,7 @@ namespace Questionable.Startup
             ConfigureMappings(services);
 
             //TODO: Move out
-            services.AddEventStore(ApplyEventStoreSettings);
-
+            services.AddEventStore();
             services.AddScoped<QuestionDetailDenormalizer>();
             services.AddSingleton<ICommandFactory, ValidatedCommandFactory>();
             services.AddScoped<IQuestionSearcher, QuestionSearcher>();
@@ -50,6 +47,7 @@ namespace Questionable.Startup
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseDeveloperExceptionPage();
             app.UseMvc();
         }
@@ -61,24 +59,16 @@ namespace Questionable.Startup
                 .AddJsonFormatters()
                 .AddDataAnnotations()
                 .AddSubscriptions()
-                .AddApplicationPart(Assembly.Load(new AssemblyName("Questionable.Questions.Http")))
-                .AddApplicationPart(Assembly.Load(new AssemblyName("Questionable.Queries.Http")))
-                .AddApplicationPart(Assembly.Load(new AssemblyName("Questionable.Queries.Denormalizer.QuestionSearch")));
-        }
-
-        private static void ApplyEventStoreSettings(EventStoreSettings settings)
-        {
-            // TODO: Pull from config
-            settings.EndPoint = new IPEndPoint(IPAddress.Loopback, 1113);
-            settings.EventTypes["QuestionAskedEvent"] = typeof(QuestionAskedEvent);
-            settings.EventTypes["QuestionTaggedEvent"] = typeof(QuestionTaggedEvent);
-            settings.EventTypes["QuestionAnsweredEvent"] = typeof(QuestionAnsweredEvent);
-            settings.EventTypes["QuestionLikedEvent"] = typeof(QuestionLikedEvent);
-            settings.EventTypes["AnswerAcceptedEvent"] = typeof(AnswerAcceptedEvent);
+                .AddCors()
+                .AddApplicationPart(Assembly.Load("Questionable.Questions.Http"))
+                .AddApplicationPart(Assembly.Load("Questionable.Queries.Http"))
+                .AddApplicationPart(Assembly.Load("Questionable.Queries.Denormalizers.QuestionDetails"));
         }
 
         private static void ConfigureAggregates(IServiceCollection services)
         {
+            
+
             services.AddAggregate<Questions.Aggregates.Question>()
                 .AddEvent<QuestionAskedEvent>()
                 .AddEvent<QuestionTaggedEvent>()

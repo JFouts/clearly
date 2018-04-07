@@ -4,7 +4,9 @@ using Questionable.Queries.QuestionSearch;
 
 namespace Questionable.Queries.Http
 {
-    [Route("query/popularQuestion")]
+    [Route("query/[controller]")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class PopularQuestionController : ControllerBase
     {
         private readonly IQuestionSearcher _questionSearcher;

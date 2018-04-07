@@ -25,7 +25,8 @@ namespace Questionable.Queries.Denormalizers.QuestionDetails
                 Description = @event.Description,
                 Id = @event.Id,
                 Likes = 0,
-                Title = @event.Title
+                Title = @event.Title,
+                UserId = @event.UserId
             };
 
             await _questionRepository.CreateAsync(question.Id, question);
@@ -38,7 +39,9 @@ namespace Questionable.Queries.Denormalizers.QuestionDetails
 
             question.Data.Answers.Add(new Question.Answer
             {
-                AnswerId = @event.AnswerId
+                AnswerId = @event.AnswerId,
+                Description = @event.Description,
+                UserId = @event.UserId
             });
 
             await _questionRepository.UpdateAsync(question.Data.Id, question);
@@ -60,6 +63,16 @@ namespace Questionable.Queries.Denormalizers.QuestionDetails
             var question = await _questionRepository.GetByIdAsync(@event.Id);
 
             question.Data.Answers.First(x => x.AnswerId == @event.AnswerId).Accepted = true;
+
+            await _questionRepository.UpdateAsync(question.Data.Id, question);
+        }
+
+        [Handler]
+        public async Task QuestionTagged(QuestionTaggedEvent @event)
+        {
+            var question = await _questionRepository.GetByIdAsync(@event.Id);
+
+            question.Data.Tags.Add(@event.SubjectTag);
 
             await _questionRepository.UpdateAsync(question.Data.Id, question);
         }

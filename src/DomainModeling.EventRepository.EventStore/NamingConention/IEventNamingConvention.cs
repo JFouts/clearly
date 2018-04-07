@@ -7,5 +7,6 @@ namespace DomainModeling.EventRepository.EventStore.NamingConention
         string GetEventName<T>();
         string GetEventName(Type type);
         Type GetEventType(string typeName);
+        bool IsKnownEventName(string eventName);
     }
 }

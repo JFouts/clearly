@@ -70,7 +70,8 @@ namespace DomainModeling.EventSubscription.EventStore
             try
             {
                 var domainEvent = ConvertToDomainEvent(@event);
-                await eventHandler(domainEvent);
+                if(domainEvent != null)
+                    await eventHandler(domainEvent);
             }
             catch (Exception exception)
             {
@@ -80,7 +81,10 @@ namespace DomainModeling.EventSubscription.EventStore
 
         private IDomainEvent ConvertToDomainEvent(ResolvedEvent @event)
         {
-            var eventType = _eventStoreSettings.EventTypes[@event.Event.EventType];
+            if (!_eventStoreSettings.EventNamingPreferences.IsKnownEventName(@event.Event.EventType))
+                return null;
+
+            var eventType = _eventStoreSettings.EventNamingPreferences.GetEventType(@event.Event.EventType);
 
             return _jsonByteConverter.Deserialize(@event.Event.Data, eventType) as IDomainEvent;
         }

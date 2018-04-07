@@ -64,5 +64,24 @@ namespace DomainModeling.EventRepository.Test.Unit.EventStore.NamingConventions
 
             Assert.Throws<UnmappedTypeException>((Action)Act);
         }
+
+        [Fact]
+        public void ItReturnsTrueForKnownEventNames()
+        {
+            var customObjectEventType = typeof(object);
+            _convention.AddMap(customObjectEventType, "CustomObjectEventType");
+
+            var result = _convention.IsKnownEventName("CustomObjectEventType");
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void ItReturnsFalseForUnknownEventNames()
+        {
+            var result = _convention.IsKnownEventName("CustomObjectEventType");
+
+            Assert.False(result);
+        }
     }
 }

@@ -46,5 +46,21 @@ namespace DomainModeling.EventRepository.Test.Unit.EventStore.NamingConventions
 
             Assert.Equal(typeof(object), eventType);
         }
+
+        [Fact]
+        public void ItReturnsTrueWhenEventNameIsRegistered()
+        {
+            var result = _convention.IsKnownEventName("Object");
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void ItReturnsFalseWhenEventNameIsUnregistered()
+        {
+            var result = _convention.IsKnownEventName("UnregisteredEventName");
+
+            Assert.False(result);
+        }
     }
 }

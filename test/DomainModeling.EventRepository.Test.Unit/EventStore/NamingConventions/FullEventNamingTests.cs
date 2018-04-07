@@ -27,5 +27,19 @@ namespace DomainModeling.EventRepository.Test.Unit.EventStore.NamingConventions
             var type = _convention.GetEventType("System.Object");
             Assert.Equal(typeof(object), type);
         }
+
+        [Fact]
+        public void ItReturnsTrueWhenEventNameIsInTheAssembly()
+        {
+            var result = _convention.IsKnownEventName("System.Object");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void ItReturnsFalseWhenEventNameIsNotInTheAssembly()
+        {
+            var result = _convention.IsKnownEventName("System.ThisClassDoesNotExist");
+            Assert.False(result);
+        }
     }
 }

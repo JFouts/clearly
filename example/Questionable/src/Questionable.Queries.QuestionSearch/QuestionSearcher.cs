@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Questionable.Queries.Models;
 using Repositoy.Core;
@@ -35,6 +36,16 @@ namespace Questionable.Queries.QuestionSearch
                 Take = take,
                 Results = query
             });
+        }
+
+        public Task<QuestionDetails> GetQuestion(Guid id)
+        {
+            var query =
+                from question in _questions.Query
+                where question.Id == id
+                select new QuestionDetails(question);
+
+            return Task.FromResult(query.FirstOrDefault());
         }
     }
 }
