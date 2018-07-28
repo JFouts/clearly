@@ -4,7 +4,7 @@ using DomainModeling.Core.Exceptions;
 using DomainModeling.Core.ValidationAnnotations;
 using Xunit;
 
-namespace DomainModeling.Core.Unit.ValidationAnnotations
+namespace DomainModeling.Core.Unit.Core.ValidationAnnotations
 {
     public class NonEmptyAttributeTests
     {

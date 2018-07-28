@@ -3,7 +3,7 @@ using DomainModeling.Core.Utilities.Interfaces;
 using Moq;
 using Xunit;
 
-namespace DomainModeling.Core.Unit.Utilities
+namespace DomainModeling.Core.Unit.Core.Utilities
 {
     public class JsonByteConverterTests
     {
@@ -20,10 +20,13 @@ namespace DomainModeling.Core.Unit.Utilities
         }
 
         [Fact]
+        // Given an object
+        // When it is serialized
+        // Then it should be converted to Json then coverted to Bytes
         public void WhenSerializingItCovertToJsonThenBytes()
         {
             // Arrange
-            var obj = new {};
+            var obj = new { };
             var json = "test";
             var expected = new byte[10];
 
@@ -38,6 +41,9 @@ namespace DomainModeling.Core.Unit.Utilities
         }
 
         [Fact]
+        // Given an object
+        // When it is deserialized anonamously
+        // Then it should be coverted from Bytes then from Json
         public void WhenDeserializingToObjectItCovertFromBytesThenFromJson()
         {
             // Arrange
@@ -56,6 +62,9 @@ namespace DomainModeling.Core.Unit.Utilities
         }
 
         [Fact]
+        // Given an object
+        // When it is deserialized to a soft type
+        // Then it should be coverted from Bytes then from Json
         public void WhenDeserializingToTypeItCovertFromBytesThenFromJson()
         {
             // Arrange
@@ -73,7 +82,10 @@ namespace DomainModeling.Core.Unit.Utilities
             Assert.Same(expected, result);
         }
 
-        [Fact]
+        [Fact]        
+        // Given an object
+        // When it is deserialized to a hard type
+        // Then it should be coverted from Bytes then from Json
         public void WhenDeserializingToExplicitTypeItCovertFromBytesThenFromJson()
         {
             // Arrange

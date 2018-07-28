@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using DomainModeling.Core.Exceptions;
 using Xunit;
 
-namespace DomainModeling.Core.Unit
+namespace DomainModeling.Core.Unit.Core
 {
     public class ValidatedCommandFactoryTests
     {

@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace DomainModeling.Core.Unit
+namespace DomainModeling.Core.Unit.Core
 {
     public class CommandFactoryTests
     {
@@ -10,7 +10,7 @@ namespace DomainModeling.Core.Unit
         public CommandFactoryTests()
         {
             _factory = new CommandFactory();
-            _commmand = new MockCommand();
+            _commmand = new DummyCommand();
         }
 
         [Fact]
@@ -26,6 +26,6 @@ namespace DomainModeling.Core.Unit
             Assert.Same(_commmand, createdInstance);
         }
 
-        private class MockCommand : Command { }
+        private class DummyCommand : Command { }
     }
 }
