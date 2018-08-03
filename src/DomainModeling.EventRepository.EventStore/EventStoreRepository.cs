@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 using DomainModeling.Core.Utilities.Interfaces;
 using EventStore.ClientAPI;
 
@@ -21,12 +21,12 @@ namespace DomainModeling.EventRepository.EventStore
             _jsonByteConverter = jsonByteConverter;
         }
 
-        public async Task SaveNewStreamEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents)
+        public async Task SaveNewStreamEventsAsync<T>(Guid id, IEnumerable<DomainEvent> domainEvents)
         {
             await SaveEventsAsync<T>(id, domainEvents, ExpectedVersion.NoStream);
         }
 
-        public async Task SaveEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents, long aggregateVersion)
+        public async Task SaveEventsAsync<T>(Guid id, IEnumerable<DomainEvent> domainEvents, long aggregateVersion)
         {
             var stream = GetStream<T>(id);
             var data = domainEvents.Select(CreateEvent);
@@ -46,12 +46,12 @@ namespace DomainModeling.EventRepository.EventStore
             };
         }
 
-        private IDomainEvent ConvertToDomainEvent(ResolvedEvent @event)
+        private DomainEvent ConvertToDomainEvent(ResolvedEvent @event)
         {
             if (!_settings.EventTypes.ContainsKey(@event.Event.EventType))
                 return null;
 
-            return _jsonByteConverter.Deserialize(@event.Event.Data, _settings.EventTypes[@event.Event.EventType]) as IDomainEvent;
+            return _jsonByteConverter.Deserialize(@event.Event.Data, _settings.EventTypes[@event.Event.EventType]) as DomainEvent;
         }
 
         private string GetStream<T>(Guid id)

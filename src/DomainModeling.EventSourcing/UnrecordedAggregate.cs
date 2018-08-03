@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DomainModeling.Core;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {

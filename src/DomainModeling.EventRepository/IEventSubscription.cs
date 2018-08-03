@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventRepository
 {
     public interface IEventSubscription
     {
-        Task Subscribe<T>(Func<IDomainEvent, Task> eventHandler);
+        Task Subscribe<T>(Func<DomainEvent, Task> eventHandler);
     }
 }

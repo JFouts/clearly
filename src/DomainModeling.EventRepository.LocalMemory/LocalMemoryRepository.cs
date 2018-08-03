@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventRepository.LocalMemory
 {
@@ -11,13 +11,13 @@ namespace DomainModeling.EventRepository.LocalMemory
     {
         private readonly ConcurrentDictionary<Guid, EventStream> _eventStreams = new ConcurrentDictionary<Guid, EventStream>();
 
-        public Task SaveNewStreamEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents)
+        public Task SaveNewStreamEventsAsync<T>(Guid id, IEnumerable<DomainEvent> domainEvents)
         {
             SaveNewStreamEvents(id, domainEvents);
             return Task.CompletedTask;
         }
 
-        public Task SaveEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents, long aggregateVersion)
+        public Task SaveEventsAsync<T>(Guid id, IEnumerable<DomainEvent> domainEvents, long aggregateVersion)
         {
             SaveEvents(id, domainEvents, aggregateVersion);
             return Task.CompletedTask;
@@ -28,12 +28,12 @@ namespace DomainModeling.EventRepository.LocalMemory
             return Task.FromResult(RetriveEvents(id));
         }
 
-        private void SaveNewStreamEvents(Guid id, IEnumerable<IDomainEvent> domainEvents)
+        private void SaveNewStreamEvents(Guid id, IEnumerable<DomainEvent> domainEvents)
         {
             _eventStreams.TryAdd(id, new EventStream(domainEvents));
         }
 
-        private void SaveEvents(Guid id, IEnumerable<IDomainEvent> domainEvents, long aggregateVersion)
+        private void SaveEvents(Guid id, IEnumerable<DomainEvent> domainEvents, long aggregateVersion)
         {
             if (_eventStreams.TryGetValue(id, out var value))
                 value.AppendEvents(aggregateVersion, domainEvents);
@@ -53,7 +53,7 @@ namespace DomainModeling.EventRepository.LocalMemory
             return new AggregateEventList
             {
                 AggregateVersion = snapshot.Version,
-                DomainEvents = snapshot.Events.Select(x => x as IDomainEvent)
+                DomainEvents = snapshot.Events.Select(x => x as DomainEvent)
             };
         }
     }

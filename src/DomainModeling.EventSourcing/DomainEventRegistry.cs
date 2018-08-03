@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {
@@ -15,7 +15,7 @@ namespace DomainModeling.EventSourcing
         }
 
         public void RegisterHandler<TEvent, THandler>()
-            where TEvent : IDomainEvent
+            where TEvent : DomainEvent
             where THandler : IDomainEventHandler<TAggregate, TEvent>
         {
             _handlers[typeof(TEvent)] = typeof(THandler);

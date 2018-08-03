@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {
@@ -13,7 +13,7 @@ namespace DomainModeling.EventSourcing
             _eventHandlerFactory = eventHandlerFactory;
         }
 
-        public async Task DispatchAsync(TAggregate aggregate, IDomainEvent @event)
+        public async Task DispatchAsync(TAggregate aggregate, DomainEvent @event)
         {
             var eventHandler = _eventHandlerFactory.CreateHandler(@event.GetType());
             await eventHandler.HandleAsync(aggregate, @event);

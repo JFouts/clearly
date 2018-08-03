@@ -1,9 +1,11 @@
 ﻿using System;
 
-namespace DomainModeling.Core {
+namespace DomainModeling.Core.DomainObjectTypes {
     /// <summary>
     /// An Aggregate Root is the Entity at the root of an Aggregate. An Aggregate is a grouping of Entities togther
     /// to all for invarients in business rules.
     /// </summary>
-    public interface AggregateRoot : Entity { }
+    public interface AggregateRoot : Entity {
+        long Version { get; }
+    }
 }

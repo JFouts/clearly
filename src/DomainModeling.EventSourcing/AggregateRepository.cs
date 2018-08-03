@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 using DomainModeling.EventRepository;
 
 namespace DomainModeling.EventSourcing

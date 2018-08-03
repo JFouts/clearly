@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {
@@ -11,9 +11,9 @@ namespace DomainModeling.EventSourcing
         private readonly IEventSourcedAggregateRepository<TAggregate> _repository;
 
         public long Version { get; }
-        public IEnumerable<IDomainEvent> Events { get; }
+        public IEnumerable<DomainEvent> Events { get; }
 
-        public RecordedAggregate(Guid id, long version, IEnumerable<IDomainEvent> events, IEventSourcedAggregateRepository<TAggregate> repository, IEventDispatcher<TAggregate> eventDispatcher)
+        public RecordedAggregate(Guid id, long version, IEnumerable<DomainEvent> events, IEventSourcedAggregateRepository<TAggregate> repository, IEventDispatcher<TAggregate> eventDispatcher)
             : base(id, eventDispatcher)
         {
             Version = version;

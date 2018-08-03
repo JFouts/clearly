@@ -1,6 +1,6 @@
 ﻿using System;
 using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {
@@ -9,7 +9,7 @@ namespace DomainModeling.EventSourcing
         Type GetHandlerType(Type eventType);
 
         void RegisterHandler<TEvent, THandler>()
-            where TEvent : IDomainEvent
+            where TEvent : DomainEvent
             where THandler : IDomainEventHandler<TAggregate, TEvent>;
     }
 }

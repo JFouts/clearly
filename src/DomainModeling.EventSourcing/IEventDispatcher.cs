@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {
     public interface IEventDispatcher<in T>
     {
-        Task DispatchAsync(T aggregate, IDomainEvent @event);
+        Task DispatchAsync(T aggregate, DomainEvent @event);
     }
 }

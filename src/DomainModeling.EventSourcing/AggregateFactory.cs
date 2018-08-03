@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
+using DomainModeling.Core.DomainObjectTypes;
 
 namespace DomainModeling.EventSourcing
 {
@@ -22,7 +22,7 @@ namespace DomainModeling.EventSourcing
             return new UnrecordedAggregate<TAggregate>(id, repo, _eventDispatcher);
         }
 
-        public EventSourcedAggregate<TAggregate> CreateRecordedAggregate(Guid id, long version, IEnumerable<IDomainEvent> events)
+        public EventSourcedAggregate<TAggregate> CreateRecordedAggregate(Guid id, long version, IEnumerable<DomainEvent> events)
         {
             var repo = _serviceProvider.GetService(typeof(IEventSourcedAggregateRepository<TAggregate>)) as IEventSourcedAggregateRepository<TAggregate>;
             return new RecordedAggregate<TAggregate>(id, version, events, repo, _eventDispatcher);

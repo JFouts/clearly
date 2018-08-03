@@ -1,6 +1,6 @@
 using System;
 
-namespace DomainModeling.Core {
+namespace DomainModeling.Core.DomainObjectTypes {
     /// <summary>
     /// An Entity is a Domain Object that maintains an idenity over time. The attributes associated with
     /// the Entity can change over time, but the identity remains constant.
