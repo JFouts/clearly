@@ -1,6 +1,3 @@
-﻿namespace DomainModeling.Core.Utilities.Interfaces
-{
-    public interface IJsonByteConverter : IJsonByteSerializer, IJsonByteDeserializer
-    {
-    }
+﻿namespace DomainModeling.Core.Utilities.Interfaces {
+    public interface IJsonByteConverter : IJsonByteSerializer, IJsonByteDeserializer { }
 }

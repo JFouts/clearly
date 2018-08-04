@@ -1,7 +1,5 @@
-﻿namespace DomainModeling.Core.Utilities.Interfaces
-{
-    public interface IBinaryStringEncoder
-    {
+﻿namespace DomainModeling.Core.Utilities.Interfaces {
+    public interface IBinaryStringEncoder {
         byte[] Encode(string str);
     }
 }
