@@ -13,8 +13,8 @@ namespace DomainModeling.Core.Exceptions {
         :base(
            $"Expected entity with id {id} to be at version " +
            $"{expectedVersion} but was actually at {actualVersion}. " +
-           $"This usually means that another command made a change to " +
-           $"this entity prior to the completion of the currently " +
+           $"This usually means that another command made a change " +
+           $"to this entity prior to the completion of the currently " +
            $"executing command. This command can be retried.") {
       Id = id;
       ExpectedVersion = expectedVersion;

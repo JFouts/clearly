@@ -24,7 +24,7 @@ namespace DomainModeling.Core.DomainObjectTypes {
     /// <summary>
     /// Persist an Aggregate
     /// </summary>
-    /// <param name="t">The Aggregate you wish to persist</param>
-    void Save(Aggregate<T> t);
+    /// <param name="aggregate">The Aggregate you wish to persist</param>
+    void Save(Aggregate<T> aggregate);
   }
 }
