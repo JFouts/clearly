@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using DomainModeling.Core.Exceptions;
 
 namespace DomainModeling.Core.ValidationAnnotations
 {
     public class AlphanumericAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            const ValidationResult success = null;
+            const ValidationResult? success = null;
             var error = new ValidationResult($"{validationContext?.DisplayName} must be alphanumeric.");
 
             switch (value)

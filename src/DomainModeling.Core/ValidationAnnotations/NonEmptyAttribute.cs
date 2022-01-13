@@ -7,9 +7,9 @@ namespace DomainModeling.Core.ValidationAnnotations
 {
     public class NonEmptyAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            const ValidationResult success = null;
+            const ValidationResult? success = null;
             var error = new ValidationResult($"{validationContext?.DisplayName} must be non-empty.");
 
             switch (value)

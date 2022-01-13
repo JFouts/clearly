@@ -52,9 +52,9 @@ namespace DomainModeling.EventSubscription.EventStore
                 .ToDictionary(x => x.GetParameters().Single().ParameterType, InvokeMethod);
         }
 
-        private static Func<object, IDomainEvent, Task> InvokeMethod(MethodInfo method)
+        private static Func<object, IDomainEvent, Task?> InvokeMethod(MethodInfo method)
         {
-            return (obj, @event) => (Task)method.Invoke(obj, new object[]{@event});
+            return (obj, @event) => (Task?)method.Invoke(obj, new object[]{@event});
         }
 
         private static IEnumerable<MethodInfo> GetSubscriptionMethods(TypeInfo type)

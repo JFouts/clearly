@@ -6,7 +6,7 @@ namespace DomainModeling.Core.ValidationAnnotations
 {
     public class MarkdownAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             switch (value)
             {
