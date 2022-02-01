@@ -1,0 +1,21 @@
+@model DomainModeling.Crud.WebUi.Models.EntityFormDefinition
+
+@{
+    Layout = "_Layout";
+}
+
+@if (Model == null)
+{
+    return;
+}
+
+<h2>@Model.DisplayName</h2>
+<form>
+    @foreach (var field in Model.Fields)
+    {
+        <div class="form-field">
+            @await Component.InvokeAsync(field.FieldType.FieldEditorName, field)
+        </div>
+    }
+    <button class="btn btn-primary" type="sumbit">Create</button>
+</form>

@@ -1,5 +1,4 @@
 using System.Reflection;
-using DomainModeling.Crud.AddControllers;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
@@ -15,11 +14,34 @@ internal class EntityCrudControllerFeatureProvider : IApplicationFeatureProvider
     }
 
     public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
-    {       
-        foreach (var type in _typeProvider.GetTypes())
+    {
+        var entities = _typeProvider.GetTypes();
+
+        Console.WriteLine("Adding Dynamic Controllers");
+
+        foreach (var applicationPart in parts.OfType<AssemblyPart>())
         {
-            var typedController = typeof(EntityCrudController<>).MakeGenericType(type).GetTypeInfo();
-            feature.Controllers.Add(typedController);
+            var assembly = applicationPart.Assembly;
+            
+            Console.WriteLine($"\tAssembly: {assembly.FullName}");
+
+            var controllers = from type in assembly.GetTypes()
+                where Attribute.IsDefined(type, typeof(GenericEntityRouteAttribute)) 
+                    && type.IsGenericType
+                select type;
+
+            foreach (var controller in controllers)
+            {
+                Console.WriteLine($"\t\tController: {controller.FullName}");
+
+                foreach (var type in entities)
+                {
+                    Console.WriteLine($"\t\t\tEntity: {type.FullName}");
+
+                    var typedController = controller.MakeGenericType(type).GetTypeInfo();
+                    feature.Controllers.Add(typedController);
+                }
+            }
         }
     }
 }

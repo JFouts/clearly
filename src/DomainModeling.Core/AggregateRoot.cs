@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace DomainModeling.Core
+﻿namespace DomainModeling.Core
 {
-    public abstract class AggregateRoot
+    public abstract record AggregateRoot : IEntity
     {
         public Guid Id { get; set; }
     }

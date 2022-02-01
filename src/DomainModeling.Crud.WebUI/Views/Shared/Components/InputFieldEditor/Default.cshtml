@@ -1,0 +1,6 @@
+@model InputFieldEditorViewModel;
+
+@if (Model == null) return;
+
+<label for="@Model.Id">@Model.FieldName</label>
+<input id="@Model.Id" type="text" class="form-control" placeholder="@Model.FieldName">
