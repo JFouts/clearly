@@ -1,0 +1,68 @@
+@model DomainModeling.Crud.WebUi.Models.EntityFormDefinition
+
+@{
+    Layout = "_Layout";
+}
+
+@if (Model == null)
+{
+    return;
+}
+
+<h1><span class="text-muted small">View all </span>  @Model.DisplayName<span class="text-muted">(s)</span></h1>
+
+<div class="py-3">
+    <div class="mb-3 d-flex justify-content-end">
+        <a href="@(Context.Request.Path)/create" class="btn btn-primary">Add New</a>
+    </div>
+
+    <div class="mb-3">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+    </div>
+
+    <table class="table table-striped table-loading" data-source="@Model.DataSourceUrl">
+    <thead>
+        <tr>
+            @foreach (var column in @Model.Fields)
+            {
+                <th>@column.DisplayName</th>
+            }
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(var i = 0; i < 5; i++) 
+        {
+            <tr>
+                @foreach (var column in @Model.Fields)
+                {
+                    <td><span></span></td>
+                }
+                <td><i class="bi bi-eye-fill">&nbsp;<i class="bi bi-pencil-fill"></i>&nbsp;<i class="bi bi-trash-fill"></i></td>
+            </tr>
+        }
+        @*      
+        <tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td>
+        <td></i><i class="bi bi-eye-fill">&nbsp;<i class="bi bi-pencil-fill"></i>&nbsp;<i class="bi bi-trash-fill"></i></td></tr>
+        *@
+    </tbody>
+    </table>
+
+    <nav aria-label="@Model.DisplayName list page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+    </ul>
+    </nav>
+</div>

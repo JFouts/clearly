@@ -12,6 +12,6 @@ public static class ServiceCollectionExtensions
         return services
             .Configure<RazorViewEngineOptions>(
                 options => options.ViewLocationExpanders.Add(new GenericControllerViewLocationExpander()))
-            .AddCrudMvc(assemblies);        
+            .AddCrud(assemblies);        
     }
 }

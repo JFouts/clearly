@@ -9,13 +9,13 @@
     return;
 }
 
-<h2>@Model.DisplayName</h2>
-<form>
+<h1><span class="text-muted small">Edit </span> @Model.DisplayName</h1>
+<form data-source="@Model.DataSourceUrl" data-type="edit">
     @foreach (var field in Model.Fields)
     {
         <div>
             @await Component.InvokeAsync(field.FieldType.FieldEditorName, field)
         </div>
     }
-    <button type="sumbit">Save</button>
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>

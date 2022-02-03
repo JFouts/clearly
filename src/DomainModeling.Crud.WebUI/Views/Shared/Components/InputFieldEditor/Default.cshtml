@@ -2,5 +2,7 @@
 
 @if (Model == null) return;
 
-<label for="@Model.Id">@Model.FieldName</label>
-<input id="@Model.Id" type="text" class="form-control" placeholder="@Model.FieldName">
+<div class="mb-3">
+    <label for="@Model.Id" class="form-label">@Model.Label</label>
+    <input id="@Model.Id" type="text" class="form-control" name="@Model.FieldName" placeholder="@Model.Label">
+</div>
