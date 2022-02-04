@@ -10,6 +10,13 @@ namespace DomainModeling.Crud.WebUi.Controllers;
 [Route("admin")]
 public class GenericCrudController<T> : Controller
 {
+    private readonly ICrudService<T> _service;
+
+    public GenericCrudController(ICrudService<T> service)
+    {
+        _service = service;
+    }
+
     [HttpGet("edit/{id}")]
     public IActionResult GetEditForm(string id)
     {
@@ -30,9 +37,26 @@ public class GenericCrudController<T> : Controller
         return View("CreateForm", viewModel);
     }
 
-
     [HttpGet]
-    public IActionResult ListView([FromQuery] int page = 0, [FromQuery] int pageSize = 24)
+    public async Task<IActionResult> ListView([FromQuery] int page = 0, [FromQuery] int pageSize = 24)
+    {
+        var entity = typeof(T);
+
+        var results = await _service.Search(new CrudSearchOptions {
+            Skip = page * pageSize,
+            Take = pageSize
+        }).ToListAsync();
+
+        var viewModel = new EntitySearchModel {
+            FormDefinition = CreateEntityFormDefinitionFromType(entity),
+            Results = results.OfType<object>().Select(ObjectToDictionary).ToList()
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetSingle([FromRoute] Guid id)
     {
         var entity = typeof(T);
 
@@ -41,10 +65,28 @@ public class GenericCrudController<T> : Controller
         return View(viewModel);
     }
 
+    private Dictionary<string, object> ObjectToDictionary(object obj)
+    {
+        var data = new Dictionary<string, object>();
+
+        foreach (var property in obj.GetType().GetProperties())
+        {
+            var value =  property.GetValue(obj);
+
+            if (value != null)
+            {
+                data[property.Name] = value;
+            }
+        }
+
+        return data;
+    }
+
     private EntityFormDefinition CreateEntityFormDefinitionFromType(Type entity)
     {
         return new EntityFormDefinition
         {
+            EntityType = entity,
             DisplayName = SplitCamelCase(entity.Name),
             EntityName = LowerCamelCase(entity.Name),
             DataSourceUrl = $"/{entity.Name.ToLower()}",

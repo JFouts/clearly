@@ -2,8 +2,15 @@ using DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 
 namespace DomainModeling.Crud.WebUi.Models;
 
+public record EntitySearchModel
+{
+    public IEnumerable<Dictionary<string, object>> Results { get; set; } = new Dictionary<string, object>[0];
+    public EntityFormDefinition FormDefinition { get; set; } = new EntityFormDefinition();
+}
+
 public record EntityFormDefinition
 {
+    public Type EntityType { get; set; } = typeof(object);
     public string EntityName { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string DataSourceUrl { get; set; } = string.Empty;

@@ -24,6 +24,10 @@ internal class CrudEntityService<T> : ICrudService<T> where T : IEntity
 
     public async Task Insert(T obj)
     {
+        if (obj.Id == Guid.Empty) {
+            obj.Id = Guid.NewGuid();
+        }
+
         await _repository.Insert(obj);
     }
 

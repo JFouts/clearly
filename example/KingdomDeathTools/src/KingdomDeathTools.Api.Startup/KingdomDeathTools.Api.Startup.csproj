@@ -10,4 +10,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\DomainModeling.Crud\DomainModeling.Crud.csproj" />
+    <ProjectReference Include="..\..\..\..\src\DomainModeling.Core\DomainModeling.Core.csproj" />
+    <ProjectReference Include="..\KingdomDeathTools.Api.Services\KingdomDeathTools.Api.Services.csproj" />
+    <ProjectReference Include="..\..\..\..\src\DomainModeling.Crud.WebUI\DomainModeling.Crud.WebUI.csproj" />
+  </ItemGroup>
+
 </Project>
