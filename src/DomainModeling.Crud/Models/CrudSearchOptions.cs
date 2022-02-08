@@ -2,16 +2,16 @@ namespace DomainModeling.Crud;
 
 public class CrudSearchResult<T>
 {
-    public long Count { get; set; }
-    public long Skip { get; set; }
-    public long Take { get; set; }
+    public int Count { get; set; }
+    public int Skip { get; set; }
+    public int Take { get; set; }
     public IAsyncEnumerable<T> Results { get; set; } = AsyncEnumerable.Empty<T>();
 }
 
 public class CrudSearchOptions
 {
-    public long Skip { get; set; }
-    public long Take { get; set; }
+    public int Skip { get; set; }
+    public int Take { get; set; }
     public CrudSearchFilter Filters { get; set; } = new CrudSearchFilter();
     public IEnumerable<CrudSearchSortField> SortFields { get; set; } = new List<CrudSearchSortField>();
 }

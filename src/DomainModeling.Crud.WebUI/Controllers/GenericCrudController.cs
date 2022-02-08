@@ -38,16 +38,20 @@ public class GenericCrudController<T> : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListView([FromQuery] int page = 0, [FromQuery] int pageSize = 24)
+    public async Task<IActionResult> ListView([FromQuery] int page = 1, [FromQuery] int pageSize = 24)
     {
         var entity = typeof(T);
 
-        var results = await _service.Search(new CrudSearchOptions {
-            Skip = page * pageSize,
+        var result = await _service.Search(new CrudSearchOptions {
+            Skip = (page - 1) * pageSize,
             Take = pageSize
-        }).ToListAsync();
+        });
+
+        var results = await result.Results.ToListAsync();
 
         var viewModel = new EntitySearchModel {
+            PageCount  = ((result.Count - 1) / pageSize) + 1,
+            CurrentPage = page,
             FormDefinition = CreateEntityFormDefinitionFromType(entity),
             Results = results.OfType<object>().Select(ObjectToDictionary).ToList()
         };
@@ -56,7 +60,7 @@ public class GenericCrudController<T> : Controller
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetSingle([FromRoute] Guid id)
+    public IActionResult GetById([FromRoute] Guid id)
     {
         var entity = typeof(T);
 
@@ -75,7 +79,7 @@ public class GenericCrudController<T> : Controller
 
             if (value != null)
             {
-                data[property.Name] = value;
+                data[LowerCamelCase(property.Name)] = value;
             }
         }
 
@@ -97,15 +101,15 @@ public class GenericCrudController<T> : Controller
         };
     }
 
-    private EditorFormFieldDefinition CreateEditorFormFieldDefinition(PropertyInfo prop)
+    private EditorFormFieldDefinition CreateEditorFormFieldDefinition(PropertyInfo property)
     {
         var defintion = new EditorFormFieldDefinition
         {
-            DisplayName = SplitCamelCase(prop.Name),
-            FieldName = LowerCamelCase(prop.Name),
+            DisplayName = SplitCamelCase(property.Name),
+            FieldName = LowerCamelCase(property.Name),
         };
 
-        var attribute = (FieldViewComponentAttribute?) Attribute.GetCustomAttribute(prop, typeof(FieldViewComponentAttribute));
+        var attribute = (FieldViewComponentAttribute?) Attribute.GetCustomAttribute(property, typeof(FieldViewComponentAttribute));
 
         if (attribute != null)
         {
@@ -118,7 +122,7 @@ public class GenericCrudController<T> : Controller
         return defintion;
     }
 
-    public static string SplitCamelCase(string str )
+    public static string SplitCamelCase(string str)
     {
         return Regex.Replace( 
             Regex.Replace( 
@@ -138,6 +142,6 @@ public class GenericCrudController<T> : Controller
             return Char.ToLower(str[0]) + str.Substring(1);
         }
 
-        return str;
+        return str ?? string.Empty;
     }
 }

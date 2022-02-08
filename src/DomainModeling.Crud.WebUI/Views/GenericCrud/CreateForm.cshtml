@@ -10,7 +10,7 @@
 }
 
 <h1><span class="text-muted small">Create a new</span> @Model.DisplayName</h1>
-<form data-source="@Model.DataSourceUrl" data-type="edit">
+<form class="default-focus" data-source="@Model.DataSourceUrl" data-type="edit">
     @foreach (var field in Model.Fields)
     {
         <div class="form-field">

@@ -2,8 +2,16 @@ using DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 
 namespace DomainModeling.Crud.WebUi.Models;
 
-public record EntitySearchModel
+public interface IPagableViewModel
 {
+    int PageCount { get; }
+    int CurrentPage { get; }
+}
+
+public record EntitySearchModel : IPagableViewModel
+{
+    public int PageCount { get; set; }
+    public int CurrentPage { get; set; }
     public IEnumerable<Dictionary<string, object>> Results { get; set; } = new Dictionary<string, object>[0];
     public EntityFormDefinition FormDefinition { get; set; } = new EntityFormDefinition();
 }

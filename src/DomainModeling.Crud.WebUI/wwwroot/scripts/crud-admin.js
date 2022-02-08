@@ -31,35 +31,37 @@ $(document).ready(function () {
         });
     });
 
-    $('table[data-source]').each(function() {
-        const dataSource = $(this).data('source');
+    $('.default-focus input:text:visible:first').focus();
 
-        $.ajax({
-            url: dataSource,
-            type: 'GET',
-            dataType: 'json',
-            headers: {          
-                "Accept": "application/json; charset=utf-8"
-            },
-            success: (data) => {
-                let html = '';
+    // $('table[data-source]').each(function() {
+    //     const dataSource = $(this).data('source');
 
-                for (record of data) {
-                    html += '<tr data-id="' + record.id + '">';
-                    for (prop in record) {
-                        html += '<td>' + record[prop] + '</td>';
-                    }
-                    html += '<td>';
-                    // html += '<a href="' + window.location + '/' + record.id + '"><i class="bi bi-eye-fill"></i></a>&nbsp;';
-                    html += '<a href="' + window.location + '/edit/' + record.id + '"><i class="bi bi-pencil-fill"></i></a>&nbsp;';
-                    html += '<a href="" onclick="alert(\'Delete\')"><i class="bi bi-trash-fill"></i>';
-                    html += '</td>';
-                    html += '</tr>\n';
-                }
+    //     $.ajax({
+    //         url: dataSource,
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         headers: {          
+    //             "Accept": "application/json; charset=utf-8"
+    //         },
+    //         success: (data) => {
+    //             let html = '';
 
-                $(this).find('tbody').html(html);
-                $(this).removeClass('table-loading');
-            }
-        });
-    });
+    //             for (record of data) {
+    //                 html += '<tr data-id="' + record.id + '">';
+    //                 for (prop in record) {
+    //                     html += '<td>' + record[prop] + '</td>';
+    //                 }
+    //                 html += '<td>';
+    //                 // html += '<a href="' + window.location + '/' + record.id + '"><i class="bi bi-eye-fill"></i></a>&nbsp;';
+    //                 html += '<a href="' + window.location + '/edit/' + record.id + '"><i class="bi bi-pencil-fill"></i></a>&nbsp;';
+    //                 html += '<a href="" onclick="alert(\'Delete\')"><i class="bi bi-trash-fill"></i>';
+    //                 html += '</td>';
+    //                 html += '</tr>\n';
+    //             }
+
+    //             $(this).find('tbody').html(html);
+    //             $(this).removeClass('table-loading');
+    //         }
+    //     });
+    // });
 });

@@ -31,9 +31,9 @@ internal class CrudEntityService<T> : ICrudService<T> where T : IEntity
         await _repository.Insert(obj);
     }
 
-    public IAsyncEnumerable<T> Search(CrudSearchOptions options)
+    public async Task<CrudSearchResult<T>> Search(CrudSearchOptions options)
     {
-        return _repository.Search(options);
+        return await _repository.Search(options);
     }
 
     public async Task Update(Guid id, T obj)

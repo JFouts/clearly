@@ -1,4 +1,5 @@
 using DomainModeling.Core;
+using DomainModeling.Crud;
 using System.Collections.Concurrent;
 
 namespace DomainModeling.EntityRepository;
@@ -31,9 +32,30 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T> where T : IEn
         return Task.CompletedTask;
     }
 
-    public IAsyncEnumerable<T> Search(object options)
+    public Task<CrudSearchResult<T>> Search(CrudSearchOptions options)
     {
-        return _table.Values.ToAsyncEnumerable();
+        var result = new CrudSearchResult<T> { 
+            Skip = options.Skip,
+            Take = options.Take 
+        };
+        
+        var query = _table.Values.AsQueryable();
+
+        result.Count = query.Count();
+
+        if (options.Skip > 0)
+        {
+            query = query.Skip(options.Skip);
+        }
+
+        if (options.Take > 0)
+        {
+            query = query.Take(options.Take);
+        }
+
+        result.Results = query.ToAsyncEnumerable();
+
+        return Task.FromResult(result);
     }
 
     public Task Update(Guid id, T obj)
