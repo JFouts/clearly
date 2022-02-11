@@ -1,0 +1,23 @@
+@model EntityEditViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+@if (Model == null)
+{
+    return;
+}
+
+<h1><span class="text-muted small">Create a new</span> @Model.Definition.DisplayName</h1>
+<form class="default-focus" data-source="@Model.Definition.DataSourceUrl" data-type="create">
+    @foreach (var fieldDefintion in Model.Definition.Fields)
+    {
+        Model.Record.TryGetValue(fieldDefintion.FieldName, out var value);
+
+        <div class="form-field">
+            @await Component.InvokeAsync(fieldDefintion.FieldType.FieldEditorName, new { fieldDefintion, value })
+        </div>
+    }
+    <button class="btn btn-primary" type="sumbit">Create</button>
+</form>

@@ -3,6 +3,28 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace DomainModeling.Crud.Infrastructure;
 
+internal class GenericActionRouteConvention : IActionModelConvention
+{
+    public void Apply(ActionModel action)
+    {
+        if (action.Controller.ControllerType.IsGenericType)
+        {
+            var genericType = action.Controller.ControllerType.GenericTypeArguments[0];
+
+            foreach (var selector in action.Selectors)
+            {
+                if (selector?.AttributeRouteModel != null 
+                    && string.IsNullOrWhiteSpace(selector.AttributeRouteModel.Name)) 
+                {
+                    selector.AttributeRouteModel.Name = $"{action.Controller.ControllerType.Name}<{genericType.Name}>{action.ActionMethod.Name}";
+
+                    Console.WriteLine($"Route Named [{selector.AttributeRouteModel.Name}]");
+                }
+            }
+        }
+    }
+}
+
 internal class GenericControllerRouteConvention : IControllerModelConvention
 {
     public void Apply(ControllerModel controller)
@@ -35,6 +57,14 @@ internal class GenericControllerRouteConvention : IControllerModelConvention
                 routeAttribute.Order = old.Order;
             }
 
+            if (string.IsNullOrWhiteSpace(routeAttribute.Name))
+            {
+                routeAttribute.Name = $"{controller.ControllerType.Name}<{genericType.Name}>";
+            }
+
+            Console.WriteLine($"Route Created [{routeAttribute.Name}:{routeAttribute.Order}][{controller.Selectors.Count}] - {routeAttribute.Template}");
+
+            controller.Selectors.Clear();
             controller.Selectors.Add(new SelectorModel
             {
                 AttributeRouteModel = new AttributeRouteModel(routeAttribute),

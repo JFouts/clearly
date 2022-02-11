@@ -1,0 +1,10 @@
+@model IEnumerable<string>
+
+@{
+    if (Model == null)
+    {
+        return;
+    }
+}
+
+@(string.Join(", ", Model))

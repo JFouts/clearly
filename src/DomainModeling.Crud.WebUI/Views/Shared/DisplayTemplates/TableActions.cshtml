@@ -1,0 +1,16 @@
+@model Guid
+
+@{
+    var editPath = Url.ChildPath($"edit/{@Model}");
+    var deletePath = Url.ChildPath($"delete/{@Model}");
+}
+
+@if (ViewBag.EditEnabled == true) {
+    <a href="@editPath"><i class="bi bi-pencil-fill"></i></a>
+    @Html.Raw("&nbsp")
+}
+
+@if (ViewBag.DeleteEnabled == true) {
+    <a href="@deletePath"><i class="bi bi-trash-fill"></i></a>
+    @Html.Raw("&nbsp")
+}

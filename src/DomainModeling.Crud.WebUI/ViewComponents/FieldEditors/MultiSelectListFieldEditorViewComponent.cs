@@ -7,12 +7,13 @@ namespace DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 [ViewComponent]
 public class MultiSelectListFieldEditorViewComponent : FieldEditorViewComponent
 {
-    public override Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion)
+    public override Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion, object value)
     {
         return Task.FromResult<IViewComponentResult>(View(new InputFieldEditorViewModel {
             Id = fieldDefintion.FieldName,
             FieldName = fieldDefintion.FieldName,
-            Label = fieldDefintion.DisplayName
+            Label = fieldDefintion.DisplayName,
+            Value = value
         }));
     }
 }

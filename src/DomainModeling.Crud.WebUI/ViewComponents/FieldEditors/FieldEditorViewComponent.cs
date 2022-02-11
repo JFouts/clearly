@@ -5,5 +5,5 @@ namespace DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 
 public abstract class FieldEditorViewComponent : ViewComponent
 {
-    public abstract Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion);
+    public abstract Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion, object value);
 }

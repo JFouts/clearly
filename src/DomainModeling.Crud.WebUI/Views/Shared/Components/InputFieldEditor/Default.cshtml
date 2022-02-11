@@ -2,7 +2,11 @@
 
 @if (Model == null) return;
 
+@{
+  var value = Model.Value.ToString();
+}
+
 <div class="mb-3">
     <label for="@Model.Id" class="form-label">@Model.Label</label>
-    <input id="@Model.Id" type="text" class="form-control" name="@Model.FieldName" placeholder="@Model.Label">
+    <input id="@Model.Id" type="text" class="form-control" name="@Model.FieldName" placeholder="@Model.Label" value="@value">
 </div>

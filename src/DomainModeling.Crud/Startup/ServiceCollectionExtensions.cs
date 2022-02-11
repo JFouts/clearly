@@ -46,7 +46,8 @@ public static class ServiceCollectionExtensions
     public static MvcOptions AddCrudConvention(this MvcOptions options)
     {
         options.Conventions.Add(new GenericControllerRouteConvention());
-
+        options.Conventions.Add(new GenericActionRouteConvention());
+        
         return options;
     }
 

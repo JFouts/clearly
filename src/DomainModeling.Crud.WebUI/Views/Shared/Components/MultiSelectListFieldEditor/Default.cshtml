@@ -2,12 +2,16 @@
 
 @if (Model == null) return;
 
+@{
+  var value = Model.Value as IEnumerable<string> ?? new List<string>();
+}
+
 <div class="mb-3">
   <label for="@Model.Id">@Model.Label</label>
   <select class="form-select" id="@Model.Id" name="@Model.FieldName" multiple>
-    <option value="1">Option 1</option>
-    <option value="2">Option 2</option>
-    <option value="3">Option 3</option>
-    <option value="4">Option 4</option>
+    <option value="1" selected='@value.Contains("1")'>Option 1</option>
+    <option value="2" selected='@value.Contains("2")'>Option 2</option>
+    <option value="3" selected='@value.Contains("3")'>Option 3</option>
+    <option value="4" selected='@value.Contains("4")'>Option 4</option>
   </select> 
 </div>

@@ -12,9 +12,9 @@ public class EntityCrudController<T> : ControllerBase {
     }
 
     [HttpGet]
-    public IActionResult Search()
+    public async Task<IActionResult> Search()
     {
-        return Ok(_service.Search(new CrudSearchOptions()));
+        return Ok(await _service.Search(new CrudSearchOptions()));
     }
 
     [HttpGet("{id}")]

@@ -3,6 +3,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         const dataSource = $(this).data('source');
+        const dataType = $(this).data('type');
 
         const data = new FormData($(e.target)[0]);
         const value = Object.fromEntries(data.entries());
@@ -12,11 +13,18 @@ $(document).ready(function () {
             value[name] = data.getAll(name);
         })
 
-        value['id'] = '00000000-0000-0000-0000-000000000000';
+        if (dataType == 'create') {
+            value.id = '00000000-0000-0000-0000-000000000000';
+        }
+
+        const url = dataType == 'edit' ? dataSource + '/' + value.id : dataSource;
+        const method = dataType == 'edit' ? 'PUT' : 'POST';
+
+        console.log(value)
 
         $.ajax({
-            url: dataSource,
-            type: 'POST',
+            url: url,
+            type: method,
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(value),
             headers: {          
@@ -25,43 +33,15 @@ $(document).ready(function () {
             },
             success: function(data, textStatus, jqXHR) {
                 const url = String(window.location)
-                window.location =url.substring(0, url.lastIndexOf('/'));
-                alert(window.location)
+
+                if (dataType == 'edit') {
+                    window.location = url.substring(0, url.lastIndexOf('/', url.lastIndexOf('/')-1));
+                } else {
+                    window.location = url.substring(0, url.lastIndexOf('/'));
+                }
             }
         });
     });
 
     $('.default-focus input:text:visible:first').focus();
-
-    // $('table[data-source]').each(function() {
-    //     const dataSource = $(this).data('source');
-
-    //     $.ajax({
-    //         url: dataSource,
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         headers: {          
-    //             "Accept": "application/json; charset=utf-8"
-    //         },
-    //         success: (data) => {
-    //             let html = '';
-
-    //             for (record of data) {
-    //                 html += '<tr data-id="' + record.id + '">';
-    //                 for (prop in record) {
-    //                     html += '<td>' + record[prop] + '</td>';
-    //                 }
-    //                 html += '<td>';
-    //                 // html += '<a href="' + window.location + '/' + record.id + '"><i class="bi bi-eye-fill"></i></a>&nbsp;';
-    //                 html += '<a href="' + window.location + '/edit/' + record.id + '"><i class="bi bi-pencil-fill"></i></a>&nbsp;';
-    //                 html += '<a href="" onclick="alert(\'Delete\')"><i class="bi bi-trash-fill"></i>';
-    //                 html += '</td>';
-    //                 html += '</tr>\n';
-    //             }
-
-    //             $(this).find('tbody').html(html);
-    //             $(this).removeClass('table-loading');
-    //         }
-    //     });
-    // });
 });
