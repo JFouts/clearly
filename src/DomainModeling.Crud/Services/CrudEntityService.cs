@@ -1,7 +1,8 @@
 using DomainModeling.Core;
-using DomainModeling.EntityRepository;
 
 namespace DomainModeling.Crud.Services;
+
+// TODO: Well defined exceptions that come from this class
 
 internal class CrudEntityService<T> : ICrudService<T> where T : IEntity
 {
@@ -24,7 +25,8 @@ internal class CrudEntityService<T> : ICrudService<T> where T : IEntity
 
     public async Task Insert(T obj)
     {
-        if (obj.Id == Guid.Empty) {
+        if (obj.Id == Guid.Empty) 
+        {
             obj.Id = Guid.NewGuid();
         }
 

@@ -1,11 +1,13 @@
+using DomainModeling.Crud.RestApi;
 using DomainModeling.Crud.WebUi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services
-    .AddCrudWithUi(System.Reflection.Assembly.Load("KingdomDeathTools.Api.Services"));
+var domain = System.Reflection.Assembly.Load("KingdomDeathTools.Api.Services");
+builder.Services.AddCrudRestApi(domain);
+builder.Services.AddCrudWebUi(domain);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -13,10 +15,6 @@ builder.Services.AddSwaggerGen(x => {
     x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo {
         Version = "v1",
         Title = "Kingdom Death: Monster Tools"
-    });
-    x.TagActionsBy(x => 
-        new List<string> { 
-            x.RelativePath.StartsWith("admin/") ? "Admin Web UI" : x.ActionDescriptor.AttributeRouteInfo.Name?.Split('<').Last().Split('>').First(),
     });
 });
 

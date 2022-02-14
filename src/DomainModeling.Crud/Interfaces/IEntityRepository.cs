@@ -1,7 +1,6 @@
 using DomainModeling.Core;
-using DomainModeling.Crud;
 
-namespace DomainModeling.EntityRepository;
+namespace DomainModeling.Crud;
 
 public interface IEntityRepository<T> where T : IEntity
 {

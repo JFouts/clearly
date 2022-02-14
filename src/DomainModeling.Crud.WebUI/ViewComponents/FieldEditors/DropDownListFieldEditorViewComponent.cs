@@ -7,13 +7,34 @@ namespace DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 [ViewComponent]
 public class DropDownListFieldEditorViewComponent : FieldEditorViewComponent
 {
-    public override Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion, object value)
+    private readonly IDataSourceFactory _dataSourceFactory;
+    private readonly IDataSourceReader<KeyValuePair<string, string>> _dataSourceReader;
+
+    public DropDownListFieldEditorViewComponent(IDataSourceFactory dataSourceFactory, IDataSourceReader<KeyValuePair<string, string>> dataSourceReader)
     {
-        return Task.FromResult<IViewComponentResult>(View(new InputFieldEditorViewModel {
+        _dataSourceFactory = dataSourceFactory;
+        _dataSourceReader = dataSourceReader;
+    }
+
+    public override async Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion, object value)
+    {
+        if (!fieldDefintion.FieldType.Properties.TryGetValue("DataSource", out var dataSourceDefinition))
+        {
+            throw new ArgumentNullException("DataSource");
+        }
+
+        var dataSource = _dataSourceFactory.Create(dataSourceDefinition);
+        var data = await _dataSourceReader.ReadFrom(dataSource);
+
+        return View(new DropDownFieldEditorViewModel {
             Id = fieldDefintion.FieldName,
             FieldName = fieldDefintion.FieldName,
             Label = fieldDefintion.DisplayName,
-            Value = value
-        }));
+            Value = value?.ToString() ?? string.Empty,
+            Options = data.Select(x => new DropDownOptionViewModel {
+                Value = x.Key,
+                Label = x.Value
+            })
+        });
     }
 }

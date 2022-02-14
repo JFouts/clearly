@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace DomainModeling.Crud.AddControllers;
+namespace DomainModeling.Crud.RestApi.Controllers;
 
-[GenericEntityRoute]
+[GenericEntityController]
+[Route("api/[type]")]
 public class EntityCrudController<T> : ControllerBase {
     private readonly ICrudService<T> _service;
 

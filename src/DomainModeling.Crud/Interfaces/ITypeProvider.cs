@@ -1,4 +1,4 @@
-namespace DomainModeling.Crud.Infrastructure;
+namespace DomainModeling.Crud;
 
 internal interface ITypeProvider
 {

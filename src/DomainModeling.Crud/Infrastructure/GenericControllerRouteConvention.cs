@@ -3,72 +3,42 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace DomainModeling.Crud.Infrastructure;
 
-internal class GenericActionRouteConvention : IActionModelConvention
-{
-    public void Apply(ActionModel action)
-    {
-        if (action.Controller.ControllerType.IsGenericType)
-        {
-            var genericType = action.Controller.ControllerType.GenericTypeArguments[0];
-
-            foreach (var selector in action.Selectors)
-            {
-                if (selector?.AttributeRouteModel != null 
-                    && string.IsNullOrWhiteSpace(selector.AttributeRouteModel.Name)) 
-                {
-                    selector.AttributeRouteModel.Name = $"{action.Controller.ControllerType.Name}<{genericType.Name}>{action.ActionMethod.Name}";
-
-                    Console.WriteLine($"Route Named [{selector.AttributeRouteModel.Name}]");
-                }
-            }
-        }
-    }
-}
-
+/// <summary>
+/// Adds token replacement support for the [type] token and updates the default route for generic controllers to 
+/// include the type in the route.
+/// </summary>
 internal class GenericControllerRouteConvention : IControllerModelConvention
 {
+    private const string TYPE_TOKEN = "type";
+    private const string DEFAULT_ROUTE_TEMPLATE = $"[controller]/[{TYPE_TOKEN}]";
+
     public void Apply(ControllerModel controller)
     {
-        if (controller.ControllerType.IsGenericType)
+        if (!controller.ControllerType.IsGenericType)
         {
-            var genericType = controller.ControllerType.GenericTypeArguments[0];
- 
-            var typeName = genericType.Name.ToLower();
-            var routeAttribute = (RouteAttribute?) Attribute.GetCustomAttribute(controller.ControllerType, typeof(RouteAttribute));
+            return;
+        }
 
-            if (routeAttribute == null)
+        AddTypeReplacementToken(controller);
+        ApplyDefaultRoute(controller);
+    }
+
+    private void AddTypeReplacementToken(ControllerModel controller)
+    {
+        var genericType = controller.ControllerType.GenericTypeArguments[0];
+        var typeName = genericType.Name.ToLower();
+
+        controller.RouteValues[TYPE_TOKEN] = typeName;
+    }
+
+    private void ApplyDefaultRoute(ControllerModel controller)
+    {
+        foreach (var selector in controller.Selectors)
+        {
+            if (selector.AttributeRouteModel == null) 
             {
-                routeAttribute = new RouteAttribute(typeName);
+                selector.AttributeRouteModel = new AttributeRouteModel(new RouteAttribute(DEFAULT_ROUTE_TEMPLATE));
             }
-            else
-            {
-                var old = routeAttribute;
-
-                if (routeAttribute.Template.Contains("{type}"))
-                {
-                    routeAttribute = new RouteAttribute(old.Template.Replace("{type}", typeName));
-                }
-                else
-                {
-                    routeAttribute = new RouteAttribute(old.Template.TrimEnd('/') + "/" + typeName);
-                }
-
-                routeAttribute.Name = old.Name;
-                routeAttribute.Order = old.Order;
-            }
-
-            if (string.IsNullOrWhiteSpace(routeAttribute.Name))
-            {
-                routeAttribute.Name = $"{controller.ControllerType.Name}<{genericType.Name}>";
-            }
-
-            Console.WriteLine($"Route Created [{routeAttribute.Name}:{routeAttribute.Order}][{controller.Selectors.Count}] - {routeAttribute.Template}");
-
-            controller.Selectors.Clear();
-            controller.Selectors.Add(new SelectorModel
-            {
-                AttributeRouteModel = new AttributeRouteModel(routeAttribute),
-            });
         }
     }
 }

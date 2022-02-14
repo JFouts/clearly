@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DomainModeling.Crud.WebUi.Controllers;
 
-[GenericEntityRoute]
-[Route("admin/{type}")]
+[GenericEntityController]
+[Route("admin/[type]")]
 public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
 {
     private readonly ICrudService<T> _service;
@@ -98,13 +98,15 @@ public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
             FieldName = property.Name.LowerCamelCase(),
         };
 
-        var attribute = (FieldViewComponentAttribute?) Attribute.GetCustomAttribute(property, typeof(FieldViewComponentAttribute));
+        var editorAttribute = (FieldEditorAttribute?) Attribute.GetCustomAttribute(property, typeof(FieldEditorAttribute));
+        var editorPropertiesAttributes = Attribute.GetCustomAttributes(property, typeof(FieldEditorPropertyAttribute)).OfType<FieldEditorPropertyAttribute>();
 
-        if (attribute != null)
+        if (editorAttribute != null)
         {
             defintion.FieldType = new EditorFormFieldType
             {
-                FieldEditorName = attribute.ViewComponentName
+                FieldEditorName = editorAttribute.ViewComponentName,
+                Properties = editorPropertiesAttributes.ToDictionary(x => x.Name, x => x.Value)
             };
         }
 
