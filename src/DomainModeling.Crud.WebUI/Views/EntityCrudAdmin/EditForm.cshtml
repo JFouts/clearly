@@ -1,4 +1,4 @@
-@model EntityEditViewModel
+@model EntityEditorViewModel
 
 @{
     Layout = "_Layout";
@@ -9,14 +9,12 @@
     return;
 }
 
-<h1><span class="text-muted small">Edit </span> @Model.Definition.DisplayName</h1>
-<form class="default-focus" data-source="@Model.Definition.DataSourceUrl" data-type="edit">
-    @foreach (var fieldDefintion in Model.Definition.Fields)
+<h1><span class="text-muted small">Edit </span> @Model.DisplayName</h1>
+<form class="default-focus" data-source="@Model.DataSourceUrl" data-type="edit">
+    @foreach (var field in Model.Fields)
     {
-        Model.Record.TryGetValue(fieldDefintion.FieldName, out var value);
-
         <div class="form-field">
-            @await Component.InvokeAsync(fieldDefintion.FieldType.FieldEditorName, new { fieldDefintion, value })
+            @await Component.InvokeAsync(field.FieldEditorName, new { fieldDefinition = field.Definition, field.Value })
         </div>
     }
     <button type="submit" class="btn btn-primary">Save</button>

@@ -38,7 +38,11 @@ public static class ServiceCollectionExtensions
     internal static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, ITypeProvider typeProvider)
     {
         return builder
-            .ConfigureApplicationPartManager(x => 
-                x.FeatureProviders.Add(new GenericControllerFeatureProvider(typeProvider)));
+            .ConfigureApplicationPartManager(x => {
+                if (!x.FeatureProviders.Any(y => y is GenericControllerFeatureProvider))
+                {
+                    x.FeatureProviders.Add(new GenericControllerFeatureProvider(typeProvider));
+                }
+            });
     }
 }

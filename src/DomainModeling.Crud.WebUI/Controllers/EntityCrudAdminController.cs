@@ -1,11 +1,6 @@
-using System.Reflection;
-using DomainModeling.Attributes.UI;
 using DomainModeling.Core;
-using DomainModeling.Crud.WebUi.Extensions;
+using DomainModeling.Crud.Services;
 using DomainModeling.Crud.WebUi.Factories;
-using DomainModeling.Crud.WebUi.Models;
-using DomainModeling.Crud.WebUi.Utilities;
-using DomainModeling.Crud.WebUi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DomainModeling.Crud.WebUi.Controllers;
@@ -14,16 +9,16 @@ namespace DomainModeling.Crud.WebUi.Controllers;
 [Route("admin/[type]")]
 public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
 {
-    private readonly ICrudService<T> _service;
+    private readonly IEntityApiService<T> _service;
 
-    private readonly IFieldDefinitionFactory _fieldDefintionFactory;
-    private readonly IListViewModelFactory<T> _listViewModelFactory;
+    private readonly IEntityEditorViewModelFactory<T> _editorViewModelFactory;
+    private readonly ISearchListViewModelFactory<T> _listViewModelFactory;
 
-    public EntityCrudAdminController(ICrudService<T> service, IFieldDefinitionFactory fieldDefintionFactory, IListViewModelFactory<T> listViewModelFactory)
+    public EntityCrudAdminController(IEntityApiService<T> service, ISearchListViewModelFactory<T> listViewModelFactory, IEntityEditorViewModelFactory<T> editorViewModelFactory)
     {
         _service = service;
-        _fieldDefintionFactory = fieldDefintionFactory;
         _listViewModelFactory = listViewModelFactory;
+        _editorViewModelFactory = editorViewModelFactory;
     }
 
     [HttpGet("edit/{id}")]
@@ -31,10 +26,9 @@ public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
     {
         var entity = await _service.GetById(id);
 
-        return View("EditForm", new EntityEditViewModel {
-            Definition = CreateEntityFormDefinitionFromType(entity),
-            Record = entity.ToDictionary()
-        });
+        var viewModel = _editorViewModelFactory.Build(entity);
+
+        return View("EditForm", viewModel);
     }
 
     [HttpGet("create")]
@@ -42,10 +36,9 @@ public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
     {
         var entity = new T();
 
-        return View("CreateForm", new EntityEditViewModel {
-            Definition = CreateEntityFormDefinitionFromType(entity),
-            Record = entity.ToDictionary()
-        });
+        var viewModel = _editorViewModelFactory.Build(entity);
+
+        return View("CreateForm", viewModel);
     }
 
     [HttpGet]
@@ -61,55 +54,5 @@ public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
         var viewModel = await _listViewModelFactory.Build(result, page, pageSize);
 
         return View(viewModel);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
-    {
-        var entity = await _service.GetById(id);
-
-        var viewModel = CreateEntityFormDefinitionFromType(entity);
-
-        return View(viewModel);
-    }
-
-    private EntityFormDefinition CreateEntityFormDefinitionFromType(T entity)
-    {
-        var type = typeof(T);
-
-        return new EntityFormDefinition
-        {
-            EntityType = type,
-            DisplayName = type.Name.SplitCamelCase(),
-            EntityName = type.Name.LowerCamelCase(),
-            DataSourceUrl = $"/{type.Name.ToLower()}",
-            Fields = type
-                .GetProperties()
-                .Select(CreateEditorFormFieldDefinition)
-                .ToList()
-        };
-    }
-
-    private EditorFormFieldDefinition CreateEditorFormFieldDefinition(PropertyInfo property)
-    {
-        var defintion = new EditorFormFieldDefinition
-        {
-            DisplayName = property.Name.SplitCamelCase(),
-            FieldName = property.Name.LowerCamelCase(),
-        };
-
-        var editorAttribute = (FieldEditorAttribute?) Attribute.GetCustomAttribute(property, typeof(FieldEditorAttribute));
-        var editorPropertiesAttributes = Attribute.GetCustomAttributes(property, typeof(FieldEditorPropertyAttribute)).OfType<FieldEditorPropertyAttribute>();
-
-        if (editorAttribute != null)
-        {
-            defintion.FieldType = new EditorFormFieldType
-            {
-                FieldEditorName = editorAttribute.ViewComponentName,
-                Properties = editorPropertiesAttributes.ToDictionary(x => x.Name, x => x.Value)
-            };
-        }
-
-        return defintion;
     }
 }

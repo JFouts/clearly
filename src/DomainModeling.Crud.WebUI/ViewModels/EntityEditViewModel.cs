@@ -1,8 +1,14 @@
-using DomainModeling.Crud.WebUi.Models;
-
 namespace DomainModeling.Crud.WebUi.ViewModels;
 
-public record EntityEditViewModel {
-    public EntityFormDefinition Definition { get; set; } = new EntityFormDefinition();
-    public Dictionary<string, object> Record { get; set; } = new Dictionary<string, object>();
+public record EntityEditorViewModel
+{
+    public EntityDefinition Definition { get; set; }
+    public string DisplayName { get; set; } = string.Empty;
+    public string DataSourceUrl { get; set; } = string.Empty;
+    public IEnumerable<EntityFieldEditorViewModel> Fields { get; set; } = new List<EntityFieldEditorViewModel>();
+    
+    public EntityEditorViewModel(EntityDefinition definition)
+    {
+        Definition = definition;
+    }
 }

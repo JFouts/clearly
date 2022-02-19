@@ -13,9 +13,9 @@ public class LocalEntityApiService<TEntity> : IEntityApiService<TEntity> where T
         _service = service;
     }
 
-    public async Task<CrudSearchResult<TEntity>> Search()
+    public async Task<CrudSearchResult<TEntity>> Search(CrudSearchOptions searchOptions)
     {
-        return await _service.Search(new CrudSearchOptions());
+        return await _service.Search(searchOptions);
     }
 
     public async Task<TEntity> GetById(Guid id)

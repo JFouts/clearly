@@ -58,8 +58,10 @@ public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity> where 
         });
     }
 
-    public async Task<CrudSearchResult<TEntity>> Search()
+    public async Task<CrudSearchResult<TEntity>> Search(CrudSearchOptions searchOptions)
     {
+        // TODO: Convert search options into query paramaters
+
         return await Send<CrudSearchResult<TEntity>>(new HttpRequestMessage
         {
             Method = HttpMethod.Get,

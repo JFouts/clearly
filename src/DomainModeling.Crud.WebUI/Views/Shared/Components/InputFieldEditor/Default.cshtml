@@ -3,7 +3,7 @@
 @if (Model == null) return;
 
 @{
-  var value = Model.Value.ToString();
+  var value = Model.Value?.ToString() ?? string.Empty;
 }
 
 <div class="mb-3">

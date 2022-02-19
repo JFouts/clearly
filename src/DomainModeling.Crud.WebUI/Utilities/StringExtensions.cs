@@ -27,4 +27,14 @@ public static class StringExtensions
 
         return str ?? string.Empty;
     }
+
+    public static string UpperCamelCase(this string str)
+    {
+        if (str?.Length > 0)
+        {
+            return Char.ToUpper(str[0]) + str.Substring(1);
+        }
+
+        return str ?? string.Empty;
+    }
 }

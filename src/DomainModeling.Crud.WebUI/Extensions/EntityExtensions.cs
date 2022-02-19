@@ -1,5 +1,4 @@
 using DomainModeling.Core;
-using DomainModeling.Crud.WebUi.Utilities;
 
 namespace DomainModeling.Crud.WebUi.Extensions;
 
@@ -17,7 +16,7 @@ public static class EntityExtensions
 
                 if (value != null)
                 {
-                    data[property.Name.LowerCamelCase()] = value;
+                    data[property.Name] = value;
                 }
             }
         }

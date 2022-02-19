@@ -17,7 +17,7 @@ public class EntityDataSource<TEntity> : DataSource<TEntity> where TEntity : IEn
 
     public override async Task<IEnumerable<TEntity>> Load()
     {
-        var response = await _service.Search();
+        var response = await _service.Search(new CrudSearchOptions());
 
         return await response.Results.ToListAsync();
     }

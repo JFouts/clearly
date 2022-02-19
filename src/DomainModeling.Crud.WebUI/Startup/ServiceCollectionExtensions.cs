@@ -10,8 +10,7 @@ namespace DomainModeling.Crud.WebUi;
 public static class ServiceCollectionExtensions
 {
     public static IMvcBuilder AddCrudWebUi(this IServiceCollection services, params Assembly[] assemblies)
-    {   
-
+    {
         return services
             .AddCrudWebUIServices(assemblies)
             .Configure<RazorViewEngineOptions>(options => options.ViewLocationExpanders.Add(new GenericControllerViewLocationExpander()))
@@ -22,8 +21,13 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddCrudWebUIServices(this IServiceCollection services, params Assembly[] assemblies)
     {
-        services.AddScoped<IFieldDefinitionFactory, DefaultFieldDefinitionFactory>();
-        services.AddScoped(typeof(IListViewModelFactory<>), typeof(ListViewModelFactory<>));
+        services.AddScoped<IEntityDefinitionFactory, EntityDefinitionFactory>();
+        
+        services.AddScoped<IEntityFieldModule, AttributeBasedEntityFieldModule>();        
+        services.AddScoped<IEntityModule, AttributeBasedEntityModule>();
+
+        services.AddScoped(typeof(IEntityEditorViewModelFactory<>), typeof(EntityEditorViewModelFactory<>));
+        services.AddScoped(typeof(ISearchListViewModelFactory<>), typeof(SearchListViewModelFactory<>));
         services.AddScoped(typeof(IDataSourceReader<>), typeof(AutoMapperDataSourceReader<>));
         services.AddScoped<IDataSourceFactory, DataSourceFactory>();
         services.AddAutoMapper(assemblies.Union(new [] { typeof(ServiceCollectionExtensions).Assembly }));
@@ -37,5 +41,10 @@ public static class ServiceCollectionExtensions
             .AddMvc(x => 
                 x.AddCrudConvention())
             .AddCrudFeature(assemblies);
+    }
+    
+    public static IServiceCollection AddModule<T>(this IServiceCollection services) where T : class, IModule
+    {
+        return services.AddSingleton<IModule, T>();
     }
 }

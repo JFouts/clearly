@@ -1,0 +1,65 @@
+using DomainModeling.Core;
+using DomainModeling.Crud.WebUi.Extensions;
+using DomainModeling.Crud.WebUi.ViewModels;
+
+namespace DomainModeling.Crud.WebUi.Factories;
+
+/// <summary>
+/// Creates the View Model for the Search page for an Entity
+/// </summary>
+public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<TEntity> where TEntity : IEntity
+{
+    private readonly IEntityDefinitionFactory _entityDefinitionFactory;
+
+    public SearchListViewModelFactory(IEntityDefinitionFactory entityDefinitionFactory)
+    {
+        _entityDefinitionFactory = entityDefinitionFactory;
+    }
+
+    public async Task<ListViewModel> Build(CrudSearchResult<TEntity> result, int page, int pageSize)
+    {
+        var definition = _entityDefinitionFactory.CreateFor<TEntity>();
+
+        return new ListViewModel {
+            DisplayName = definition.DisplayName,
+            Columns = CreateListViewColumnFromType(definition),
+            PageCount = ((result.Count - 1) / pageSize) + 1,
+            CurrentPage = page,
+            Results = await result.Results.Select(e => e.ToDictionary()).ToListAsync()
+        };
+    }
+
+    private IEnumerable<TableColumnViewModel> CreateListViewColumnFromType(EntityDefinition entity)
+    {
+        var columns = entity
+            .Fields
+            .Where(x => x.Property.Name != "Id") // TODO: This is hacky we should have a way to hide properties from the view
+            .Select(BuildColumnViewModel)
+            .ToList();
+
+        columns.Add(new TableColumnViewModel { // TODO: Hard coding this is hacky
+            DisplayName = "Actions",
+            Key = nameof(IEntity.Id),
+            DisplayTemplate = "TableActions",
+            Properties = new Dictionary<string, object> {
+                { "EditEnabled", true },
+                { "DeleteEnabled", true },
+            }
+        });
+
+        return columns;
+    }
+
+    private TableColumnViewModel BuildColumnViewModel(EntityFieldDefinition field)
+    {
+        var metadata = field.UsingMetadata<CrudAdminEntityFieldMetadata>();
+
+        return new TableColumnViewModel
+        {
+            DisplayName = field.DisplayName,
+            Key = field.Property.Name,
+            DisplayTemplate = metadata.DisplayTemplate,
+            Properties = metadata.DisplayProperties
+        };
+    }
+}

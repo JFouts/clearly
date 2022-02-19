@@ -1,5 +1,6 @@
 using DomainModeling.Crud.RestApi;
 using DomainModeling.Crud.WebUi;
+using KingdomDeathTools.Api.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 var domain = System.Reflection.Assembly.Load("KingdomDeathTools.Api.Services");
 builder.Services.AddCrudRestApi(domain);
 builder.Services.AddCrudWebUi(domain);
+// builder.Services.AddModule<AdminEditorDefinition>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,3 @@
-using DomainModeling.Crud.WebUi.Models;
 using DomainModeling.Crud.WebUi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +15,11 @@ public class DropDownListFieldEditorViewComponent : FieldEditorViewComponent
         _dataSourceReader = dataSourceReader;
     }
 
-    public override async Task<IViewComponentResult> InvokeAsync(EditorFormFieldDefinition fieldDefintion, object value)
+    public override async Task<IViewComponentResult> InvokeAsync(EntityFieldDefinition fieldDefinition, object value)
     {
-        if (!fieldDefintion.FieldType.Properties.TryGetValue("DataSource", out var dataSourceDefinition))
+        var metadata = fieldDefinition.UsingMetadata<CrudAdminEntityFieldMetadata>();
+
+        if (!metadata.EditorProperties.TryGetValue("DataSource", out var dataSourceDefinition))
         {
             throw new ArgumentNullException("DataSource");
         }
@@ -27,9 +28,9 @@ public class DropDownListFieldEditorViewComponent : FieldEditorViewComponent
         var data = await _dataSourceReader.ReadFrom(dataSource);
 
         return View(new DropDownFieldEditorViewModel {
-            Id = fieldDefintion.FieldName,
-            FieldName = fieldDefintion.FieldName,
-            Label = fieldDefintion.DisplayName,
+            Id = fieldDefinition.Property.Name,
+            FieldName = fieldDefinition.Property.Name,
+            Label = fieldDefinition.DisplayName,
             Value = value?.ToString() ?? string.Empty,
             Options = data.Select(x => new DropDownOptionViewModel {
                 Value = x.Key,
