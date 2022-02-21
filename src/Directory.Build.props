@@ -1,0 +1,8 @@
+<Project>
+    <PropertyGroup>
+        <CodeAnalysisRuleset>$(MSBuildThisFileDirectory)Extensions.ruleset</CodeAnalysisRuleset>
+    </PropertyGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" />
+    </ItemGroup>
+</Project>

@@ -1,10 +1,12 @@
 
 using System.Text.RegularExpressions;
 
-namespace DomainModeling.Crud.WebUi.Utilities;
+namespace DomainModeling.Crud;
 
 public static class StringExtensions
 {
+    // TODO: Comments and probably give these better names
+
     public static string SplitCamelCase(this string str)
     {
         return Regex.Replace( 

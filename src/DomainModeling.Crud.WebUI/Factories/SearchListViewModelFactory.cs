@@ -1,4 +1,5 @@
 using DomainModeling.Core;
+using DomainModeling.Crud.Search;
 using DomainModeling.Crud.WebUi.Extensions;
 using DomainModeling.Crud.WebUi.ViewModels;
 

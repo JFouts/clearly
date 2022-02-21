@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using DomainModeling.Core;
+using DomainModeling.Crud.Search;
 
 namespace DomainModeling.Crud.Services;
 

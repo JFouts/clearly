@@ -1,5 +1,5 @@
 ﻿using System;
-using DomainModeling.EventRepository.EventStore.NamingConention;
+using DomainModeling.EventRepository.EventStore.NamingConvention;
 using Xunit;
 
 namespace DomainModeling.EventRepository.Test.Unit.EventStore.NamingConventions

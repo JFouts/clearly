@@ -1,9 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace DomainModeling.Core.Utilities.Interfaces
+namespace DomainModeling.Core.Utilities.Interfaces;
+
+// TODO: Consider removing this
+public interface IDate
 {
-    public interface IDate
-    {
-        DateTime CurrentDateUtc();
-    }
+    DateTime CurrentDateUtc();
 }

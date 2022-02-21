@@ -21,10 +21,13 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddCrudWebUIServices(this IServiceCollection services, params Assembly[] assemblies)
     {
-        services.AddScoped<IEntityDefinitionFactory, EntityDefinitionFactory>();
-        
-        services.AddScoped<IEntityFieldModule, AttributeBasedEntityFieldModule>();        
-        services.AddScoped<IEntityModule, AttributeBasedEntityModule>();
+        services.AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>();        
+        services.AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>();        
+        services.AddSingleton<IEntityModule, AttributeBasedEntityModule>();
+        services.AddSingleton<IEntityFieldModule, CoreEntityFieldModule>();        
+        services.AddSingleton<IEntityModule, CoreEntityModule>();
+        services.AddSingleton<IEntityModule, CrudAdminEntityModule>();
+        services.AddSingleton<IEntityFieldModule, CrudAdminEntityFieldModule>();
 
         services.AddScoped(typeof(IEntityEditorViewModelFactory<>), typeof(EntityEditorViewModelFactory<>));
         services.AddScoped(typeof(ISearchListViewModelFactory<>), typeof(SearchListViewModelFactory<>));

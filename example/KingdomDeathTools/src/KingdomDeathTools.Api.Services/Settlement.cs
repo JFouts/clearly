@@ -14,5 +14,6 @@ public record Settlement : AggregateRoot, INamedEntity
     public string Campaign { get; set; } = string.Empty;
 
     [FieldEditor(SystemViewComponents.MultiSelectList)]
+    [FieldEditorProperty("DataSource", "People of the Lantern;People of the Sun;People of the Stars")]
     public IEnumerable<string> Expansions { get; set; } = new string[0];
 }

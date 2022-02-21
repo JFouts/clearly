@@ -11,7 +11,7 @@ public class FieldEditorPropertyAttribute : EntityFieldDefinitionAttribute
         Value = value;
     }
 
-    protected internal override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
+    protected override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
     {
         var metadata = field.UsingMetadata<CrudAdminEntityFieldMetadata>();
 

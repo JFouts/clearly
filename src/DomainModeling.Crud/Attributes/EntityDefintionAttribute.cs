@@ -1,4 +1,4 @@
-namespace DomainModeling.Crud.WebUi;
+namespace DomainModeling.Crud;
 
 /// <summary>
 /// Applies changes to the Entity Definition when the Definition is being built

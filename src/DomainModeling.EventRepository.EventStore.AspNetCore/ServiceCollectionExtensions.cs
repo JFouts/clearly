@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using DomainModeling.Core.Utilities;
 using DomainModeling.Core.Utilities.Interfaces;
 using DomainModeling.EventSourcing.AspNetCore;
@@ -23,7 +22,7 @@ namespace DomainModeling.EventRepository.EventStore.AspNetCore
 
         private static void ApplyDefaultSettings(EventStoreSettings settings)
         {
-            settings.NamingPreferences = NamingConvention.Literal;
+            settings.NamingPreferences = EventStoreNamingConvention.Literal;
             settings.EndPoint = new IPEndPoint(IPAddress.Loopback, 1113);
         }
 

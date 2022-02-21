@@ -1,4 +1,4 @@
-namespace DomainModeling.Crud;
+namespace DomainModeling.Crud.Search;
 
 public class CrudSearchOptions
 {

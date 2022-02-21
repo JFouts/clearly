@@ -1,4 +1,4 @@
-namespace DomainModeling.Crud.WebUi;
+namespace DomainModeling.Crud;
 
 public abstract class BaseDefinition
 {

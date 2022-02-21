@@ -1,3 +1,5 @@
+using DomainModeling.Crud.Search;
+
 namespace DomainModeling.Crud;
 
 public interface ICrudService<T> : IService

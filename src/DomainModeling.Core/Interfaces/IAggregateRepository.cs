@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace DomainModeling.Core.Interfaces
+namespace DomainModeling.Core.Interfaces;
+
+public interface IAggregateRepository<TAggregate>
+    where TAggregate : AggregateRoot
 {
-    public interface IAggregateRepository<TAggregate> where TAggregate : AggregateRoot
-    {
-        IAggregate<TAggregate> Instantiate(Guid id);
-        Task<IAggregate<TAggregate>> RetrieveAsync(Guid id);
-    }
+    IAggregate<TAggregate> Instantiate(Guid id);
+    Task<IAggregate<TAggregate>> RetrieveAsync(Guid id);
 }

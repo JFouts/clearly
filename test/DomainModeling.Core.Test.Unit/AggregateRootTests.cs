@@ -23,5 +23,5 @@ namespace DomainModeling.Core.Unit
         }
     }
 
-    public class MockAggregateRoot : AggregateRoot { }
+    public record MockAggregateRoot : AggregateRoot { }
 }

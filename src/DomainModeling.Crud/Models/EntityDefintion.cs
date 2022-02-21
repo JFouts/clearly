@@ -1,6 +1,4 @@
-using DomainModeling.Crud.WebUi.Utilities;
-
-namespace DomainModeling.Crud.WebUi;
+namespace DomainModeling.Crud;
 
 public class EntityDefinition : BaseDefinition
 {

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.ComponentModel.DataAnnotations;
 
-namespace DomainModeling.Core.Exceptions
+namespace DomainModeling.Core.Exceptions;
+public class InvalidModelStateException : Exception
 {
-    public class InvalidModelStateException : Exception
-    {
-        public IEnumerable<ValidationResult> ValidationErrors { get; }
+    public IEnumerable<ValidationResult> ValidationErrors { get; }
 
-        public InvalidModelStateException(IEnumerable<ValidationResult> validationErrors)
-        {
-            ValidationErrors = validationErrors;
-        }
+    public InvalidModelStateException(IEnumerable<ValidationResult> validationErrors)
+    {
+        ValidationErrors = validationErrors;
     }
 }

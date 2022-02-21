@@ -1,3 +1,4 @@
+using DomainModeling.Crud.Search;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DomainModeling.Crud.RestApi.Controllers;

@@ -1,3 +1,4 @@
+using DomainModeling.Crud.Search;
 using DomainModeling.Crud.WebUi.ViewModels;
 
 namespace DomainModeling.Crud.WebUi.Factories;

@@ -1,4 +1,5 @@
 using DomainModeling.Core;
+using DomainModeling.Crud.Search;
 using DomainModeling.Crud.Services;
 using DomainModeling.Crud.WebUi.Factories;
 using Microsoft.AspNetCore.Mvc;

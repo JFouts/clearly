@@ -1,4 +1,5 @@
 using DomainModeling.Core;
+using DomainModeling.Crud.Search;
 
 namespace DomainModeling.Crud.Services;
 

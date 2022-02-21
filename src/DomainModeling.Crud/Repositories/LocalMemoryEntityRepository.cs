@@ -1,5 +1,6 @@
 using DomainModeling.Core;
 using DomainModeling.Crud;
+using DomainModeling.Crud.Search;
 using System.Collections.Concurrent;
 
 namespace DomainModeling.EntityRepository;

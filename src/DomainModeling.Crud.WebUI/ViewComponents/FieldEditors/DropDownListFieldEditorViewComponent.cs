@@ -27,7 +27,8 @@ public class DropDownListFieldEditorViewComponent : FieldEditorViewComponent
         var dataSource = _dataSourceFactory.Create(dataSourceDefinition);
         var data = await _dataSourceReader.ReadFrom(dataSource);
 
-        return View(new DropDownFieldEditorViewModel {
+        return View(new DropDownFieldEditorViewModel 
+        {
             Id = fieldDefinition.Property.Name,
             FieldName = fieldDefinition.Property.Name,
             Label = fieldDefinition.DisplayName,

@@ -10,15 +10,15 @@ namespace DomainModeling.EventRepository.EventStore
 {
     public class EventStoreRepository : IEventRepository, IDisposable
     {
-        private readonly IEventStoreConnection _eventStore;
-        private readonly IJsonByteConverter _jsonByteConverter;
-        private readonly EventStoreSettings _settings;
+        private readonly IEventStoreConnection eventStore;
+        private readonly IJsonByteConverter jsonByteConverter;
+        private readonly EventStoreSettings settings;
 
         public EventStoreRepository(IEventStoreConnection eventStore, EventStoreSettings settings, IJsonByteConverter jsonByteConverter)
         {
-            _eventStore = eventStore;
-            _settings = settings;
-            _jsonByteConverter = jsonByteConverter;
+            this.eventStore = eventStore;
+            this.settings = settings;
+            this.jsonByteConverter = jsonByteConverter;
         }
 
         public async Task SaveNewStreamEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents)
@@ -30,14 +30,14 @@ namespace DomainModeling.EventRepository.EventStore
         {
             var stream = GetStream<T>(id);
             var data = domainEvents.Select(CreateEvent);
-            await _eventStore.AppendToStreamAsync(stream, aggregateVersion, data);
+            await eventStore.AppendToStreamAsync(stream, aggregateVersion, data);
         }
 
         public async Task<AggregateEventList> RetriveEventsAsync<T>(Guid id)
         {
             var stream = GetStream<T>(id);
             //TODO: Handle this limit of 4000
-            var data = await _eventStore.ReadStreamEventsForwardAsync(stream, 0, 4000, false);
+            var data = await eventStore.ReadStreamEventsForwardAsync(stream, 0, 4000, false);
 
             return new AggregateEventList
             {
@@ -48,28 +48,32 @@ namespace DomainModeling.EventRepository.EventStore
 
         private IDomainEvent ConvertToDomainEvent(ResolvedEvent @event)
         {
-            if (!_settings.EventTypes.ContainsKey(@event.Event.EventType))
+            if (!settings.EventTypes.ContainsKey(@event.Event.EventType))
+            {
                 return null;
+            }
 
-            return _jsonByteConverter.Deserialize(@event.Event.Data, _settings.EventTypes[@event.Event.EventType]) as IDomainEvent;
+            return jsonByteConverter.Deserialize(@event.Event.Data, settings.EventTypes[@event.Event.EventType]) as IDomainEvent;
         }
 
         private string GetStream<T>(Guid id)
         {
-            var @namespace = _settings.NamingPreferences.GetNamespaceName<T>();
+            var @namespace = settings.NamingPreferences.GetNamespaceName<T>();
+            
             return $"{@namespace}-{id}";
         }
 
         private EventData CreateEvent(object data)
         {
-            var eventType = _settings.NamingPreferences.GetEventTypeName(data.GetType());
-            var json = _jsonByteConverter.Serialize(data);
+            var eventType = settings.NamingPreferences.GetEventTypeName(data.GetType());
+            var json = jsonByteConverter.Serialize(data);
+
             return new EventData(Guid.NewGuid(), eventType, true, json, new byte[0]);
         }
 
         public void Dispose()
         {
-            _eventStore?.Dispose();
+            eventStore?.Dispose();
         }
     }
 }

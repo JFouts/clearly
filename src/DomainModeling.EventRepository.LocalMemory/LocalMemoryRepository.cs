@@ -36,13 +36,17 @@ namespace DomainModeling.EventRepository.LocalMemory
         private void SaveEvents(Guid id, IEnumerable<IDomainEvent> domainEvents, long aggregateVersion)
         {
             if (_eventStreams.TryGetValue(id, out var value))
+            {
                 value.AppendEvents(aggregateVersion, domainEvents);
+            }
         }
 
         private AggregateEventList RetriveEvents(Guid id)
         {
             if (!_eventStreams.TryGetValue(id, out var stream))
+            {
                 throw new KeyNotFoundException();
+            }
 
             return RetrieveEventList(stream);
         }
@@ -50,6 +54,7 @@ namespace DomainModeling.EventRepository.LocalMemory
         private static AggregateEventList RetrieveEventList(EventStream stream)
         {
             var snapshot = stream.RetrieveSnapshot();
+
             return new AggregateEventList
             {
                 AggregateVersion = snapshot.Version,

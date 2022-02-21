@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DomainModeling.EventRepository.EventStore.NamingConention
+namespace DomainModeling.EventRepository.EventStore.NamingConvention
 {
     public class UnmappedTypeException : Exception
     {

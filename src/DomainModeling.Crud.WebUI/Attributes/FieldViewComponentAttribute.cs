@@ -15,10 +15,9 @@ public class FieldEditorAttribute : EntityFieldDefinitionAttribute
         ViewComponentName = viewComponentName;
     }
 
-    protected internal override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
+    protected override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
     {
         var metadata = field.UsingMetadata<CrudAdminEntityFieldMetadata>();
-
 
         metadata.EditorViewComponentName = ViewComponentName;
     }

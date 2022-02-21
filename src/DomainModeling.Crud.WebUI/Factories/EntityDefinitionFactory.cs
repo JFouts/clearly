@@ -1,9 +1,12 @@
+using System.Collections.Concurrent;
+
 namespace DomainModeling.Crud.WebUi;
 
 public class EntityDefinitionFactory : IEntityDefinitionFactory
 {
     private readonly IEnumerable<IEntityModule> _entityModules;
     private readonly IEnumerable<IEntityFieldModule> _entityFieldModules;
+    private readonly ConcurrentDictionary<Type, EntityDefinition> _entityPool = new ConcurrentDictionary<Type, EntityDefinition>();
 
     public EntityDefinitionFactory(IEnumerable<IEntityModule> entityModules, IEnumerable<IEntityFieldModule> entityFieldModules)
     {
@@ -13,9 +16,23 @@ public class EntityDefinitionFactory : IEntityDefinitionFactory
 
     public EntityDefinition CreateForType(Type entity)
     {
-        // TODO: Flyweight cache these?
-        var definition = new EntityDefinition(entity);
+        if (_entityPool.TryGetValue(entity, out var definition))
+        {
+            return definition;
+        }
 
+        definition = new EntityDefinition(entity);
+
+        ApplyModules(definition);
+        ApplyFallbackDefaults(definition);
+
+        _entityPool[entity] = definition;
+
+        return definition;
+    }
+
+    private void ApplyModules(EntityDefinition definition)
+    {
         foreach (var module in _entityModules)
         {
             module.OnApplyingModule(definition);
@@ -28,7 +45,21 @@ public class EntityDefinitionFactory : IEntityDefinitionFactory
                 module.OnApplyingModule(definition, field);
             }
         }
+    }
 
-        return definition;
+    private void ApplyFallbackDefaults(EntityDefinition definition)
+    {
+        foreach (var module in _entityModules)
+        {
+            module.OnApplyingFallbackDefaults(definition);
+        }
+
+        foreach (var field in definition.Fields)
+        {
+            foreach (var module in _entityFieldModules)
+            {
+                module.OnApplyingFallbackDefaults(definition, field);
+            }
+        }
     }
 }

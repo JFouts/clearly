@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace DomainModeling.Crud.WebUi;
+namespace DomainModeling.Crud;
 
 public class AttributeBasedEntityModule : EntityModule
 {

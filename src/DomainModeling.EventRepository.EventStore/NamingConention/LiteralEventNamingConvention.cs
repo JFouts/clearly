@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DomainModeling.EventRepository.EventStore.NamingConention
+namespace DomainModeling.EventRepository.EventStore.NamingConvention
 {
     public class LiteralEventNamingConvention : IEventNamingConvention
     {
