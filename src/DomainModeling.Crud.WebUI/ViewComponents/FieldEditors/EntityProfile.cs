@@ -21,7 +21,7 @@ public static class AutoMapperExtensions
 
         foreach (var param in constructor.GetParameters())
         {
-            mapper = mapper.ForCtorParam(param.Name, opt => opt.MapFrom(param.Name!.UpperCamelCase()));
+            mapper = mapper.ForCtorParam(param.Name, opt => opt.MapFrom(param.Name!.ToPascalCase()));
         }
 
         return mapper;

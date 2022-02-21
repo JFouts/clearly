@@ -6,7 +6,7 @@ public class CoreEntityModule : EntityModule
     {
         if (string.IsNullOrWhiteSpace(entity.DisplayName))
         {
-            entity.DisplayName = entity.Entity.Name.SplitCamelCase();
+            entity.DisplayName = entity.Entity.Name.FormatForDisplay();
         }
 
         if (string.IsNullOrWhiteSpace(entity.NameKey))

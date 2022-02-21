@@ -1,4 +1,8 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
+using DomainModeling.Crud.RestApi.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +12,7 @@ public static class ServiceCollectionExtensions
 {
     public static IMvcBuilder AddCrudRestApi(this IServiceCollection services, params Assembly[] assemblies)
     {
-        return services.AddCrudRestApi(_ => {}, assemblies);
+        return services.AddCrudRestApi(NullAction<MvcOptions>.NoOp(), assemblies);
     }
 
     public static IMvcBuilder AddCrudRestApi(this IServiceCollection services, Action<MvcOptions> config, params Assembly[] assemblies)
@@ -16,7 +20,8 @@ public static class ServiceCollectionExtensions
         return services
             .AddCrudServices()
             .AddInMemoryEntityRepository() // TODO: Replace this
-            .AddControllers(o => {
+            .AddControllers(o =>
+            {
                 o.AddCrudConvention();
                 config(o);
             })
@@ -27,11 +32,9 @@ public static class ServiceCollectionExtensions
     // services
     //     .AddCrudServices()
     //     .AddInMemoryEntityRepository(); // Some Entity Repository Implementation
-    // 
 
     // Option 2 - I want to use the CRUD REST API standalone
     // services.AddCrudRestApi();
-    // 
 
     // Option 3 - I want to run the CRUD REST API in the same app a Razor/Views application
     // services
@@ -42,13 +45,10 @@ public static class ServiceCollectionExtensions
     //     .AddMvc(o =>   // Or AddControllersWithViews
     //          o.AddCrudConvention())
     //     .AddCrudFeatures();
-    //
 
     // Option 4 - I want to run the CRUD REST API along side the CRUD Web UI
-    // 
-    //
+    // TODO
 
     // Option 5 - I want to run the CRUD Web UI standalone
-    //
-    // 
+    // TODO
 }

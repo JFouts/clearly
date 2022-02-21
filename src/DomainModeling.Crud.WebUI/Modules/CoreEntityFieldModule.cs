@@ -6,7 +6,7 @@ public class CoreEntityFieldModule : EntityFieldModule
     {
         if (string.IsNullOrWhiteSpace(field.DisplayName))
         {
-            field.DisplayName = field.Property.Name.SplitCamelCase();
+            field.DisplayName = field.Property.Name.FormatForDisplay();
         }
     }
 }
