@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using DomainModeling.Core;
 
 namespace DomainModeling.Crud.WebUi.Extensions;
@@ -12,7 +15,7 @@ public static class EntityExtensions
         {
             foreach (var property in entity.GetType().GetProperties())
             {
-                var value =  property.GetValue(entity);
+                var value = property.GetValue(entity);
 
                 if (value != null)
                 {
@@ -20,7 +23,7 @@ public static class EntityExtensions
                 }
             }
         }
-        
+
         return data;
     }
 }

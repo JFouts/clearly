@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using DomainModeling.Crud.WebUi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,13 +9,13 @@ namespace DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 [ViewComponent]
 public class MultiSelectListFieldEditorViewComponent : FieldEditorViewComponent
 {
-    private readonly IDataSourceFactory _dataSourceFactory;
-    private readonly IDataSourceReader<KeyValuePair<string, string>> _dataSourceReader;
+    private readonly IDataSourceFactory dataSourceFactory;
+    private readonly IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
 
     public MultiSelectListFieldEditorViewComponent(IDataSourceFactory dataSourceFactory, IDataSourceReader<KeyValuePair<string, string>> dataSourceReader)
     {
-        _dataSourceFactory = dataSourceFactory;
-        _dataSourceReader = dataSourceReader;
+        this.dataSourceFactory = dataSourceFactory;
+        this.dataSourceReader = dataSourceReader;
     }
 
     public override async Task<IViewComponentResult> InvokeAsync(EntityFieldDefinition fieldDefinition, object value)
@@ -24,19 +27,20 @@ public class MultiSelectListFieldEditorViewComponent : FieldEditorViewComponent
             throw new ArgumentNullException("DataSource");
         }
 
-        var dataSource = _dataSourceFactory.Create(dataSourceDefinition);
-        var data = await _dataSourceReader.ReadFrom(dataSource);
+        var dataSource = dataSourceFactory.Create(dataSourceDefinition);
+        var data = await dataSourceReader.ReadFrom(dataSource);
 
-        return View(new MultiSelectFieldEditorViewModel 
+        return View(new MultiSelectFieldEditorViewModel
         {
             Id = fieldDefinition.Property.Name,
             FieldName = fieldDefinition.Property.Name,
             Label = fieldDefinition.DisplayName,
             Value = value as IEnumerable<string>,
-            Options = data.Select(x => new DropDownOptionViewModel {
+            Options = data.Select(x => new DropDownOptionViewModel
+            {
                 Value = x.Key,
-                Label = x.Value
-            })
+                Label = x.Value,
+            }),
         });
     }
 }

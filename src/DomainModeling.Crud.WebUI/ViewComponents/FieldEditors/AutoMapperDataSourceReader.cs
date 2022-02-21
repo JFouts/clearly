@@ -1,17 +1,19 @@
-using DomainModeling.Crud.Services;
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using AutoMapper;
 using System.Collections;
+using AutoMapper;
+using DomainModeling.Crud.Services;
 
 namespace DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 
 public class AutoMapperDataSourceReader<TModel> : IDataSourceReader<TModel>
 {
-    private readonly IMapper _mapper;
+    private readonly IMapper mapper;
 
     public AutoMapperDataSourceReader(IMapper mapper)
     {
-        _mapper = mapper;
+        this.mapper = mapper;
     }
 
     public async Task<IEnumerable<TModel>> ReadFrom(IDataSource dataSource)
@@ -25,7 +27,7 @@ public class AutoMapperDataSourceReader<TModel> : IDataSourceReader<TModel>
     {
         foreach (var obj in source)
         {
-            yield return _mapper.Map<TModel>(obj);
+            yield return mapper.Map<TModel>(obj);
         }
     }
 }

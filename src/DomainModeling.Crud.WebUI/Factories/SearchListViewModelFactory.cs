@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using DomainModeling.Core;
 using DomainModeling.Crud.Search;
 using DomainModeling.Crud.WebUi.Extensions;
@@ -8,25 +11,27 @@ namespace DomainModeling.Crud.WebUi.Factories;
 /// <summary>
 /// Creates the View Model for the Search page for an Entity
 /// </summary>
-public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<TEntity> where TEntity : IEntity
+public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<TEntity>
+    where TEntity : IEntity
 {
-    private readonly IEntityDefinitionFactory _entityDefinitionFactory;
+    private readonly IEntityDefinitionFactory entityDefinitionFactory;
 
     public SearchListViewModelFactory(IEntityDefinitionFactory entityDefinitionFactory)
     {
-        _entityDefinitionFactory = entityDefinitionFactory;
+        this.entityDefinitionFactory = entityDefinitionFactory;
     }
 
     public async Task<ListViewModel> Build(CrudSearchResult<TEntity> result, int page, int pageSize)
     {
-        var definition = _entityDefinitionFactory.CreateFor<TEntity>();
+        var definition = entityDefinitionFactory.CreateFor<TEntity>();
 
-        return new ListViewModel {
+        return new ListViewModel
+        {
             DisplayName = definition.DisplayName,
             Columns = CreateListViewColumnFromType(definition),
             PageCount = ((result.Count - 1) / pageSize) + 1,
             CurrentPage = page,
-            Results = await result.Results.Select(e => e.ToDictionary()).ToListAsync()
+            Results = await result.Results.Select(e => e.ToDictionary()).ToListAsync(),
         };
     }
 
@@ -38,14 +43,17 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
             .Select(BuildColumnViewModel)
             .ToList();
 
-        columns.Add(new TableColumnViewModel { // TODO: Hard coding this is hacky
+        columns.Add(new TableColumnViewModel
+        {
+            // TODO: Hard coding this is hacky
             DisplayName = "Actions",
             Key = nameof(IEntity.Id),
             DisplayTemplate = "TableActions",
-            Properties = new Dictionary<string, object> {
+            Properties = new Dictionary<string, object>
+            {
                 { "EditEnabled", true },
                 { "DeleteEnabled", true },
-            }
+            },
         });
 
         return columns;
@@ -60,7 +68,7 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
             DisplayName = field.DisplayName,
             Key = field.Property.Name,
             DisplayTemplate = metadata.DisplayTemplate,
-            Properties = metadata.DisplayProperties
+            Properties = metadata.DisplayProperties,
         };
     }
 }

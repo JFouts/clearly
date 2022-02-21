@@ -3,10 +3,11 @@
 
 namespace DomainModeling.Crud.WebUi.ViewModels;
 
-public record InputFieldEditorViewModel
+public record MultiSelectFieldEditorViewModel
 {
     public string Id { get; set; } = string.Empty;
     public string FieldName { get; set; } = string.Empty;
     public string Label { get; set; } = string.Empty;
-    public object Value { get; set; } = string.Empty;
+    public IEnumerable<string> Value { get; set; } = new List<string>();
+    public IEnumerable<DropDownOptionViewModel> Options { get; set; } = new List<DropDownOptionViewModel>();
 }

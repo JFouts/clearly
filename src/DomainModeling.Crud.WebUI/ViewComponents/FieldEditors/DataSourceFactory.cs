@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using DomainModeling.Crud.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -5,11 +8,11 @@ namespace DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
 
 public class DataSourceFactory : IDataSourceFactory
 {
-    private readonly IServiceProvider _serviceLocator;
+    private readonly IServiceProvider serviceLocator;
 
     public DataSourceFactory(IServiceProvider serviceLocator)
     {
-        _serviceLocator = serviceLocator;
+        this.serviceLocator = serviceLocator;
     }
 
     public IDataSource Create(object sourceDefinition)
@@ -17,8 +20,8 @@ public class DataSourceFactory : IDataSourceFactory
         switch (sourceDefinition)
         {
             case Type dataSourceType:
-                var dataSource = _serviceLocator.GetRequiredService(dataSourceType) as IDataSource;
-                
+                var dataSource = serviceLocator.GetRequiredService(dataSourceType) as IDataSource;
+
                 if (dataSource == null)
                 {
                     throw new Exception();
@@ -46,8 +49,8 @@ public class DataSourceFactory : IDataSourceFactory
                 }
 
                 return new StaticListDataSource(data);
-
         }
+
         throw new Exception();
     }
 }

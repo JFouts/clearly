@@ -3,8 +3,8 @@
 
 namespace DomainModeling.Crud.WebUi.ViewModels;
 
-public interface IPageableViewModel
+public record DropDownOptionViewModel
 {
-    int PageCount { get; }
-    int CurrentPage { get; }
+    public string Value { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
 }

@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
 using DomainModeling.Crud.WebUi.Factories;
 using DomainModeling.Crud.WebUi.Infrastructure;
@@ -16,15 +19,15 @@ public static class ServiceCollectionExtensions
             .Configure<RazorViewEngineOptions>(options => options.ViewLocationExpanders.Add(new GenericControllerViewLocationExpander()))
             .AddCrudServices()
             .AddInMemoryEntityRepository() // TODO: Remove this when we can
-            .AddCrudMvc(assemblies);        
+            .AddCrudMvc(assemblies);
     }
 
     public static IServiceCollection AddCrudWebUIServices(this IServiceCollection services, params Assembly[] assemblies)
     {
-        services.AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>();        
-        services.AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>();        
+        services.AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>();
+        services.AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>();
         services.AddSingleton<IEntityModule, AttributeBasedEntityModule>();
-        services.AddSingleton<IEntityFieldModule, CoreEntityFieldModule>();        
+        services.AddSingleton<IEntityFieldModule, CoreEntityFieldModule>();
         services.AddSingleton<IEntityModule, CoreEntityModule>();
         services.AddSingleton<IEntityModule, CrudAdminEntityModule>();
         services.AddSingleton<IEntityFieldModule, CrudAdminEntityFieldModule>();
@@ -41,12 +44,12 @@ public static class ServiceCollectionExtensions
     public static IMvcBuilder AddCrudMvc(this IServiceCollection services, params Assembly[] assemblies)
     {
         return services
-            .AddMvc(x => 
-                x.AddCrudConvention())
+            .AddMvc(x => x.AddCrudConvention())
             .AddCrudFeature(assemblies);
     }
-    
-    public static IServiceCollection AddModule<T>(this IServiceCollection services) where T : class, IModule
+
+    public static IServiceCollection AddModule<T>(this IServiceCollection services)
+        where T : class, IModule
     {
         return services.AddSingleton<IModule, T>();
     }

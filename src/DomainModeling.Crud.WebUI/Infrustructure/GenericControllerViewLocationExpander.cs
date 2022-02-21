@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace DomainModeling.Crud.WebUi.Infrastructure;
@@ -23,5 +26,7 @@ public class GenericControllerViewLocationExpander : IViewLocationExpander
         return viewLocations;
     }
 
-    public void PopulateValues(ViewLocationExpanderContext context) { }
+    public void PopulateValues(ViewLocationExpanderContext context)
+    {
+    }
 }

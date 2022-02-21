@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using DomainModeling.Core;
 using DomainModeling.Crud.Search;
 using DomainModeling.Crud.Services;
@@ -8,26 +11,27 @@ namespace DomainModeling.Crud.WebUi.Controllers;
 
 [GenericEntityController]
 [Route("admin/[type]")]
-public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
+public class EntityCrudAdminController<T> : Controller
+    where T : IEntity, new()
 {
-    private readonly IEntityApiService<T> _service;
+    private readonly IEntityApiService<T> service;
 
-    private readonly IEntityEditorViewModelFactory<T> _editorViewModelFactory;
-    private readonly ISearchListViewModelFactory<T> _listViewModelFactory;
+    private readonly IEntityEditorViewModelFactory<T> editorViewModelFactory;
+    private readonly ISearchListViewModelFactory<T> listViewModelFactory;
 
     public EntityCrudAdminController(IEntityApiService<T> service, ISearchListViewModelFactory<T> listViewModelFactory, IEntityEditorViewModelFactory<T> editorViewModelFactory)
     {
-        _service = service;
-        _listViewModelFactory = listViewModelFactory;
-        _editorViewModelFactory = editorViewModelFactory;
+        this.service = service;
+        this.listViewModelFactory = listViewModelFactory;
+        this.editorViewModelFactory = editorViewModelFactory;
     }
 
     [HttpGet("edit/{id}")]
     public async Task<IActionResult> GetEditForm(Guid id)
     {
-        var entity = await _service.GetById(id);
+        var entity = await service.GetById(id);
 
-        var viewModel = _editorViewModelFactory.Build(entity);
+        var viewModel = editorViewModelFactory.Build(entity);
 
         return View("EditForm", viewModel);
     }
@@ -37,7 +41,7 @@ public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
     {
         var entity = new T();
 
-        var viewModel = _editorViewModelFactory.Build(entity);
+        var viewModel = editorViewModelFactory.Build(entity);
 
         return View("CreateForm", viewModel);
     }
@@ -47,12 +51,13 @@ public class EntityCrudAdminController<T> : Controller where T : IEntity, new()
     {
         var entity = typeof(T);
 
-        var result = await _service.Search(new CrudSearchOptions {
+        var result = await service.Search(new CrudSearchOptions
+        {
             Skip = (page - 1) * pageSize,
-            Take = pageSize
+            Take = pageSize,
         });
 
-        var viewModel = await _listViewModelFactory.Build(result, page, pageSize);
+        var viewModel = await listViewModelFactory.Build(result, page, pageSize);
 
         return View(viewModel);
     }
