@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
 
 namespace DomainModeling.Crud;
@@ -8,9 +11,9 @@ public class AttributeBasedEntityModule : EntityModule
     {
         var definitionAttributes = entity.Entity.GetCustomAttributes<EntityDefinitionAttribute>();
 
-        foreach (var DefinitionAttribute in definitionAttributes)
+        foreach (var definitionAttribute in definitionAttributes)
         {
-            DefinitionAttribute.ApplyToEntityDefinition(entity);
+            definitionAttribute.ApplyToEntityDefinition(entity);
         }
     }
 }

@@ -1,5 +1,9 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 namespace DomainModeling.Crud;
 
+// TODO: Use these in place on magic strings
 public static class SystemViewComponents
 {
     public const string Input = "InputFieldEditor";

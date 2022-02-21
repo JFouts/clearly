@@ -1,18 +1,19 @@
-using DomainModeling.Core;
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 namespace DomainModeling.Crud.Services;
 
 public class StaticListDataSource : DataSource<KeyValuePair<string, string>>
 {
-    public readonly IEnumerable<KeyValuePair<string, string>> _data;
+    private readonly IEnumerable<KeyValuePair<string, string>> data;
 
     public StaticListDataSource(IEnumerable<KeyValuePair<string, string>> data)
     {
-        _data = data;
+        this.data = data;
     }
 
     public override Task<IEnumerable<KeyValuePair<string, string>>> Load()
     {
-        return Task.FromResult(_data);
+        return Task.FromResult(data);
     }
 }

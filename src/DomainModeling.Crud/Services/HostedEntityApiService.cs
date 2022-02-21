@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Net.Http.Json;
 using DomainModeling.Core;
 using DomainModeling.Crud.Search;
@@ -5,20 +8,18 @@ using DomainModeling.Crud.Search;
 namespace DomainModeling.Crud.Services;
 
 // TODO: Pull URLs for entity from Entity Configuration
-
 // TODO: Well defined exceptions that come from this class
-
 // TODO: Security and customization of HTTP headers (Can a named HttpClient solve this?)
-
-public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity> where TEntity : IEntity
+public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity>
+    where TEntity : IEntity
 {
-    public readonly HttpClient _http;
-    public readonly HostedCrudApiConfiguration _config;
+    private readonly HttpClient http;
+    private readonly HostedCrudApiConfiguration config;
 
     public HostedEntityApiService(HttpClient http, HostedCrudApiConfiguration config)
     {
-        _http = http;
-        _config = config;
+        this.http = http;
+        this.config = config;
     }
 
     public async Task<TEntity> GetById(Guid id)
@@ -26,7 +27,7 @@ public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity> where 
         return await Send<TEntity>(new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri =  Url($"/api/{typeof(TEntity).Name}/{id}")
+            RequestUri = Url($"/api/{typeof(TEntity).Name}/{id}"),
         });
     }
 
@@ -35,8 +36,8 @@ public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity> where 
         await Send<TEntity>(new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            RequestUri =  Url($"/api/{typeof(TEntity).Name}"),
-            Content = JsonContent.Create(value)
+            RequestUri = Url($"/api/{typeof(TEntity).Name}"),
+            Content = JsonContent.Create(value),
         });
     }
 
@@ -45,8 +46,8 @@ public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity> where 
         await Send<TEntity>(new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            RequestUri =  Url($"/api/{typeof(TEntity).Name}/{id}"),
-            Content = JsonContent.Create(value)
+            RequestUri = Url($"/api/{typeof(TEntity).Name}/{id}"),
+            Content = JsonContent.Create(value),
         });
     }
 
@@ -55,38 +56,37 @@ public class HostedEntityApiService<TEntity> : IEntityApiService<TEntity> where 
         await Send<TEntity>(new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            RequestUri =  Url($"/api/{typeof(TEntity).Name}/{id}")
+            RequestUri = Url($"/api/{typeof(TEntity).Name}/{id}"),
         });
     }
 
     public async Task<CrudSearchResult<TEntity>> Search(CrudSearchOptions searchOptions)
     {
         // TODO: Convert search options into query paramaters
-
         return await Send<CrudSearchResult<TEntity>>(new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = Url($"/api/{typeof(TEntity).Name}")
+            RequestUri = Url($"/api/{typeof(TEntity).Name}"),
         });
     }
 
     private Uri Url(string path)
     {
-        return new Uri(new Uri(_config.BaseUrl), path);
+        return new Uri(new Uri(config.BaseUrl), path);
     }
 
     private async Task<T> Send<T>(HttpRequestMessage request)
     {
-        var response = await _http.SendAsync(request);
+        var response = await http.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
-        
+
         var entity = await response.Content.ReadFromJsonAsync<T>();
 
         if (entity == null)
         {
             // TODO: Better Exception
-            throw new Exception();    
+            throw new Exception();
         }
 
         return entity;

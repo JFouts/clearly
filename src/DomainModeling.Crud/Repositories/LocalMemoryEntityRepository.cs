@@ -1,24 +1,29 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System.Collections.Concurrent;
 using DomainModeling.Core;
 using DomainModeling.Crud;
 using DomainModeling.Crud.Search;
-using System.Collections.Concurrent;
 
 namespace DomainModeling.EntityRepository;
 
-public class LocalMemoryEntityRepository<T> : IEntityRepository<T> where T : IEntity
+// TODO: This doesn't belong in here
+public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
+    where T : IEntity
 {
-    private static readonly ConcurrentDictionary<Guid, T> _table = new ConcurrentDictionary<Guid, T>();
+    private static readonly ConcurrentDictionary<Guid, T> Table = new ConcurrentDictionary<Guid, T>();
 
     public Task Delete(Guid id)
     {
-        _table.TryRemove(id, out _);
-        
+        Table.TryRemove(id, out _);
+
         return Task.CompletedTask;
     }
 
     public Task<T> GetById(Guid id)
     {
-        if (_table.TryGetValue(id, out var result))
+        if (Table.TryGetValue(id, out var result))
         {
             return Task.FromResult(result);
         }
@@ -28,19 +33,20 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T> where T : IEn
 
     public Task Insert(T obj)
     {
-        _table.TryAdd(obj.Id, obj);
+        Table.TryAdd(obj.Id, obj);
 
         return Task.CompletedTask;
     }
 
     public Task<CrudSearchResult<T>> Search(CrudSearchOptions options)
     {
-        var result = new CrudSearchResult<T> { 
+        var result = new CrudSearchResult<T>
+        {
             Skip = options.Skip,
-            Take = options.Take 
+            Take = options.Take,
         };
-        
-        var query = _table.Values.AsQueryable();
+
+        var query = Table.Values.AsQueryable();
 
         result.Count = query.Count();
 
@@ -61,7 +67,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T> where T : IEn
 
     public Task Update(Guid id, T obj)
     {
-        _table.AddOrUpdate(id, obj, (x,y) => obj);
+        Table.AddOrUpdate(id, obj, (x, y) => obj);
 
         return Task.CompletedTask;
     }

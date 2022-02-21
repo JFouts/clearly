@@ -1,25 +1,28 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace DomainModeling.Crud.Infrastructure;
 
-/// <summary>    
+/// <summary>
 /// Adds support for generic controllers to the AspNetCore Controller Feature.
 /// </summary>
 internal class GenericControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
 {
-    private readonly ITypeProvider _typeProvider;
+    private readonly ITypeProvider typeProvider;
 
-    /// <summary>    
+    /// <summary>
     /// Adds support for generic controllers to the AspNetCore Controller Feature.
     /// </summary>
     /// <param name="typeProvider">The source for the Types to register generic controllers with.</param>
     public GenericControllerFeatureProvider(ITypeProvider typeProvider)
     {
-        _typeProvider = typeProvider;
+        this.typeProvider = typeProvider;
     }
-    
+
     /// <summary>
     /// Updates the feature instance.
     /// </summary>
@@ -32,7 +35,7 @@ internal class GenericControllerFeatureProvider : IApplicationFeatureProvider<Co
     /// </remarks>
     public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
     {
-        var allowedTypes = _typeProvider.GetTypes();
+        var allowedTypes = typeProvider.GetTypes();
 
         foreach (var applicationPart in parts.OfType<AssemblyPart>())
         {

@@ -1,9 +1,12 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 namespace DomainModeling.Crud;
 
 public class EntityDefinition : BaseDefinition
 {
-    private readonly List<EntityFieldDefinition> _field;
-    public IEnumerable<EntityFieldDefinition> Fields => _field;
+    private readonly List<EntityFieldDefinition> field;
+    public IEnumerable<EntityFieldDefinition> Fields => field;
 
     public Type Entity { get; set; }
 
@@ -14,7 +17,7 @@ public class EntityDefinition : BaseDefinition
     {
         Entity = entity;
         NameKey = entity.Name;
-        DisplayName = entity.Name.SplitCamelCase();
-        _field = entity.GetProperties().Select(x => new EntityFieldDefinition(x)).ToList();
+        DisplayName = entity.Name.FormatForDisplay();
+        field = entity.GetProperties().Select(x => new EntityFieldDefinition(x)).ToList();
     }
 }

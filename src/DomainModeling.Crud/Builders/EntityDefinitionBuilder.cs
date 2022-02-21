@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Linq.Expressions;
 using DomainModeling.Core;
 
@@ -7,13 +10,14 @@ namespace DomainModeling.Crud;
 /// Configures the defintion for an entity when it is built.
 /// </summary>
 /// <typeparam name="TEntity">Entity Model that is being configured</typeparam>
-public class EntityDefinitionBuilder<TEntity> where TEntity : IEntity
+public class EntityDefinitionBuilder<TEntity>
+    where TEntity : IEntity
 {
-    private readonly EntityDefinition _definition;
+    private readonly EntityDefinition definition;
 
     internal EntityDefinitionBuilder(EntityDefinition definition)
     {
-        _definition = definition;
+        this.definition = definition;
     }
 
     /// <summary>
@@ -27,9 +31,9 @@ public class EntityDefinitionBuilder<TEntity> where TEntity : IEntity
     public EntityFieldDefinitionBuilder<TEntity> Field<TProp>(Expression<Func<TEntity, TProp>> selector)
     {
         var selectedPropertyInfo = selector.GetPropertyInfo();
-        var selectedField = _definition.Fields.First(x => x.Property.Name == selectedPropertyInfo.Name);
+        var selectedField = definition.Fields.First(x => x.Property.Name == selectedPropertyInfo.Name);
 
-        return new EntityFieldDefinitionBuilder<TEntity>(_definition, selectedField);
+        return new EntityFieldDefinitionBuilder<TEntity>(definition, selectedField);
     }
 
     /// <summary>
@@ -39,7 +43,7 @@ public class EntityDefinitionBuilder<TEntity> where TEntity : IEntity
     /// <returns>The builder for fluent chaining.</returns>
     public EntityDefinitionBuilder<TEntity> ApplyAttribute(EntityDefinitionAttribute attribute)
     {
-        attribute.ApplyToEntityDefinition(_definition);
+        attribute.ApplyToEntityDefinition(definition);
 
         return this;
     }

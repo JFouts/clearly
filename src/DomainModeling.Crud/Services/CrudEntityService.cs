@@ -1,46 +1,49 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using DomainModeling.Core;
 using DomainModeling.Crud.Search;
 
 namespace DomainModeling.Crud.Services;
 
 // TODO: Well defined exceptions that come from this class
-
-internal class CrudEntityService<T> : ICrudService<T> where T : IEntity
+internal class CrudEntityService<T> : ICrudService<T>
+    where T : IEntity
 {
-    private readonly IEntityRepository<T> _repository;
+    private readonly IEntityRepository<T> repository;
 
     public CrudEntityService(IEntityRepository<T> repository)
     {
-        _repository = repository;
+        this.repository = repository;
     }
 
     public async Task Delete(Guid id)
     {
-        await _repository.Delete(id);
+        await repository.Delete(id);
     }
 
     public async Task<T> GetById(Guid id)
     {
-        return await _repository.GetById(id);
+        return await repository.GetById(id);
     }
 
     public async Task Insert(T obj)
     {
-        if (obj.Id == Guid.Empty) 
+        if (obj.Id == Guid.Empty)
         {
             obj.Id = Guid.NewGuid();
         }
 
-        await _repository.Insert(obj);
+        await repository.Insert(obj);
     }
 
     public async Task<CrudSearchResult<T>> Search(CrudSearchOptions options)
     {
-        return await _repository.Search(options);
+        return await repository.Search(options);
     }
 
     public async Task Update(Guid id, T obj)
     {
-        await _repository.Update(id, obj);
+        await repository.Update(id, obj);
     }
 }

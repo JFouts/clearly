@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
 
 namespace DomainModeling.Crud;
@@ -10,6 +13,6 @@ public class EntityFieldDefinition : BaseDefinition
     public EntityFieldDefinition(PropertyInfo property)
     {
         Property = property;
-        DisplayName = property.Name.SplitCamelCase();
+        DisplayName = property.Name.FormatForDisplay();
     }
 }

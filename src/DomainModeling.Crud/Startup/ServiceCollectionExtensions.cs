@@ -1,3 +1,6 @@
+// Copyright (c) Justin Fouts All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
 using DomainModeling.Crud.Infrastructure;
 using DomainModeling.Crud.Services;
@@ -21,11 +24,11 @@ public static class ServiceCollectionExtensions
     {
         return services.AddScoped(typeof(ICrudService<>), typeof(CrudEntityService<>));
     }
-    
+
     public static MvcOptions AddCrudConvention(this MvcOptions options)
     {
         options.Conventions.Add(new GenericControllerRouteConvention());
-        
+
         return options;
     }
 
@@ -38,7 +41,8 @@ public static class ServiceCollectionExtensions
     internal static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, ITypeProvider typeProvider)
     {
         return builder
-            .ConfigureApplicationPartManager(x => {
+            .ConfigureApplicationPartManager(x =>
+            {
                 if (!x.FeatureProviders.Any(y => y is GenericControllerFeatureProvider))
                 {
                     x.FeatureProviders.Add(new GenericControllerFeatureProvider(typeProvider));
