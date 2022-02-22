@@ -39,7 +39,7 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
     {
         var columns = entity
             .Fields
-            .Where(x => x.Property.Name != "Id") // TODO: This is hacky we should have a way to hide properties from the view
+            .Where(x => x.UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayOnSearch)
             .Select(BuildColumnViewModel)
             .ToList();
 

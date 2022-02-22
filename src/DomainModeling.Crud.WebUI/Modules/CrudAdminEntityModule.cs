@@ -11,7 +11,7 @@ public class CrudAdminEntityModule : EntityModule
 
         if (string.IsNullOrWhiteSpace(metadata.DataSourceUrl))
         {
-            metadata.DataSourceUrl = $"/api/{entity.NameKey}";
+            metadata.DataSourceUrl = $"/api/{entity.NameKey.ToLower()}";
         }
     }
 }

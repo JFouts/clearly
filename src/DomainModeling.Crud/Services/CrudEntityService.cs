@@ -1,8 +1,11 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Runtime.CompilerServices;
 using DomainModeling.Core;
 using DomainModeling.Crud.Search;
+
+[assembly: InternalsVisibleTo("DomainModeling.Crud.Test.Unit")]
 
 namespace DomainModeling.Crud.Services;
 
