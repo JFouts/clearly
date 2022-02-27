@@ -3,6 +3,10 @@
 
 namespace DomainModeling.Crud.Test.Unit;
 
+#pragma warning disable SA1401
+#pragma warning disable SA1306
+#pragma warning disable CS0649
+#pragma warning disable CS0169
 public record FullySpecifiedEntity : FullySpecifiedEntityBase
 {
     public object? PublicField;
@@ -44,3 +48,7 @@ public record FullySpecifiedEntity : FullySpecifiedEntityBase
     private protected object? PrivateProtectedReadonlyProperty { get; }
     private protected object? PrivateProtectedComputedProperty => null;
 }
+#pragma warning restore SA1401
+#pragma warning restore SA1306
+#pragma warning restore CS0649
+#pragma warning restore CS0169

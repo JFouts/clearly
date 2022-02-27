@@ -5,8 +5,5 @@ namespace DomainModeling.Crud.JsonLd;
 
 public record JsonLdFieldMetadata : IMetadata
 {
-    public string Name { get; set; }
-    public string Namespace { get; set; }
-    public string Vocab { get; set; }
-    public string Iri { get; set; }
+    public string Iri { get; set; } = string.Empty;
 }

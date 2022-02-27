@@ -5,6 +5,10 @@ using DomainModeling.Core;
 
 namespace DomainModeling.Crud.Test.Unit;
 
+#pragma warning disable SA1401
+#pragma warning disable SA1306
+#pragma warning disable CS0649
+#pragma warning disable CS0169
 public record FullySpecifiedEntityBase : IEntity
 {
     public Guid Id { get; set; }
@@ -48,3 +52,7 @@ public record FullySpecifiedEntityBase : IEntity
     private protected object? PrivateProtectedReadonlyBaseProperty { get; }
     private protected object? PrivateProtectedComputedBaseProperty => null;
 }
+#pragma warning restore SA1401
+#pragma warning restore SA1306
+#pragma warning restore CS0649
+#pragma warning restore CS0169

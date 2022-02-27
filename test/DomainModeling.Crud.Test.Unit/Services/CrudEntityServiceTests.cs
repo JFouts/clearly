@@ -29,9 +29,10 @@ public class CrudEntityServiceTests
 
         example.Property = "Test";
 
-        var result = JsonSerializer.Serialize(example, options: new JsonSerializerOptions {
+        var result = JsonSerializer.Serialize(example, options: new JsonSerializerOptions
+        {
             DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = false
+            WriteIndented = false,
         });
 
         Assert.Equal("{\"property\":\"Test\"}", result);

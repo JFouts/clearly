@@ -18,7 +18,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             new AttributeBasedEntityModule(),
             new CoreEntityModule(),
             new CrudAdminEntityModule(),
-         };
+        };
 
         var fieldModules = new IEntityFieldModule[]
         {

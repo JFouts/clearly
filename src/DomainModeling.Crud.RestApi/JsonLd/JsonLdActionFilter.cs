@@ -40,6 +40,7 @@ public class JsonLdActionFilter : IAsyncActionFilter
 
             var ldContext = new Dictionary<string, object>();
             ldContext["@version"] = 1.1;
+            ldContext["@vocab"] = $"{baseUrl}/schema/{nameKey}#";
 
             foreach (var field in definition.Fields)
             {
@@ -52,7 +53,6 @@ public class JsonLdActionFilter : IAsyncActionFilter
                 }
                 else
                 {
-                    ldContext[propertyToken] = $"{baseUrl}/schema/{nameKey}#{propertyToken.ToLower()}";
                 }
 
                 responseBodyDictionary[propertyToken] = field.Property.GetValue(entity);
@@ -62,16 +62,6 @@ public class JsonLdActionFilter : IAsyncActionFilter
 
             objectResult.Value = responseBody;
             objectResult.DeclaredType = responseBody.GetType();
-        }
-    }
-
-    private IEnumerable<HateoasLink> GenerateLinks(EntityDefinition definition, IEntity entity)
-    {
-        var apis = definition.Features.OfType<EntityApiFeature>();
-
-        foreach (var api in apis)
-        {
-            yield return new HateoasLink("self", api.UrlFormat, api.Method);
         }
     }
 }

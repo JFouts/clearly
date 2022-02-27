@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Xunit;
-using SE = DomainModeling.Crud.RestApi.Controllers.StringExtensions;
 
 namespace DomainModeling.Crud.Test.Unit;
 
@@ -16,7 +15,7 @@ public class FormatTokenizedStringTests
         var pattern = "[Key]";
 
         // Act
-        var result = SE.FormatTokenizedString(pattern, replacements);
+        var result = pattern.FormatTokenizedString(replacements);
 
         // Assert
         Assert.Equal("Example", result);
@@ -30,7 +29,7 @@ public class FormatTokenizedStringTests
         var pattern = "These are [1][2].";
 
         // Act
-        var result = SE.FormatTokenizedString(pattern, replacements);
+        var result = pattern.FormatTokenizedString(replacements);
 
         // Assert
         Assert.Equal("These are back to back.", result);
@@ -44,7 +43,7 @@ public class FormatTokenizedStringTests
         var pattern = "This [An[[Odd]]Key] escaped.";
 
         // Act
-        var result = SE.FormatTokenizedString(pattern, replacements);
+        var result = pattern.FormatTokenizedString(replacements);
 
         // Assert
         Assert.Equal("This is escaped.", result);
@@ -58,7 +57,7 @@ public class FormatTokenizedStringTests
         var pattern = "This is [First][Second]]Key] of sorts.";
 
         // Act
-        var result = SE.FormatTokenizedString(pattern, replacements);
+        var result = pattern.FormatTokenizedString(replacements);
 
         // Assert
         Assert.Equal("This is a test of sorts.", result);
@@ -72,7 +71,7 @@ public class FormatTokenizedStringTests
         var pattern = "This [[[Odd]]] escaped.";
 
         // Act
-        var result = SE.FormatTokenizedString(pattern, replacements);
+        var result = pattern.FormatTokenizedString(replacements);
 
         // Assert
         Assert.Equal("This [is] escaped.", result);
@@ -86,7 +85,7 @@ public class FormatTokenizedStringTests
         var pattern = "[Part1]/[Part2]/[Part3]";
 
         // Act
-        var result = SE.FormatTokenizedString(pattern, replacements);
+        var result = pattern.FormatTokenizedString(replacements);
 
         // Assert
         Assert.Equal("api/controller/action", result);
@@ -96,11 +95,11 @@ public class FormatTokenizedStringTests
     public void ItThrowsOn_UnclosedBrackets()
     {
         // Arrange
-        var replacements = new Dictionary<string, string?> {  };
+        var replacements = new Dictionary<string, string?>();
         var pattern = "This has an [ unclosed bracket!";
 
         // Act
-        void Act() => SE.FormatTokenizedString(pattern!, replacements!);
+        void Act() => pattern.FormatTokenizedString(replacements!);
 
         // Assert
         Assert.Throws<InvalidOperationException>(Act);
@@ -110,11 +109,11 @@ public class FormatTokenizedStringTests
     public void ItThrowsOn_UnclosedBrackets_AtEnd()
     {
         // Arrange
-        var replacements = new Dictionary<string, string?> {  };
+        var replacements = new Dictionary<string, string?>();
         var pattern = "This has an unclosed bracket![";
 
         // Act
-        void Act() => SE.FormatTokenizedString(pattern!, replacements!);
+        void Act() => pattern.FormatTokenizedString(replacements!);
 
         // Assert
         Assert.Throws<InvalidOperationException>(Act);
@@ -124,11 +123,11 @@ public class FormatTokenizedStringTests
     public void ItThrowsOn_UnMatchedClosingBracket()
     {
         // Arrange
-        var replacements = new Dictionary<string, string?> {  };
+        var replacements = new Dictionary<string, string?>();
         var pattern = "This has an unclosed bracket!]";
 
         // Act
-        void Act() => SE.FormatTokenizedString(pattern!, replacements!);
+        void Act() => pattern.FormatTokenizedString(replacements!);
 
         // Assert
         Assert.Throws<InvalidOperationException>(Act);
@@ -138,11 +137,11 @@ public class FormatTokenizedStringTests
     public void ItThrowsOn_OpeningBracketInToken()
     {
         // Arrange
-        var replacements = new Dictionary<string, string?> {  };
+        var replacements = new Dictionary<string, string?>();
         var pattern = "This has [Brackets [in] a token]!";
 
         // Act
-        void Act() => SE.FormatTokenizedString(pattern!, replacements!);
+        void Act() => pattern.FormatTokenizedString(replacements!);
 
         // Assert
         Assert.Throws<InvalidOperationException>(Act);
@@ -156,7 +155,7 @@ public class FormatTokenizedStringTests
         var pattern = "[Key]";
 
         // Act
-        void Act() => SE.FormatTokenizedString(pattern!, replacements!);
+        void Act() => pattern.FormatTokenizedString(replacements!);
 
         // Assert
         Assert.Throws<InvalidOperationException>(Act);
