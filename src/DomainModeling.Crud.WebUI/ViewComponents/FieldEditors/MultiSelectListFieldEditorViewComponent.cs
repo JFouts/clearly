@@ -20,6 +20,11 @@ public class MultiSelectListFieldEditorViewComponent : FieldEditorViewComponent
 
     public override async Task<IViewComponentResult> InvokeAsync(EntityFieldDefinition fieldDefinition, object value)
     {
+        if (value is not IEnumerable<string> typedValue)
+        {
+            throw new ArgumentException($"ViewComponent parameter ${value} must be of type {nameof(IEnumerable<string>)}", nameof(value));
+        }
+
         var metadata = fieldDefinition.UsingMetadata<CrudAdminEntityFieldMetadata>();
 
         if (!metadata.EditorProperties.TryGetValue("DataSource", out var dataSourceDefinition))
@@ -35,7 +40,7 @@ public class MultiSelectListFieldEditorViewComponent : FieldEditorViewComponent
             Id = fieldDefinition.Property.Name,
             FieldName = fieldDefinition.Property.Name,
             Label = fieldDefinition.DisplayName,
-            Value = value as IEnumerable<string>,
+            Value = typedValue,
             Options = data.Select(x => new DropDownOptionViewModel
             {
                 Value = x.Key,

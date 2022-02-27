@@ -13,7 +13,8 @@ namespace DomainModeling.Crud.Infrastructure;
 internal class GenericControllerRouteConvention : IControllerModelConvention
 {
     private const string TYPE_TOKEN = "type";
-    private const string DEFAULT_ROUTE_TEMPLATE = $"[controller]/[{TYPE_TOKEN}]";
+    private const string CONTROLLER_TOKEN = "generic";
+    private const string DEFAULT_ROUTE_TEMPLATE = $"[{CONTROLLER_TOKEN}]/[{TYPE_TOKEN}]";
 
     public void Apply(ControllerModel controller)
     {
@@ -32,6 +33,8 @@ internal class GenericControllerRouteConvention : IControllerModelConvention
         var typeName = genericType.Name.ToLower();
 
         controller.RouteValues[TYPE_TOKEN] = typeName;
+        // TODO: Make this more fool proof
+        controller.RouteValues[CONTROLLER_TOKEN] = controller.ControllerType.Name.Replace("Controller`1", string.Empty).ToLower();
     }
 
     private void ApplyDefaultRoute(ControllerModel controller)

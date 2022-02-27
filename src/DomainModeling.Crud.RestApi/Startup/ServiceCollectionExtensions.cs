@@ -5,6 +5,8 @@ using System.Reflection;
 using DomainModeling.Crud.RestApi.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
+using DomainModeling.Crud.JsonLd;
 
 namespace DomainModeling.Crud.RestApi;
 
@@ -17,6 +19,8 @@ public static class ServiceCollectionExtensions
 
     public static IMvcBuilder AddCrudRestApi(this IServiceCollection services, Action<MvcOptions> config, params Assembly[] assemblies)
     {
+        services.AddSingleton<JsonLdActionFilter>();
+
         return services
             .AddCrudServices()
             .AddInMemoryEntityRepository() // TODO: Replace this
@@ -24,7 +28,7 @@ public static class ServiceCollectionExtensions
             {
                 o.AddCrudConvention();
                 config(o);
-            })
+            }).AddJsonOptions(x => x.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase)
             .AddCrudFeature(assemblies);
     }
 

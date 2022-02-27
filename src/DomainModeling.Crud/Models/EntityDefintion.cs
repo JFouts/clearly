@@ -8,6 +8,9 @@ public class EntityDefinition : BaseDefinition
     private readonly List<EntityFieldDefinition> field;
     public IEnumerable<EntityFieldDefinition> Fields => field;
 
+    private readonly List<IEntityFeature> features = new List<IEntityFeature>();
+    public IEnumerable<IEntityFeature> Features => features;
+
     public Type Entity { get; set; }
 
     public string NameKey { get; set; }
@@ -20,4 +23,14 @@ public class EntityDefinition : BaseDefinition
         DisplayName = entity.Name.FormatForDisplay();
         field = entity.GetProperties().Select(x => new EntityFieldDefinition(x)).ToList();
     }
+
+    public void AddFeature(IEntityFeature feature)
+    {
+        features.Add(feature);
+    }
+}
+
+public interface IEntityFeature
+{
+
 }

@@ -1,6 +1,5 @@
 using DomainModeling.Crud.RestApi;
 using DomainModeling.Crud.WebUi;
-using KingdomDeathTools.Api.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 

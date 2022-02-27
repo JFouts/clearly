@@ -3,7 +3,7 @@
 
 using System.Collections.Concurrent;
 
-namespace DomainModeling.Crud.WebUi;
+namespace DomainModeling.Crud;
 
 public class EntityDefinitionFactory : IEntityDefinitionFactory
 {

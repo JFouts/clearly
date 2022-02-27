@@ -1,6 +1,8 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Dynamic;
+using System.Text.Json;
 using DomainModeling.Crud.Search;
 using DomainModeling.Crud.Services;
 using Moq;
@@ -20,8 +22,20 @@ public class CrudEntityServiceTests
         service = new CrudEntityService<BlankEntity>(repository.Object);
     }
 
+    [Fact]
+    public void ExpandoObjectFollowJsonConvertSettings()
+    {
+        dynamic example = new ExpandoObject();
 
+        example.Property = "Test";
 
+        var result = JsonSerializer.Serialize(example, options: new JsonSerializerOptions {
+            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = false
+        });
+
+        Assert.Equal("{\"property\":\"Test\"}", result);
+    }
 
     [Fact]
     public async Task Insert_AddsEntityToRepository()
