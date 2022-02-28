@@ -13,6 +13,8 @@ namespace DomainModeling.Crud.JsonLd;
 /// </summary>
 public class SystemTextJsonLdOutputFormatter : SystemTextJsonOutputFormatter
 {
+    public const string ApplicationJsonLd = "application/ld+json";
+
     private readonly JsonLdObjectConverterFactory converterFactory;
 
     /// <summary>
@@ -27,12 +29,12 @@ public class SystemTextJsonLdOutputFormatter : SystemTextJsonOutputFormatter
         SerializerOptions.Converters.Insert(0, converterFactory);
 
         SupportedMediaTypes.Clear();
-        SupportedMediaTypes.Add("application/ld+json");
+        SupportedMediaTypes.Add(ApplicationJsonLd);
     }
 
     public override bool CanWriteResult(OutputFormatterCanWriteContext context)
     {
-        if (!context.ContentType.Equals("application/ld+json", StringComparison.InvariantCultureIgnoreCase))
+        if (!context.ContentType.Equals(ApplicationJsonLd, StringComparison.InvariantCultureIgnoreCase))
         {
             return false;
         }
@@ -42,8 +44,8 @@ public class SystemTextJsonLdOutputFormatter : SystemTextJsonOutputFormatter
             return false;
         }
 
-        var factory = context.HttpContext.RequestServices.GetRequiredService<IEntityDefinitionFactory>();
-        var entity = factory.CreateForType(context.GetType());
+        // var factory = context.HttpContext.RequestServices.GetRequiredService<IEntityDefinitionFactory>();
+        // var entity = factory.CreateForType(context.GetType());
 
         // TODO: Better checking for if Type Definition can be used for JSON-LD
         return true;
