@@ -1,20 +1,21 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Dynamic;
+using System.Text.Json;
 using DomainModeling.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace DomainModeling.Crud.JsonLd;
 
 public class JsonLdActionFilter : IAsyncActionFilter
-{    
-    private readonly IEntityDefinitionFactory entityDefinitionFactory;
+{
+    private readonly JsonLdObjectConverterFactory jsonLdObjectConverterFactory;
 
-    public JsonLdActionFilter(IEntityDefinitionFactory entityDefinitionFactory)
+    public JsonLdActionFilter(JsonLdObjectConverterFactory jsonLdObjectConverterFactory)
     {
-        this.entityDefinitionFactory = entityDefinitionFactory;
+        this.jsonLdObjectConverterFactory = jsonLdObjectConverterFactory;
     }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -23,45 +24,8 @@ public class JsonLdActionFilter : IAsyncActionFilter
 
         if (executedContext.Result is ObjectResult objectResult && objectResult.Value is IEntity entity)
         {
-            // TODO: Configurable base URL or none at all
-            var baseUrl = $"http{(context.HttpContext.Request.IsHttps ? "s" : "")}://{context.HttpContext.Request.Host}";
-
-            var type = entity.GetType();
-            var definition = entityDefinitionFactory.CreateForType(type);
-
-            dynamic responseBody = new ExpandoObject();
-            IDictionary<string, object?> responseBodyDictionary = responseBody;
-
-            var nameKey = definition.NameKey.ToLower();
-
-            responseBodyDictionary["@context"] = $"{baseUrl}/schema/{nameKey}";
-            responseBodyDictionary["@type"] = $"{baseUrl}/schema/{nameKey}";
-            responseBodyDictionary["@id"] = $"{baseUrl}/api/{nameKey}/{entity.Id}"; // TODO: Should be set of defintion
-
-            var ldContext = new Dictionary<string, object>();
-            ldContext["@version"] = 1.1;
-            ldContext["@vocab"] = $"{baseUrl}/schema/{nameKey}#";
-
-            foreach (var field in definition.Fields)
-            {
-                var fieldJsonMetadata = field.UsingMetadata<JsonLdFieldMetadata>();
-                var propertyToken = field.Property.Name.ToCamelCase();
-
-                if (!string.IsNullOrWhiteSpace(fieldJsonMetadata.Iri))
-                {
-                    ldContext[propertyToken] = fieldJsonMetadata.Iri;
-                }
-                else
-                {
-                }
-
-                responseBodyDictionary[propertyToken] = field.Property.GetValue(entity);
-            }
-
-            responseBodyDictionary["@context"] = ldContext;
-
-            objectResult.Value = responseBody;
-            objectResult.DeclaredType = responseBody.GetType();
+            objectResult.Formatters.Add(new SystemTextJsonLdOutputFormatter(new JsonSerializerOptions(), jsonLdObjectConverterFactory));
+            objectResult.Formatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions()));
         }
     }
 }
