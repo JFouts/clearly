@@ -67,7 +67,7 @@ internal class GenericControllerFeatureProvider : IApplicationFeatureProvider<Co
         feature.Controllers.Add(typedController);
     }
 
-    // TODO: Can this be pulled out of this class?
+    // TODO: Can this be pulled out of this class? Probably rework type provider to give the generic and the type
     private static IEnumerable<Type> GetTypesFromAssembly(Assembly assembly)
     {
         return

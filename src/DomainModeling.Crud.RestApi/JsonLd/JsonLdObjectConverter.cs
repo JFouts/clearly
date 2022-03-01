@@ -38,21 +38,41 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         // TODO: Consider this being already Lower on the definition
         var nameKey = definition.NameKey.ToLower();
 
+        var typeJsonMetadata = definition.UsingMetadata<JsonLdTypeMetadata>();
+        var vocab = $"{baseUrl}/schema/{nameKey}#";
+
+        // TODO: Move this fallback logic to defintion generation
+        if (!string.IsNullOrWhiteSpace(typeJsonMetadata.TermsDefaultVocab))
+        {
+            vocab = typeJsonMetadata.TermsDefaultVocab;
+        }
+
+        var typeIri = $"{baseUrl}/schema/{nameKey}";
+
+        // TODO: Move this fallback logic to defintion generation
+        if (!string.IsNullOrWhiteSpace(typeJsonMetadata.TypeIri))
+        {
+            typeIri = typeJsonMetadata.TypeIri;
+        }
+
         responseBody["@context"] = ldContext;
 
         writer.WriteStartObject();
-        writer.WritePropertyName("@context");
-        writer.WriteStartObject();
+        writer.WriteStartObject("@context");
         writer.WriteNumber("@version", 1.1);
-        writer.WriteString("@vocab", $"{baseUrl}/schema/{nameKey}#");
+        writer.WriteString("@vocab", vocab);
 
         foreach (var field in definition.Fields)
         {
             var fieldJsonMetadata = field.UsingMetadata<JsonLdFieldMetadata>();
+            var propertyToken = options.PropertyNamingPolicy?.ConvertName(field.Property.Name) ?? field.Property.Name;
 
-            if (!string.IsNullOrWhiteSpace(fieldJsonMetadata.Iri))
+            if (fieldJsonMetadata.ExcludeFromLinkedData)
             {
-                var propertyToken = field.Property.Name.ToCamelCase(); // TODO: Support casing options
+                writer.WriteString(propertyToken, string.Empty);
+            }
+            else if (!string.IsNullOrWhiteSpace(fieldJsonMetadata.Iri))
+            {
                 ldContext[propertyToken] = fieldJsonMetadata.Iri;
 
                 writer.WriteString(propertyToken, fieldJsonMetadata.Iri);
@@ -61,18 +81,18 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
 
         writer.WriteEndObject(); // End of @context
 
-        writer.WriteString("@type", $"{baseUrl}/schema/{nameKey}");
+        writer.WriteString("@type", typeIri);
         writer.WriteString("@id", $"{baseUrl}/api/{nameKey}/{value.Id}"); // TODO: Should be set of defintion
         
         foreach (var field in definition.Fields)
         {
             var fieldJsonMetadata = field.UsingMetadata<JsonLdFieldMetadata>();
-            var propertyToken = field.Property.Name.ToCamelCase(); // TODO: Support casing options
+            var propertyToken = options.PropertyNamingPolicy?.ConvertName(field.Property.Name) ?? field.Property.Name;
 
             writer.WritePropertyName(propertyToken);
             JsonSerializer.Serialize(writer, field.Property.GetValue(value), options);
         }
 
-        writer.WriteEndObject(); // End of object
+        writer.WriteEndObject(); // End of main object
     }
 }

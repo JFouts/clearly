@@ -7,7 +7,7 @@ namespace KingdomDeathTools.Api.Services;
 
 public record Settlement : AggregateRoot, INamedEntity
 {
-    [JsonLdSchema(Iri = "https://schema.org/Property")]
+    [TermSchema("https://schema.org/Property")]
     [FieldEditor(SystemViewComponents.Input)]
     public string Name { get; set; } = string.Empty;
 
@@ -18,4 +18,20 @@ public record Settlement : AggregateRoot, INamedEntity
     [FieldEditor(SystemViewComponents.MultiSelectList)]
     [FieldEditorProperty("DataSource", "People of the Lantern;People of the Sun;People of the Stars")]
     public IEnumerable<string> Expansions { get; set; } = new string[0];
+}
+
+[TypeSchema("https://schema.org/Recipe", TermsVocab = "https://schema.org/")]
+public record Recipe : IEntity
+{
+    [NonLinkedData]
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public AggregateRating AggregateRating { get; set; }
+}
+
+public record AggregateRating
+{
+    public decimal RatingValue { get; set; }
+    public decimal RatingCount { get; set; }
 }

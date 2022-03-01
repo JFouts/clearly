@@ -1,6 +1,7 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
@@ -33,8 +34,7 @@ internal class GenericControllerRouteConvention : IControllerModelConvention
         var typeName = genericType.Name.ToLower();
 
         controller.RouteValues[TYPE_TOKEN] = typeName;
-        // TODO: Make this more fool proof
-        controller.RouteValues[CONTROLLER_TOKEN] = controller.ControllerType.Name.Replace("Controller`1", string.Empty).ToLower();
+        controller.RouteValues[CONTROLLER_TOKEN] = GetGenericControllerName(controller.ControllerType.Name);
     }
 
     private void ApplyDefaultRoute(ControllerModel controller)
@@ -46,5 +46,13 @@ internal class GenericControllerRouteConvention : IControllerModelConvention
                 selector.AttributeRouteModel = new AttributeRouteModel(new RouteAttribute(DEFAULT_ROUTE_TEMPLATE));
             }
         }
+    }
+
+    private string GetGenericControllerName(string systemName)
+    {
+        var temp = Regex.Replace(systemName, @"(.+)`\d+$", @"$1");
+
+        return Regex.Replace(temp, @"(.+)Controller$", @"$1")
+            .ToLowerInvariant();
     }
 }

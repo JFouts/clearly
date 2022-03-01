@@ -1,11 +1,11 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Text.Json;
 using DomainModeling.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DomainModeling.Crud.JsonLd;
 
@@ -24,8 +24,9 @@ public class JsonLdActionFilter : IAsyncActionFilter
 
         if (executedContext.Result is ObjectResult objectResult && objectResult.Value is IEntity entity)
         {
-            objectResult.Formatters.Add(new SystemTextJsonLdOutputFormatter(new JsonSerializerOptions(), jsonLdObjectConverterFactory));
-            objectResult.Formatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions()));
+            using var scope = context.HttpContext.RequestServices.CreateScope();
+            objectResult.Formatters.Add(scope.ServiceProvider.GetRequiredService<SystemTextJsonLdOutputFormatter>());
+            objectResult.Formatters.Add(scope.ServiceProvider.GetRequiredService<SystemTextJsonOutputFormatter>());
         }
     }
 }

@@ -3,8 +3,8 @@
 
 namespace DomainModeling.Crud.JsonLd;
 
-public record JsonLdFieldMetadata : IMetadata
+public record JsonLdTypeMetadata : IMetadata
 {
-    public string Iri { get; set; } = string.Empty;
-    public bool ExcludeFromLinkedData { get; set; }
+    public string TypeIri { get; set; } = string.Empty;
+    public string TermsDefaultVocab { get; set; } = string.Empty;
 }

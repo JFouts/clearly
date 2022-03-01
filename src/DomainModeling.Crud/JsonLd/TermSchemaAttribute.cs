@@ -3,9 +3,14 @@
 
 namespace DomainModeling.Crud.JsonLd;
 
-public class JsonLdSchemaAttribute : EntityFieldDefinitionAttribute
+public class TermSchemaAttribute : EntityFieldDefinitionAttribute
 {
     public string Iri { get; set; } = string.Empty;
+
+    public TermSchemaAttribute(string iri)
+    {
+        Iri = iri;
+    }
 
     protected internal override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
     {
