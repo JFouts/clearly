@@ -15,9 +15,20 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCrudServices(this IServiceCollection services)
     {
         return services
+            .AddCoreModules()
+            .AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>()
             .AddScoped(typeof(IEntityApiService<>), typeof(LocalEntityApiService<>))
             .AddScoped(typeof(EntityDataSource<>))
             .AddScoped(typeof(IEntityRepository<>), typeof(LocalMemoryEntityRepository<>));
+    }
+
+    private static IServiceCollection AddCoreModules(this IServiceCollection services)
+    {
+        return  services
+            .AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>()
+            .AddSingleton<IEntityModule, AttributeBasedEntityModule>()
+            .AddSingleton<IEntityFieldModule, CoreEntityFieldModule>()
+            .AddSingleton<IEntityModule, CoreEntityModule>();
     }
 
     public static IServiceCollection AddInMemoryEntityRepository(this IServiceCollection services)

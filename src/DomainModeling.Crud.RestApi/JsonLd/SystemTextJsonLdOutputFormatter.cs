@@ -4,7 +4,6 @@
 using System.Text.Json;
 using DomainModeling.Core;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DomainModeling.Crud.JsonLd;
 

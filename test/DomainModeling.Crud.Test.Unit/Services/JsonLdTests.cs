@@ -3,7 +3,9 @@
 
 using System.Text;
 using System.Text.Json;
+using DomainModeling.Core;
 using DomainModeling.Crud.JsonLd;
+using DomainModeling.Crud.WebUi;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +16,12 @@ namespace DomainModeling.Crud.Test.Unit;
 public class JsonLdTests
 {
     private readonly IServiceCollection services;
-    private readonly JsonLdObjectConverterFactory factory;
-    private readonly SystemTextJsonLdOutputFormatter formatter;
+    private JsonLdObjectConverterFactory factory;
+    private SystemTextJsonLdOutputFormatter formatter;
     private readonly DefaultHttpContext httpContext;
     private readonly MockOutputFormatterCanWriteContext canWriteContext;
-    private readonly MockOutputFormatterWriteContext writeContext;
-    private readonly BlankEntity entity;
+    private MockOutputFormatterWriteContext writeContext;
+    private IEntity entity;
     private readonly Guid entityId;
     private readonly StringBuilder outputBuffer;
 
@@ -27,16 +29,21 @@ public class JsonLdTests
     {
         outputBuffer = new StringBuilder();
         entityId = Guid.Parse("1dc64d2b-d3f4-472b-9b41-5e95d8d888ed");
-        entity = new BlankEntity(entityId);
+
         services = new ServiceCollection()
-            .AddSingleton<JsonLdObjectConverter<BlankEntity>>()
+            .AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>()
+            .AddSingleton<IEntityModule, AttributeBasedEntityModule>()
+            .AddSingleton<IEntityFieldModule, CoreEntityFieldModule>()
+            .AddSingleton<IEntityModule, CoreEntityModule>()
+            .AddSingleton<IEntityModule, CrudAdminEntityModule>()
+            .AddSingleton<IEntityFieldModule, CrudAdminEntityFieldModule>()
             .AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>();
-        factory = new JsonLdObjectConverterFactory(services.BuildServiceProvider());
-        formatter = new SystemTextJsonLdOutputFormatter(new JsonSerializerOptions(), factory);
+
         httpContext = new DefaultHttpContext();
         httpContext.Response.Body = new MemoryStream();
         canWriteContext = new MockOutputFormatterCanWriteContext(httpContext);
-        writeContext = new MockOutputFormatterWriteContext(httpContext, WriterFactory, entity.GetType(), entity);
+
+        UsingEntity<BlankEntity>(new BlankEntity(entityId));
     }
 
     private TextWriter WriterFactory(Stream stream, Encoding encoding)
@@ -91,6 +98,44 @@ public class JsonLdTests
         Assert.Equal(expected, response);
     }
 
+    [TypeSchema("Article", DefaultVocab = "https://schema.org")]
+    private class Article : IEntity
+    {
+        public Guid Id { get; set; }
+        public string Author { get; set; } = string.Empty;
+    }
+
+    [Fact]
+    public async Task Formatter_ReadsTypeOverride()
+    {
+        UsingEntity<Article>(new Article { Id = entityId, Author = "Mr. Example Pants" });
+
+        await formatter.WriteResponseBodyAsync(writeContext, Encoding.UTF8);
+
+        httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
+        using var reader = new StreamReader(httpContext.Response.Body);
+        var response = await reader.ReadToEndAsync();
+
+        // Using Newtonsoft here rather than System.Text.Json because Newtonsoft is faster
+        // a querying properties in the JSON
+        var json = Newtonsoft.Json.JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(response);
+
+        Assert.Equal("https://schema.org", (string) json["@context"]["@vocab"]);
+        Assert.Equal("Article", (string) json["@type"]);
+        Assert.Equal("Mr. Example Pants", (string) json["author"]);
+    }
+
+    private void UsingEntity<TEntity>(TEntity entity) where TEntity : IEntity
+    {
+        this.entity = entity;
+
+        services.AddSingleton<JsonLdObjectConverter<TEntity>>();
+        writeContext = new MockOutputFormatterWriteContext(httpContext, WriterFactory, entity.GetType(), entity);
+
+        factory = new JsonLdObjectConverterFactory(services.BuildServiceProvider());
+        formatter = new SystemTextJsonLdOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web), factory);
+    }
+
     private class MockOutputFormatterWriteContext : OutputFormatterWriteContext
     {
         public MockOutputFormatterWriteContext(HttpContext httpContext, Func<Stream, Encoding, TextWriter> writerFactory, Type? objectType, object? @object) 
@@ -115,4 +160,3 @@ public class JsonLdTests
         }
     }
 }
-

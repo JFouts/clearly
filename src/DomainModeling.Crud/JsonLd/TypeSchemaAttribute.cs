@@ -26,9 +26,9 @@ public class TypeSchemaAttribute : EntityDefinitionAttribute
     public string Iri { get; set; } = string.Empty;
 
     /// <summary>
-    /// The base IRI applied to terms of this type. By default with will be based off the type IRI in the form of "{IRI}#{term}"
+    /// The base IRI applied to terms/types under this type. By default with will be based off the type IRI in the form of "{IRI}#{term}"
     /// </summary>
-    public string TermsVocab { get; set; } = string.Empty;
+    public string DefaultVocab { get; set; } = string.Empty;
 
     /// <summary>
     /// Sets the IRI for the type and assumes all terms on the entity come from a shared
@@ -56,7 +56,7 @@ public class TypeSchemaAttribute : EntityDefinitionAttribute
     {
         entity.UsingMetadata<JsonLdTypeMetadata>().TypeIri = Iri;
 
-        var vocab = string.IsNullOrEmpty(TermsVocab) ? $"{Iri}#" : TermsVocab;
+        var vocab = string.IsNullOrEmpty(DefaultVocab) ? $"{Iri}#" : DefaultVocab;
         entity.UsingMetadata<JsonLdTypeMetadata>().TermsDefaultVocab = vocab;
     }
 }
