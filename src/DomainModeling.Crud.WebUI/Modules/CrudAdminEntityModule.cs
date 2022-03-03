@@ -7,7 +7,7 @@ public class CrudAdminEntityModule : EntityModule
 {
     public override void OnApplyingFallbackDefaults(EntityDefinition entity)
     {
-        var metadata = entity.UsingMetadata<CrudAdminEntityMetadata>();
+        var metadata = entity.Using<CrudAdminEntityFeature>();
 
         if (string.IsNullOrWhiteSpace(metadata.DataSourceUrl))
         {

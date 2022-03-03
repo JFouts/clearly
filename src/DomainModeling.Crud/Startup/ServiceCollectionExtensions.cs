@@ -12,18 +12,64 @@ namespace DomainModeling.Crud;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds the required services for Clearly CRUD
+    /// </summary>
     public static IServiceCollection AddCrudServices(this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
+
         return services
             .AddCoreModules()
             .AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>()
             .AddScoped(typeof(IEntityApiService<>), typeof(LocalEntityApiService<>))
-            .AddScoped(typeof(EntityDataSource<>))
+            .AddScoped(typeof(ICrudService<>), typeof(CrudEntityService<>))
+            .AddScoped(typeof(EntityDataSource<>));
+    }
+
+    /// <summary>
+    /// Add a local in memory entity repository that cleared when the service shuts down
+    /// </summary>
+    /// <remarks>
+    /// This is intended for use in testing
+    /// </remarks>
+    public static IServiceCollection AddInMemoryEntityRepository(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
+
+        return services
             .AddScoped(typeof(IEntityRepository<>), typeof(LocalMemoryEntityRepository<>));
+    }
+
+    /// <summary>
+    /// Add route contentions required for Clearly CRUD
+    /// </summary>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    public static MvcOptions AddCrudConvention(this MvcOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options, nameof(options));
+
+        options.Conventions.Add(new GenericControllerRouteConvention());
+
+        return options;
+    }
+
+    /// <summary>
+    /// Adds required MVC Features for Clearly CRUD
+    /// </summary>
+    public static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, params Assembly[] assemblies)
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
+        return builder
+            .AddCrudFeature(new EntitiesInAssemblyProvider(assemblies));
     }
 
     private static IServiceCollection AddCoreModules(this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
+        
         return  services
             .AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>()
             .AddSingleton<IEntityModule, AttributeBasedEntityModule>()
@@ -31,25 +77,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IEntityModule, CoreEntityModule>();
     }
 
-    public static IServiceCollection AddInMemoryEntityRepository(this IServiceCollection services)
-    {
-        return services.AddScoped(typeof(ICrudService<>), typeof(CrudEntityService<>));
-    }
-
-    public static MvcOptions AddCrudConvention(this MvcOptions options)
-    {
-        options.Conventions.Add(new GenericControllerRouteConvention());
-
-        return options;
-    }
-
-    public static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, params Assembly[] assemblies)
-    {
-        return builder
-            .AddCrudFeature(new EntitiesInAssemblyProvider(assemblies));
-    }
-
-    internal static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, ITypeProvider typeProvider)
+    private static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, ITypeProvider typeProvider)
     {
         return builder
             .ConfigureApplicationPartManager(x =>

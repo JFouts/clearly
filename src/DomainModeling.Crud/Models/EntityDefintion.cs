@@ -3,13 +3,11 @@
 
 namespace DomainModeling.Crud;
 
-public class EntityDefinition : BaseDefinition
+public class EntityDefinition
 {
     private readonly List<EntityFieldDefinition> field;
     public IEnumerable<EntityFieldDefinition> Fields => field;
-
-    private readonly List<IEntityFeature> features = new List<IEntityFeature>();
-    public IEnumerable<IEntityFeature> Features => features;
+    protected List<IEntityFeature> Features { get; } = new List<IEntityFeature>();
 
     public Type Entity { get; set; }
 
@@ -24,13 +22,17 @@ public class EntityDefinition : BaseDefinition
         field = entity.GetProperties().Select(x => new EntityFieldDefinition(x)).ToList();
     }
 
-    public void AddFeature(IEntityFeature feature)
+    public TFeature Using<TFeature>()
+        where TFeature : class, IEntityFeature, new()
     {
-        features.Add(feature);
+        var feature = Features.OfType<TFeature>().SingleOrDefault();
+
+        if (feature == null)
+        {
+            feature = new TFeature();
+            Features.Add(feature);
+        }
+
+        return feature;
     }
-}
-
-public interface IEntityFeature
-{
-
 }

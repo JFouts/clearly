@@ -20,7 +20,7 @@ public class DropDownListFieldEditorViewComponent : FieldEditorViewComponent
 
     public override async Task<IViewComponentResult> InvokeAsync(EntityFieldDefinition fieldDefinition, object value)
     {
-        var metadata = fieldDefinition.UsingMetadata<CrudAdminEntityFieldMetadata>();
+        var metadata = fieldDefinition.Using<CrudAdminEntityFieldFeature>();
 
         if (!metadata.EditorProperties.TryGetValue("DataSource", out var dataSourceDefinition))
         {

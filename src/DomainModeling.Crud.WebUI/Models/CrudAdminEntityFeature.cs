@@ -3,7 +3,7 @@
 
 namespace DomainModeling.Crud.WebUi;
 
-public class CrudAdminEntityMetadata : IMetadata
+public class CrudAdminEntityFeature : IEntityFeature
 {
     public string DataSourceUrl { get; set; } = string.Empty;
 }

@@ -3,14 +3,17 @@
 
 namespace DomainModeling.Crud.JsonLd;
 
-/// <summary>
-/// Removes the property from the linked data schema for JSON-LD
-/// </summary>
-public class NonLinkedData : EntityFieldDefinitionAttribute
+public class TermSchemaAttribute : EntityFieldDefinitionAttribute
 {
-    /// <inheritdoc />
+    public string Iri { get; set; } = string.Empty;
+
+    public TermSchemaAttribute(string iri)
+    {
+        Iri = iri;
+    }
+
     protected internal override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
     {
-        field.UsingMetadata<JsonLdFieldMetadata>().ExcludeFromLinkedData = true;
+        field.Using<JsonLdFieldFeature>().Iri = Iri;
     }
 }

@@ -20,7 +20,7 @@ public class EntityEditorViewModelFactory<TEntity> : IEntityEditorViewModelFacto
     {
         var definition = entityDefinitionFactory.CreateFor<TEntity>();
 
-        var metadata = definition.UsingMetadata<CrudAdminEntityMetadata>();
+        var metadata = definition.Using<CrudAdminEntityFeature>();
 
         return new EntityEditorViewModel(definition)
         {
@@ -37,7 +37,7 @@ public class EntityEditorViewModelFactory<TEntity> : IEntityEditorViewModelFacto
 
     private EntityFieldEditorViewModel BuildFieldViewModel(EntityFieldDefinition definition, TEntity value)
     {
-        var metadata = definition.UsingMetadata<CrudAdminEntityFieldMetadata>();
+        var metadata = definition.Using<CrudAdminEntityFieldFeature>();
 
         return new EntityFieldEditorViewModel(definition)
         {

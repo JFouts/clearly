@@ -25,7 +25,7 @@ public class MultiSelectListFieldEditorViewComponent : FieldEditorViewComponent
             throw new ArgumentException($"ViewComponent parameter ${value} must be of type {nameof(IEnumerable<string>)}", nameof(value));
         }
 
-        var metadata = fieldDefinition.UsingMetadata<CrudAdminEntityFieldMetadata>();
+        var metadata = fieldDefinition.Using<CrudAdminEntityFieldFeature>();
 
         if (!metadata.EditorProperties.TryGetValue("DataSource", out var dataSourceDefinition))
         {

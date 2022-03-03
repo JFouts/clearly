@@ -3,6 +3,7 @@
 
 namespace DomainModeling.Crud;
 
-public interface IMetadata
+public interface IEntityFieldFeature
 {
+
 }

@@ -39,7 +39,7 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
     {
         var columns = entity
             .Fields
-            .Where(x => x.UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayOnSearch)
+            .Where(x => x.Using<CrudAdminEntityFieldFeature>().DisplayOnSearch)
             .Select(BuildColumnViewModel)
             .ToList();
 
@@ -61,7 +61,7 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
 
     private TableColumnViewModel BuildColumnViewModel(EntityFieldDefinition field)
     {
-        var metadata = field.UsingMetadata<CrudAdminEntityFieldMetadata>();
+        var metadata = field.Using<CrudAdminEntityFieldFeature>();
 
         return new TableColumnViewModel
         {

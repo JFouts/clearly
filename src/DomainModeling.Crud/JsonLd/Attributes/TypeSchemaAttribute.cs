@@ -54,9 +54,10 @@ public class TypeSchemaAttribute : EntityDefinitionAttribute
     /// <inheritdoc />    
     protected internal override void ApplyToEntityDefinition(EntityDefinition entity)
     {
-        entity.UsingMetadata<JsonLdTypeMetadata>().TypeIri = Iri;
+        var jsonLdFeature = entity.Using<JsonLdTypeFeature>();
+        jsonLdFeature.TypeIri = Iri;
 
         var vocab = string.IsNullOrEmpty(DefaultVocab) ? $"{Iri}#" : DefaultVocab;
-        entity.UsingMetadata<JsonLdTypeMetadata>().TermsDefaultVocab = vocab;
+        jsonLdFeature.TermsDefaultVocab = vocab;
     }
 }

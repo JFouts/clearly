@@ -38,7 +38,7 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         // TODO: Consider this being already Lower on the definition
         var nameKey = definition.NameKey.ToLower();
 
-        var typeJsonMetadata = definition.UsingMetadata<JsonLdTypeMetadata>();
+        var typeJsonMetadata = definition.Using<JsonLdTypeFeature>();
         var vocab = $"{baseUrl}/schema/{nameKey}#";
 
         // TODO: Move this fallback logic to defintion generation
@@ -64,7 +64,7 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
 
         foreach (var field in definition.Fields)
         {
-            var fieldJsonMetadata = field.UsingMetadata<JsonLdFieldMetadata>();
+            var fieldJsonMetadata = field.Using<JsonLdFieldFeature>();
             var propertyToken = options.PropertyNamingPolicy?.ConvertName(field.Property.Name) ?? field.Property.Name;
 
             if (fieldJsonMetadata.ExcludeFromLinkedData)
@@ -86,7 +86,7 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         
         foreach (var field in definition.Fields)
         {
-            var fieldJsonMetadata = field.UsingMetadata<JsonLdFieldMetadata>();
+            var fieldJsonMetadata = field.Using<JsonLdFieldFeature>();
             var propertyToken = options.PropertyNamingPolicy?.ConvertName(field.Property.Name) ?? field.Property.Name;
 
             writer.WritePropertyName(propertyToken);

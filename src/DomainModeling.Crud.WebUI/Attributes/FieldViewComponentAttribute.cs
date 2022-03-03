@@ -20,7 +20,7 @@ public class FieldEditorAttribute : EntityFieldDefinitionAttribute
 
     protected override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
     {
-        var metadata = field.UsingMetadata<CrudAdminEntityFieldMetadata>();
+        var metadata = field.Using<CrudAdminEntityFieldFeature>();
 
         metadata.EditorViewComponentName = ViewComponentName;
     }

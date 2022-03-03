@@ -3,7 +3,7 @@
 
 namespace DomainModeling.Crud.WebUi;
 
-public class CrudAdminEntityFieldMetadata : IMetadata
+public class CrudAdminEntityFieldFeature : IEntityFieldFeature
 {
     // TODO if we can use concrete types we can avoid boxing/unboxing
     public Dictionary<string, object> EditorProperties { get; set; } = new Dictionary<string, object>();

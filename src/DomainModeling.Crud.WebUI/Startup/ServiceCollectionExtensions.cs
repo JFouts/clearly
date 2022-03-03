@@ -5,6 +5,7 @@ using System.Reflection;
 using DomainModeling.Crud.WebUi.Factories;
 using DomainModeling.Crud.WebUi.Infrastructure;
 using DomainModeling.Crud.WebUi.ViewComponents.FieldEditors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,16 +13,37 @@ namespace DomainModeling.Crud.WebUi;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds all the required service and initializes MVC for a Clearly Web UI
+    /// </summary>
+    /// <param name="assemblies">Assemblies containing Entity defintions.</param>
+    /// <returns>IMvcBuilder from AddMvc()</returns>
     public static IMvcBuilder AddCrudWebUi(this IServiceCollection services, params Assembly[] assemblies)
     {
         return services
             .AddCrudWebUIServices(assemblies)
-            .Configure<RazorViewEngineOptions>(options => options.ViewLocationExpanders.Add(new GenericControllerViewLocationExpander()))
-            .AddCrudServices()
-            .AddInMemoryEntityRepository() // TODO: Remove this when we can
-            .AddCrudMvc(assemblies);
+            .AddCrudWebUiInternal(null, assemblies);
     }
 
+    /// <summary>
+    /// Adds all the required service and initializes MVC for a Clearly Web UI
+    /// </summary>
+    /// <param name="assemblies">Assemblies containing Entity defintions.</param>
+    /// <returns>IMvcBuilder from AddMvc()</returns>
+    public static IMvcBuilder AddCrudWebUi(this IServiceCollection services, Action<MvcOptions> configure, params Assembly[] assemblies)
+    {
+        return services
+            .AddCrudWebUIServices(assemblies)
+            .AddCrudWebUiInternal(configure, assemblies);
+    }
+
+    /// <summary>
+    /// Adds the required services for Clearly CRUD's Web UI
+    /// </summary>
+    /// <remarks>
+    /// Typically you should use AddCrudWebUi. Call this method only if you are manually configuring MVC for example if you are running
+    /// the Clearly Web UI side by side with another Web Application or API.
+    /// </remarks>
     public static IServiceCollection AddCrudWebUIServices(this IServiceCollection services, params Assembly[] assemblies)
     {
         services.AddSingleton<IEntityModule, CrudAdminEntityModule>();
@@ -33,19 +55,23 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDataSourceFactory, DataSourceFactory>();
         services.AddAutoMapper(assemblies.Union(new [] { typeof(ServiceCollectionExtensions).Assembly }));
 
-        return services;
+        services
+            .Configure<RazorViewEngineOptions>(options => options.ViewLocationExpanders.Add(new GenericControllerViewLocationExpander()));
+
+        return services.AddCrudServices();
     }
 
-    public static IMvcBuilder AddCrudMvc(this IServiceCollection services, params Assembly[] assemblies)
+    private static IMvcBuilder AddCrudWebUiInternal(this IServiceCollection services, Action<MvcOptions>? configure, params Assembly[] assemblies)
     {
         return services
-            .AddMvc(x => x.AddCrudConvention())
+            .AddMvc(options =>
+            {
+                options.AddCrudConvention();
+                if (configure != null)
+                {
+                    configure(options);
+                }
+            })
             .AddCrudFeature(assemblies);
-    }
-
-    public static IServiceCollection AddModule<T>(this IServiceCollection services)
-        where T : class, IModule
-    {
-        return services.AddSingleton<IModule, T>();
     }
 }

@@ -3,7 +3,10 @@
 
 namespace DomainModeling.Crud.JsonLd;
 
-public record JsonLdFieldMetadata : IMetadata
+/// <summary>
+/// Provides JSON-LD for a specific field on an entity
+/// </summary>
+public record JsonLdFieldFeature : IEntityFieldFeature
 {
     public string Iri { get; set; } = string.Empty;
     public bool ExcludeFromLinkedData { get; set; }

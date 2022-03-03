@@ -37,7 +37,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
         var entity = factory.CreateFor<BlankEntity>();
 
         // Assert
-        Assert.Equal("/api/blankentity", entity.UsingMetadata<CrudAdminEntityMetadata>().DataSourceUrl);
+        Assert.Equal("/api/blankentity", entity.Using<CrudAdminEntityFeature>().DataSourceUrl);
     }
 
     public record DecoratedEntity : IEntity
@@ -60,7 +60,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             "MyCustomViewComponent", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().EditorViewComponentName);
+                .Using<CrudAdminEntityFieldFeature>().EditorViewComponentName);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             "A Custom Value", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().EditorProperties["MyCustomProperty"]);
+                .Using<CrudAdminEntityFieldFeature>().EditorProperties["MyCustomProperty"]);
     }
     
     public record BasicEntity : IEntity
@@ -98,7 +98,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             "String", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.StringProperty))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayTemplate);
+                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             "Int32", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.IntProperty))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayTemplate);
+                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
     }
     
     [Fact]
@@ -126,7 +126,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             "Guid", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.GuidProperty))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayTemplate);
+                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
     }
        
     [Fact]
@@ -140,7 +140,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
             "IEnumerable`1", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.StringListProperty))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayTemplate);
+                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
     }
        
     [Fact]
@@ -153,7 +153,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
         Assert.False(
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.Id))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayOnSearch);
+                .Using<CrudAdminEntityFieldFeature>().DisplayOnSearch);
     }
 
     [Fact(Skip = "Not Yet Implemented")]
@@ -166,6 +166,6 @@ public class EntityDefinitionFactoryTests_DefaultModules
         Assert.False(
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.Id))
-                .UsingMetadata<CrudAdminEntityFieldMetadata>().DisplayInEditor);
+                .Using<CrudAdminEntityFieldFeature>().DisplayInEditor);
     }
 }

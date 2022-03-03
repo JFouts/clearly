@@ -1,11 +1,13 @@
 using DomainModeling.Crud.RestApi;
 using DomainModeling.Crud.WebUi;
+using DomainModeling.Crud;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 var domain = System.Reflection.Assembly.Load("KingdomDeathTools.Api.Services");
+builder.Services.AddInMemoryEntityRepository(); // TODO: This is just for testing
 builder.Services.AddCrudRestApi(domain);
 builder.Services.AddCrudWebUi(domain);
 // builder.Services.AddModule<AdminEditorDefinition>();

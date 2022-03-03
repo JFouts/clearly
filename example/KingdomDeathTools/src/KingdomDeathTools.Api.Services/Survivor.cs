@@ -5,7 +5,8 @@ using DomainModeling.Crud.WebUi;
 
 namespace KingdomDeathTools.Api.Services;
 
-public record Survivor : AggregateRoot, INamedEntity {
+public record Survivor : AggregateRoot, INamedEntity
+{
     [FieldEditor(SystemViewComponents.DropDownList)]
     [FieldEditorProperty("DataSource", typeof(EntityDataSource<Settlement>))]
     public Guid SettlementId { get; set; }

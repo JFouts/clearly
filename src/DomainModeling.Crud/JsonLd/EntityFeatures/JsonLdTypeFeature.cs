@@ -3,7 +3,7 @@
 
 namespace DomainModeling.Crud.JsonLd;
 
-public record JsonLdTypeMetadata : IMetadata
+public record JsonLdTypeFeature : IEntityFeature
 {
     public string TypeIri { get; set; } = string.Empty;
     public string TermsDefaultVocab { get; set; } = string.Empty;

@@ -9,7 +9,7 @@ public class CrudAdminEntityFieldModule : EntityFieldModule
 {
     public override void OnApplyingFallbackDefaults(EntityDefinition entity, EntityFieldDefinition field)
     {
-        var metadata = field.UsingMetadata<CrudAdminEntityFieldMetadata>();
+        var metadata = field.Using<CrudAdminEntityFieldFeature>();
 
         if (string.IsNullOrWhiteSpace(metadata.EditorViewComponentName))
         {

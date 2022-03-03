@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using DomainModeling.Crud.JsonLd;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -11,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace DomainModeling.Crud.RestApi;
-
 
 public static class ServiceCollectionExtensions
 {
@@ -32,51 +29,66 @@ public static class ServiceCollectionExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds all the required service and initializes MVC Controllers for a Clearly CRUD API
+    /// </summary>
+    /// <param name="assemblies">Assemblies containing Entity defintions.</param>
+    /// <returns>IMvcBuilder from AddControllers()</returns>
+    /// <remarks>
+    /// This will automatically configure AddControllers(), to manually configure MVC in your project's startup
+    /// see TODO: Link to documentation
+    /// </remarks>
     public static IMvcBuilder AddCrudRestApi(this IServiceCollection services, params Assembly[] assemblies)
     {
         return AddCrudRestApiInternal(services, null, assemblies);
     }
 
-    
+    /// <summary>
+    /// All required service and initializes MVC Controllers for a Clearly CRUD API
+    /// </summary>
+    /// <param name="assemblies">Assemblies containing Entity defintions.</param>
+    /// <returns>IMvcBuilder from AddControllers()</returns>
+    /// <remarks>
+    /// This will automatically configure AddControllers(), to manually configure MVC in your project's startup
+    /// see TODO: Link to documentation
+    /// </remarks>
     public static IMvcBuilder AddCrudRestApi(this IServiceCollection services, Action<MvcOptions> configure, params Assembly[] assemblies)
     {
         return AddCrudRestApiInternal(services, configure, assemblies);
     }
 
-    internal static IMvcBuilder AddCrudRestApiInternal(this IServiceCollection services, Action<MvcOptions>? configure, params Assembly[] assemblies)
+    /// <summary>
+    /// Adds the required services for Clearly CRUD's API
+    /// </summary>
+    /// <remarks>
+    /// Typically you should use AddCrudRestApi. Call this method only if you are manually configuring MVC for example if you are running
+    /// the Clearly CRUD API side by side with another API for application with MVC Views or Razor pages.
+    /// </remarks>
+    public static IServiceCollection AddCrudRestApiServices(this IServiceCollection services)
     {
-        services.AddSingleton<JsonLdActionFilter>();
-        services.AddSingleton<JsonLdObjectConverterFactory>();
-        services.AddSingleton(typeof(JsonLdObjectConverter<>));
-
-        // services.AddOptions<JsonOptions>("jsonld").Validate(x => x.JsonSerializerOptions.Converters.Any(c => c is JsonLdObjectConverterFactory));
+        services
+            .AddSingleton<JsonLdActionFilter>()
+            .AddSingleton<JsonLdObjectConverterFactory>()
+            .AddSingleton(typeof(JsonLdObjectConverter<>));
 
         // TODO: I hate this, it feels so against how aspnetcore want you to setup Formatters, but we need EntityDefinitions in our formatter
         // Look into ways to rework this so that the DI container doesn't need to be fully initialized when we create our Formatter
         services.AddScoped<SystemTextJsonLdOutputFormatter>(x => 
             new SystemTextJsonLdOutputFormatter(
-                x.GetRequiredService<IOptionsSnapshot<JsonOptions>>().Get("jsonld").JsonSerializerOptions 
-                // ?? 
-                // x.GetRequiredService<IOptionsSnapshot<JsonOptions>>().Value?.JsonSerializerOptions ??
-                // new JsonSerializerOptions(JsonSerializerDefaults.Web)
-                // {
-                //     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                // }
-                , 
+                x.GetRequiredService<IOptionsSnapshot<JsonOptions>>().Get("jsonld").JsonSerializerOptions, 
                 x.GetRequiredService<JsonLdObjectConverterFactory>()));
         services.AddScoped<SystemTextJsonOutputFormatter>(x => 
             new SystemTextJsonOutputFormatter(
-                x.GetRequiredService<IOptions<JsonOptions>>().Value.JsonSerializerOptions
-                // ??
-                // new JsonSerializerOptions(JsonSerializerDefaults.Web)
-                // {
-                //     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                // }
-            ));
+                x.GetRequiredService<IOptions<JsonOptions>>().Value.JsonSerializerOptions));
 
         return services
-            .AddCrudServices()
-            .AddInMemoryEntityRepository() // TODO: Replace this
+            .AddCrudServices();
+    }
+
+    private static IMvcBuilder AddCrudRestApiInternal(this IServiceCollection services, Action<MvcOptions>? configure, params Assembly[] assemblies)
+    {
+        return services
+            .AddCrudRestApiServices()
             .AddControllers(o =>
             {
                 o.AddCrudConvention();
@@ -87,28 +99,4 @@ public static class ServiceCollectionExtensions
             })
             .AddCrudFeature(assemblies);
     }
-
-    // Option 1 - I only want to use the CRUD services/repositories
-    // services
-    //     .AddCrudServices()
-    //     .AddInMemoryEntityRepository(); // Some Entity Repository Implementation
-
-    // Option 2 - I want to use the CRUD REST API standalone
-    // services.AddCrudRestApi();
-
-    // Option 3 - I want to run the CRUD REST API in the same app a Razor/Views application
-    // services
-    //     .AddCrudServices()
-    //     .AddInMemoryEntityRepository(); // Some Entity Repository Implementation
-    //
-    // services
-    //     .AddMvc(o =>   // Or AddControllersWithViews
-    //          o.AddCrudConvention())
-    //     .AddCrudFeatures();
-
-    // Option 4 - I want to run the CRUD REST API along side the CRUD Web UI
-    // TODO
-
-    // Option 5 - I want to run the CRUD Web UI standalone
-    // TODO
 }
