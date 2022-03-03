@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using DomainModeling.Core;
-using DomainModeling.Core.ValidationAnnotations;
+using Clearly.Core;
+using Clearly.Core.ValidationAnnotations;
 
 namespace Questionable.Questions.Commands.Commands
 {

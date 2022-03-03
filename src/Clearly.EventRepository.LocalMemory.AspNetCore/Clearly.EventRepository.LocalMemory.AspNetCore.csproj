@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Clearly.EventRepository.LocalMemory\Clearly.EventRepository.LocalMemory.csproj" />
+    <ProjectReference Include="..\Clearly.EventRepository\Clearly.EventRepository.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,8 @@
-# Gettings Started with Domain Modeling
+# Getting Started with Clearly .NET
 
-Domain Modeling follows the CQRS pattern. So your first step to creating an application is to create commands and queries.
+## Clearly CRUD
+
+## Clearly CQRS
 
 ## Creating Commands
 

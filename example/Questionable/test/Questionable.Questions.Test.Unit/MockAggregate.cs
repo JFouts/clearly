@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DomainModeling.Core;
-using DomainModeling.Core.Interfaces;
-using DomainModeling.EventSourcing;
+using Clearly.Core;
+using Clearly.Core.Interfaces;
+using Clearly.EventSourcing;
 
 namespace Questionable.Questions.Test.Unit
 {

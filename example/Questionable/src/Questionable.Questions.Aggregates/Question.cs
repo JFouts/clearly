@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using DomainModeling.Core;
+using Clearly.Core;
 
 namespace Questionable.Questions.Aggregates
 {

@@ -7,9 +7,9 @@
 </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\DomainModeling.Core\DomainModeling.Core.csproj" />
-    <ProjectReference Include="..\..\..\..\src\DomainModeling.Crud\DomainModeling.Crud.csproj" />
-    <ProjectReference Include="..\..\..\..\src\DomainModeling.Crud.WebUI\DomainModeling.Crud.WebUI.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Clearly.Core\Clearly.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Clearly.Crud\Clearly.Crud.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Clearly.Crud.WebUI\Clearly.Crud.WebUI.csproj" />
   </ItemGroup>
 
 </Project>

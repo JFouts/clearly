@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DomainModeling.EventSubscription.EventStore;
+using Clearly.EventSubscription.EventStore;
 using Questionable.Queries.Models;
 using Questionable.Questions.Events.Events;
 using Repositoy.Core;

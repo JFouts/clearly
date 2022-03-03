@@ -1,5 +1,5 @@
 ﻿using System;
-using DomainModeling.Core;
+using Clearly.Core;
 
 namespace Questionable.Questions.Commands.Commands
 {

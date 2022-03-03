@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DomainModeling.Core.Interfaces;
-using DomainModeling.Core.Utilities.Interfaces;
-using DomainModeling.EventSourcing;
+using Clearly.Core.Interfaces;
+using Clearly.Core.Utilities.Interfaces;
+using Clearly.EventSourcing;
 using Questionable.Questions.Aggregates;
 using Questionable.Questions.Commands.Commands;
 using Questionable.Questions.Commands.Exceptions.Domain;

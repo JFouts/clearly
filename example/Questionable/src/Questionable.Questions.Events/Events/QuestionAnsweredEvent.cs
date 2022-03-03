@@ -1,5 +1,5 @@
 ﻿using System;
-using DomainModeling.Core.Interfaces;
+using Clearly.Core.Interfaces;
 
 namespace Questionable.Questions.Events.Events
 {

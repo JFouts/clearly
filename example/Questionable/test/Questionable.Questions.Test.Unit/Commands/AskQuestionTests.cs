@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DomainModeling.Core.Interfaces;
-using DomainModeling.EventSourcing;
+using Clearly.Core.Interfaces;
+using Clearly.EventSourcing;
 using Moq;
 using Questionable.Questions.Aggregates;
 using Questionable.Questions.Commands.CommandHandlers;

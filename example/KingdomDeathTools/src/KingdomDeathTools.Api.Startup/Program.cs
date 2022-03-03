@@ -1,6 +1,6 @@
-using DomainModeling.Crud.RestApi;
-using DomainModeling.Crud.WebUi;
-using DomainModeling.Crud;
+using Clearly.Crud.RestApi;
+using Clearly.Crud.WebUi;
+using Clearly.Crud;
 
 var builder = WebApplication.CreateBuilder(args);
 

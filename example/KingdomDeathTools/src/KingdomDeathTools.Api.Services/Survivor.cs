@@ -1,7 +1,7 @@
-using DomainModeling.Core;
-using DomainModeling.Crud;
-using DomainModeling.Crud.Services;
-using DomainModeling.Crud.WebUi;
+using Clearly.Core;
+using Clearly.Crud;
+using Clearly.Crud.Services;
+using Clearly.Crud.WebUi;
 
 namespace KingdomDeathTools.Api.Services;
 

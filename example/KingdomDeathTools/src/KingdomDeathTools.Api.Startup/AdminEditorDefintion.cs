@@ -1,7 +1,7 @@
 using AutoMapper;
-using DomainModeling.Crud;
-using DomainModeling.Crud.Services;
-using DomainModeling.Crud.WebUi;
+using Clearly.Crud;
+using Clearly.Crud.Services;
+using Clearly.Crud.WebUi;
 using KingdomDeathTools.Api.Services;
 
 namespace KingdomDeathTools.Api.Startup;

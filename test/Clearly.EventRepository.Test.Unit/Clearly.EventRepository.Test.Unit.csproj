@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Clearly.EventRepository.EventStore.AspNetCore\Clearly.EventRepository.EventStore.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\Clearly.EventRepository.EventStore\Clearly.EventRepository.EventStore.csproj" />
+    <ProjectReference Include="..\..\src\Clearly.EventRepository.LocalMemory.AspNetCore\Clearly.EventRepository.LocalMemory.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\Clearly.EventRepository.LocalMemory\Clearly.EventRepository.LocalMemory.csproj" />
+    <ProjectReference Include="..\..\src\Clearly.EventRepository\Clearly.EventRepository.csproj" />
+  </ItemGroup>
+
+</Project>
