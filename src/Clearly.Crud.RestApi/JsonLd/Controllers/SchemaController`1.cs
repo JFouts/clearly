@@ -4,7 +4,7 @@
 using Clearly.Core;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Clearly.Crud.RestApi.Controllers;
+namespace Clearly.Crud.RestApi.JsonLd;
 
 [GenericEntityController]
 [Route("[generic]/[type]")]
@@ -26,7 +26,7 @@ public class SchemaController<TEntity> : ControllerBase
         
         var def = new
         {
-            @id = $"{baseUrl}/api/doc/{entity.NameKey}",
+            @id = $"{baseUrl}/schema/{entity.NameKey}",
         };
 
         return Ok(def);

@@ -30,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(x => x.DocumentTitle = "API Docs - Kingdom Death: Monster Tools");
 }
 
+app.UseCrudErrorHandler();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

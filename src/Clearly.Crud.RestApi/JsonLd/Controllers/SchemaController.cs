@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Clearly.Crud.RestApi.Controllers;
+namespace Clearly.Crud.RestApi.JsonLd;
 
 [Route("[controller]")]
 public class SchemaController : ControllerBase

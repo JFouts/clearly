@@ -1,13 +1,12 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Text.Json.Serialization;
 using Clearly.Core;
 using Clearly.Crud.JsonLd;
 using Clearly.Crud.Search;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Clearly.Crud.RestApi.Controllers;
+namespace Clearly.Crud.RestApi;
 
 [GenericEntityController]
 [Route("api/[type]")]
@@ -43,13 +42,13 @@ public class EntityCrudController<TEntity> : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task Post(Guid id, [FromBody] TEntity value)
+    public async Task Put(Guid id, [FromBody] TEntity value)
     {
         await service.Update(id, value);
     }
 
     [HttpDelete("{id}")]
-    public async Task Post(Guid id)
+    public async Task Delete(Guid id)
     {
         await service.Delete(id);
     }

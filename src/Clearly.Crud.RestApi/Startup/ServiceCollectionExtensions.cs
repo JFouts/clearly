@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using Clearly.Crud.JsonLd;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,20 @@ public static class ServiceCollectionExtensions
 
         builder.Services.Configure(name, configure);
         return builder;
+    }
+
+    /// <summary>
+    /// Adds the CRUD Exception Handler middleware for handling many known exceptions with their
+    /// appropriate status codes
+    /// </summary>
+    /// <remarks>
+    /// This should always come before your call to MapControllers()
+    /// </remarks>
+    public static IApplicationBuilder UseCrudErrorHandler(this IApplicationBuilder app)
+    {
+        ArgumentNullException.ThrowIfNull(app, nameof(app));
+
+        return app.UseExceptionHandler(x => x.Run(ExceptionHandler.HandleCrudApiException));
     }
 
     /// <summary>
