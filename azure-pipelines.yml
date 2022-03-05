@@ -16,28 +16,36 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
+  displayName: 'Restore Packages'
   inputs:
     command: 'restore'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Build'
   inputs:
     command: 'build'
     arguments: '--no-restore'
+    projects: src/**/*.csproj
 
 - task: DotNetCoreCLI@2
+  displayName: 'Test'
   inputs:
     command: 'test'
+    projects: test/**/*.csproj
     arguments: '--no-restore'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Package'
   inputs: 
     command: 'pack'
+    projects: src/**/*.csproj
     arguments: '--no-restore'
-    outputDir: '$(Build.ArtifactStagingDirectory)/Package'
+    outputDir: '$(Build.ArtifactStagingDirectory)/'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Push'
   inputs:
     command: 'push'
     searchPatternPush: '$(Build.ArtifactStagingDirectory)/*.nupkg;!$(Build.ArtifactStagingDirectory)/*.Tests.nupkg'
-    feedPublish: 'FabrikamFeed'
+    feedPublish: 'Clearly'
 
