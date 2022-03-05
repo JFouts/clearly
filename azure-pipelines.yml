@@ -37,9 +37,9 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Package'
   inputs: 
-    command: 'pack'
-    projects: Clearly.sln
-    arguments: '--no-restore --no-build'
+    command: 'custom'
+    custom: 'pack'
+    arguments: 'Clearly.sln --no-restore --no-build'
     outputDir: '$(Build.ArtifactStagingDirectory)/'
 
 - task: DotNetCoreCLI@2
