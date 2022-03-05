@@ -38,8 +38,8 @@ steps:
   displayName: 'Package'
   inputs: 
     command: 'pack'
-    projects: src/**/*.csproj
-    arguments: '--no-restore'
+    projects: Clearly.sln
+    arguments: '--no-restore --no-build'
     outputDir: '$(Build.ArtifactStagingDirectory)/'
 
 - task: DotNetCoreCLI@2

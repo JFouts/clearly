@@ -14,8 +14,7 @@ Stay tuned for the first release
 ## Contributing
 Some of the best ways to contribute are to try things out, file issues, join in design conversations, and make pull-requests.
 
-### Reporting bugs and feature requests
-
+Check out our [Contributing Page](docs/Contributing.md) for more details.
 
 ## License
 Clearly .NET is licensed under the [MIT license](https://github.com/JFouts/domainmodeling/blob/master/LICENSE) for code.  
