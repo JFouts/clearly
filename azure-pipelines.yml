@@ -40,7 +40,7 @@ steps:
     command: 'custom'
     custom: 'pack'
     packagesToPack: "src/**/*.csproj"
-    arguments: '--no-restore --no-build -o'
+    arguments: '--no-restore --no-build'
     packDestination: '$(Build.ArtifactStagingDirectory)/'
     versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
