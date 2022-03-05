@@ -1,9 +1,11 @@
 
 # Creating Your First Domain Entity
 
-Creating an Entity is as easy as creating a record _(or class)_ the implements the `IEntity` interface.
+## Defining a New Entity
 
-```
+Defining a new Entity is as easy as creating a record _(or class)_ in your project the implements the `IEntity` interface.
+
+```c#
 using Clearly.Crud;
 
 public record MyFirstEntity : IEntity
@@ -11,14 +13,13 @@ public record MyFirstEntity : IEntity
     public Guid Id { get; set; }
 }
 ```
+_NOTE: We recommend using records for Entities rather than classes and keeping them as POCOs._
 
 By implementing the interface `IEntity` you are telling the system that this is a Domain Entity within this application and it will generate a REST API and Admin UI for you to edit this entity.
 
 As part of the contract for the `IEntity` interface you must add an `Id` property of type `System.Guid`. This will be used in the API to lookup your entity. 
 
 _NOTE: We recommend that this Id be the Primary Key for how your entity is stored in the database, however Clearly does not make this a requirement, it simply needs to be unique among all other entities of the same type._
-
-_NOTE: We recommend using records for Entities rather than classes and keeping them as POCOs._
 
 With just this if we build an run our application we will get REST API endpoints generated at:
 ```
