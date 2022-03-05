@@ -10,8 +10,8 @@ pool:
   vmImage: 'windows-2022'
 
 variables:
-  Major: '1'
-  Minor: '0'
+  Major: '0'
+  Minor: '1'
   Patch: '0'
 
 steps:
@@ -37,8 +37,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Package'
   inputs: 
-    command: 'custom'
-    custom: 'pack'
+    command: 'pack'
     packagesToPack: "src/**/*.csproj"
     arguments: '--no-restore --no-build'
     packDestination: '$(Build.ArtifactStagingDirectory)/'
