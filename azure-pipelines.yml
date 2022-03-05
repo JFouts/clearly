@@ -10,9 +10,9 @@ pool:
   vmImage: 'windows-2022'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  Major: '1'
+  Minor: '0'
+  Patch: '0'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -39,12 +39,20 @@ steps:
   inputs: 
     command: 'custom'
     custom: 'pack'
-    arguments: 'Clearly.sln --no-restore --no-build -o "$(Build.ArtifactStagingDirectory)/"'
+    packagesToPack: "src/**/*.csproj"
+    arguments: '--no-restore --no-build -o'
+    packDestination: '$(Build.ArtifactStagingDirectory)/'
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
 
 - task: DotNetCoreCLI@2
   displayName: 'Push'
   inputs:
     command: 'push'
     searchPatternPush: '$(Build.ArtifactStagingDirectory)/*.nupkg;!$(Build.ArtifactStagingDirectory)/*.Tests.nupkg'
-    feedPublish: 'Clearly'
+    feedPublish: 'Clearly .NET/Clearly'
+    nuGetFeedType: 'internal'
+    
 
