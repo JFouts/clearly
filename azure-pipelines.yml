@@ -39,7 +39,7 @@ steps:
   inputs: 
     command: 'custom'
     custom: 'pack'
-    arguments: 'Clearly.sln --no-restore --no-build' -o '$(Build.ArtifactStagingDirectory)/'
+    arguments: 'Clearly.sln --no-restore --no-build' -o "$(Build.ArtifactStagingDirectory)/"'
 
 - task: DotNetCoreCLI@2
   displayName: 'Push'
