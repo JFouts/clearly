@@ -9,7 +9,7 @@ Check out the [Getting Started Guide](docs/GettingStarted.md) for instructions o
 [![Build Status](https://justin-fouts.visualstudio.com/Clearly%20.NET/_apis/build/status/JFouts.domainmodeling?branchName=master)](https://justin-fouts.visualstudio.com/Clearly%20.NET/_build/latest?definitionId=5&branchName=master)
 
 ## Releases
-Stay tuned for the first release
+We are currently working towards our first [Alpha Release](https://github.com/JFouts/domainmodeling/milestone/1)
 
 ## Contributing
 Some of the best ways to contribute are to try things out, file issues, join in design conversations, and make pull-requests.
