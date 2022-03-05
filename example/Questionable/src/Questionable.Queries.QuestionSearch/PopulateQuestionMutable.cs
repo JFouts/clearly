@@ -1,11 +1,9 @@
-﻿using System;
+﻿
+namespace Questionable.Queries.QuestionSearch;
 
-namespace Questionable.Queries.QuestionSearch
+internal class PopulateQuestionMutable
 {
-    internal class PopulateQuestionMutable
-    {
-        public Guid QuestionId { get; set; }
-        public string Title { get; set; }
-        public int Votes { get; set; }
-    }
+    public Guid QuestionId { get; set; }
+    public string Title { get; set; }
+    public int Votes { get; set; }
 }

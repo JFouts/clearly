@@ -1,9 +1,7 @@
-﻿using System.Linq;
+﻿
+namespace Repository.Core;
 
-namespace Repositoy.Core
+public interface IQuery<out T>
 {
-    public interface IQuery<out T>
-    {
-        IQueryable<T> Query { get; }
-    }
+    IQueryable<T> Query { get; }
 }

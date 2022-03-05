@@ -1,16 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Questionable.Startup;
 
-namespace Questionable.Startup
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build()
-                .Run();
-        }
-    }
-}
+WebHost.CreateDefaultBuilder(args)
+    .UseStartup<Startup>()
+    .Build()
+    .Run();

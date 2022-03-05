@@ -1,9 +1,6 @@
-﻿using System;
+﻿
+namespace Questionable.Questions.Commands.Exceptions;
 
-namespace Questionable.Questions.Commands.Exceptions
+public abstract class InvalidStateException : Exception
 {
-    public abstract class InvalidStateException : Exception
-    {
-
-    }
 }

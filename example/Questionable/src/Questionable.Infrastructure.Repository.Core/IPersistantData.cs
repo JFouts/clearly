@@ -1,7 +1,7 @@
-﻿namespace Repositoy.Core
+﻿
+namespace Repository.Core;
+
+public interface IPersistantData<out T>
 {
-    public interface IPersistantData<out T>
-    {
-        T Data { get; }
-    }
+    T Data { get; }
 }

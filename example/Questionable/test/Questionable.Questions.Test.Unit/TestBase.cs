@@ -1,49 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace Questionable.Questions.Test.Unit
+namespace Questionable.Questions.Test.Unit;
+
+public class TestBase : IDisposable
 {
-    public class TestBase : IDisposable
+    private Exception? latestException;
+
+    public void Dispose()
     {
-        private Exception _latestException;
+        RethrowLastestException();
+    }
 
-        public void Dispose()
+    protected void ThenItProducesAn<T>()
+        where T : Exception
+    {
+        Assert.ThrowsAny<T>((Action)RethrowLastestException);
+    }
+
+    protected static void AssertContains<T1, T2>(IEnumerable<T1> collection, Func<T2, bool> exp)
+        where T2 : T1
+    {
+        Assert.Contains(collection, x => x is T2 t2 && exp(t2));
+    }
+
+    protected async Task ExceptionWrappedAsync(Func<Task> act)
+    {
+        try
         {
-            RethrowLastestException();
+            await act();
         }
-
-        protected void ThenItProducesAn<T>() where T : Exception
+        catch (Exception e)
         {
-            Assert.ThrowsAny<T>((Action)RethrowLastestException);
+            latestException = e;
         }
+    }
 
-        protected static void AssertContains<T1, T2>(IEnumerable<T1> collection, Func<T2, bool> exp) where T2 : T1
-        {
-            Assert.Contains(collection, x => x.GetType() == typeof(T2) && exp((T2)x));
-        }
+    private void RethrowLastestException()
+    {
+        if (latestException == null)
+            return;
 
-        protected async Task ExceptionWrappedAsync(Func<Task> act)
-        {
-            try
-            {
-                await act();
-            }
-            catch (Exception e)
-            {
-                _latestException = e;
-            }
-        }
+        var e = latestException;
+        latestException = null;
 
-        private void RethrowLastestException()
-        {
-            if (_latestException == null)
-                return;
-
-            var e = _latestException;
-            _latestException = null;
-            throw e;
-        }
+        throw e;
     }
 }

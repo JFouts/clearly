@@ -8,7 +8,7 @@ namespace Clearly.EventSubscription.EventStore.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {
-        public static IMvcCoreBuilder AddSubscriptions(this IMvcCoreBuilder builder)
+        public static IMvcBuilder AddSubscriptions(this IMvcBuilder builder)
         {
             builder.Services
                 .AddBasicSubscriptions()

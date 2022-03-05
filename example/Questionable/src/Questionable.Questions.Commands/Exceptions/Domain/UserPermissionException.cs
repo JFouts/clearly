@@ -1,6 +1,5 @@
-﻿namespace Questionable.Questions.Commands.Exceptions.Domain
+﻿namespace Questionable.Questions.Commands.Exceptions.Domain;
+
+public class UserPermissionException : PermissionException
 {
-    public class UserPermissionException : PermissionException
-    {
-    }
 }
