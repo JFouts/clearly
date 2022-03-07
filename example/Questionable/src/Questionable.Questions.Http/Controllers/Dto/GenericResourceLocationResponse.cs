@@ -1,10 +1,8 @@
-﻿using System;
+﻿
+namespace Questionable.Questions.Http.Controllers.Dto;
 
-namespace Questionable.Questions.Http.Controllers.Dto
+public class GenericResourceLocationResponseDto
 {
-    public class GenericResourceLocationResponseDto
-    {
-        public Guid Id { get; set; }
-        public string Location { get; set; }
-    }
+    public Guid Id { get; set; }
+    public string Location { get; set; }
 }

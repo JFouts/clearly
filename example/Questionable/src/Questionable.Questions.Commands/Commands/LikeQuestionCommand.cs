@@ -1,21 +1,19 @@
-﻿using System;
-using Clearly.Core;
+﻿using Clearly.Core;
 
-namespace Questionable.Questions.Commands.Commands
+namespace Questionable.Questions.Commands.Commands;
+
+public class LikeQuestionCommand : Command
 {
-    public class LikeQuestionCommand : Command
+    public Guid QuestionId { get; }
+
+    public Guid UserId { get; }
+
+    public DateTime OccurredAtUtc { get; }
+
+    public LikeQuestionCommand(Guid questionId, Guid userId, DateTime occurredAtUtc)
     {
-        public Guid QuestionId { get; }
-
-        public Guid UserId { get; }
-
-        public DateTime OccurredAtUtc { get; }
-
-        public LikeQuestionCommand(Guid questionId, Guid userId, DateTime occurredAtUtc)
-        {
-            QuestionId = questionId;
-            UserId = userId;
-            OccurredAtUtc = occurredAtUtc;
-        }
+        QuestionId = questionId;
+        UserId = userId;
+        OccurredAtUtc = occurredAtUtc;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Repositoy.Core
+namespace Repository.Core
 {
     public interface ICreate<in T>
     {

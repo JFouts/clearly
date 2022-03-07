@@ -1,26 +1,24 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Questionable.Questions.Http.Controllers.Dto
+namespace Questionable.Questions.Http.Controllers.Dto;
+
+public class AnswerQuestionCommandDto
 {
-    public class AnswerQuestionCommandDto
+    [FromRoute]
+    public Guid? QuestionId { get; set; }
+
+    [FromRoute]
+    public Guid? AnswerId { get; set; }
+
+    [FromBody]
+    public AnswerQuestionCommandBodyDto? Body { get; set; }
+
+    public class AnswerQuestionCommandBodyDto
     {
-        [FromRoute]
-        public Guid? QuestionId { get; set; }
+        public DateTime? OccurredAtUtc { get; set; }
 
-        [FromRoute]
-        public Guid? AnswerId { get; set; }
+        public Guid? UserId { get; set; }
 
-        [FromBody]
-        public AnswerQuestionCommandBodyDto Body { get; set; }
-
-        public class AnswerQuestionCommandBodyDto
-        {
-            public DateTime? OccurredAtUtc { get; set; }
-
-            public Guid? UserId { get; set; }
-
-            public string Description { get; set; }
-        }
+        public string? Description { get; set; }
     }
 }

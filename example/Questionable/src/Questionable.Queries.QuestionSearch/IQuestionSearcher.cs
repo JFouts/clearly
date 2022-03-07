@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿
+namespace Questionable.Queries.QuestionSearch;
 
-namespace Questionable.Queries.QuestionSearch
+public interface IQuestionSearcher
 {
-    public interface IQuestionSearcher
-    {
-        Task<IPagedResult<PopularQuestion>> GetMostPopularQuestions(int skip, int take);
-    }
+    Task<IPagedResult<PopularQuestion>> GetMostPopularQuestions(int skip, int take);
 }

@@ -1,19 +1,17 @@
-﻿using System;
-using Questionable.Queries.Models;
+﻿using Questionable.Queries.Models;
 
-namespace Questionable.Queries.QuestionSearch
+namespace Questionable.Queries.QuestionSearch;
+
+public class PopularQuestion
 {
-    public class PopularQuestion
-    {
-        public Guid QuestionId { get; }
-        public string Title { get; }
-        public long Likes { get; }
+    public Guid QuestionId { get; }
+    public string Title { get; }
+    public long Likes { get; }
 
-        internal PopularQuestion(Question question)
-        {
-            QuestionId = question.Id;
-            Title = question.Title;
-            Likes = question.Likes;
-        }
+    internal PopularQuestion(Question question)
+    {
+        QuestionId = question.Id;
+        Title = question.Title;
+        Likes = question.Likes;
     }
 }

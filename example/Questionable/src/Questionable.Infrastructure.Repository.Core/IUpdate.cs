@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿
+namespace Repository.Core;
 
-namespace Repositoy.Core
+public interface IUpdate<in T>
 {
-    public interface IUpdate<in T>
-    {
-        Task UpdateAsync(Guid id, IPersistantData<T> data);
-    }
+    Task UpdateAsync(Guid id, IPersistantData<T> data);
 }
