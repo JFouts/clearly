@@ -26,23 +26,27 @@ public class EntityEditorViewModelFactory<TEntity> : IEntityEditorViewModelFacto
         {
             DataSourceUrl = metadata.DataSourceUrl,
             DisplayName = definition.DisplayName,
-            Fields = BuildFieldsViewModel(definition, value),
+            Fields = BuildFieldsViewModel(definition, value).ToList(),
         };
     }
 
     private IEnumerable<EntityFieldEditorViewModel> BuildFieldsViewModel(EntityDefinition definition, TEntity value)
     {
-        return definition.Fields.Select(x => BuildFieldViewModel(x, value));
+        foreach (var field in definition.Fields)
+        {
+            var feature = field.Using<CrudAdminEntityFieldFeature>();
+
+            yield return BuildFieldViewModel(field, value, feature);
+        }
     }
 
-    private EntityFieldEditorViewModel BuildFieldViewModel(EntityFieldDefinition definition, TEntity value)
+    private EntityFieldEditorViewModel BuildFieldViewModel(EntityFieldDefinition definition, TEntity value, CrudAdminEntityFieldFeature feature)
     {
-        var metadata = definition.Using<CrudAdminEntityFieldFeature>();
-
         return new EntityFieldEditorViewModel(definition)
         {
             FieldName = definition.Property.Name,
-            FieldEditorName = metadata.EditorViewComponentName,
+            FieldEditorName = feature.EditorViewComponentName,
+            Hidden = !feature.DisplayInEditor,
             Value = definition.Property.GetValue(value),
         };
     }

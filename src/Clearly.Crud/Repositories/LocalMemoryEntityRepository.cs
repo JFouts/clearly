@@ -2,9 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.Concurrent;
+using System.Linq.Expressions;
 using Clearly.Core;
 using Clearly.Crud;
 using Clearly.Crud.Search;
+using static System.Linq.Expressions.Expression;
 
 namespace Clearly.EntityRepository;
 
@@ -47,6 +49,37 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
         };
 
         var query = Table.Values.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(options.SearchQuery))
+        {
+            Expression? condition = null;
+            var paramater = Parameter(typeof(T), "x");
+
+            // TODO: Configureable in Entity Defintion
+            foreach (var property in typeof(T).GetProperties())
+            {
+                if (property.PropertyType.IsAssignableTo(typeof(string)))
+                {
+                    // TODO: I'd hate to make people conform to this paradigm when implementing their own repos
+                    // Maybe there is a way for the expressions to be build when the entity definition is built
+                    // Then they can just use a where clause in their repo.
+                    var match = Call(
+                        Property(paramater, property),
+                        typeof(string).GetMethod("Contains", new [] { typeof(string), typeof(StringComparison) }), 
+                        new Expression[] {
+                            Constant(options.SearchQuery, typeof(string)),
+                            Constant(StringComparison.InvariantCultureIgnoreCase, typeof(StringComparison))
+                        });
+
+                    condition = condition == null ? match : Or(condition, match);
+                }
+            }
+
+            if (condition != null)
+            {
+                query = query.Where((Expression<Func<T, bool>>)Lambda(condition, "WhereClause", new [] { paramater } ));
+            }
+        }
 
         result.Count = query.Count();
 

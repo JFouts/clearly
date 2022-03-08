@@ -9,6 +9,7 @@ public record EntityFieldEditorViewModel
     public string FieldName { get; set; } = string.Empty;
     public string FieldEditorName { get; set; } = string.Empty;
     public object? Value { get; set; } // TODO: Options for boxing?
+    public bool Hidden { get; set; }
 
     public EntityFieldEditorViewModel(EntityFieldDefinition definition)
     {

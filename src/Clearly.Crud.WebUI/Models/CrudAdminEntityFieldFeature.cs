@@ -10,6 +10,6 @@ public class CrudAdminEntityFieldFeature : IEntityFieldFeature
     public Dictionary<string, object> DisplayProperties { get; set; } = new Dictionary<string, object>();
     public string EditorViewComponentName { get; set; } = string.Empty;
     public string DisplayTemplate { get; set; } = string.Empty;
-    public bool DisplayOnSearch { get; set; } = false;
+    public bool DisplayOnSearch { get; set; } = true;
     public bool DisplayInEditor { get; set; } = true;
 }

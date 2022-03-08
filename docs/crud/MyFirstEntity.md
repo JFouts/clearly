@@ -1,6 +1,10 @@
 
 # Creating Your First Domain Entity
 
+## Prerequisites
+
+Before creating your first entity you will need to add the required NuGet packages and configure your applications startup. If you haven't done this already check out the [Getting Started](GettingStarted.md) guide.
+
 ## Defining a New Entity
 
 Defining a new Entity is as easy as creating a record _(or class)_ in your project the implements the `IEntity` interface.
@@ -30,17 +34,34 @@ PUT     /api/myfirstentity/{id}  /* For updating an entity of this type by it's 
 DELETE  /api/myfirstentity/{id}  /* For deleting an entity of this type by it's ID */
 ```
 
-Now lets add an additional field to this Entity:
+## Adding Custom Fields
+
+Now lets customize this entity a little bit to make it more useful. We will add a simple `Message` field as well as an `Author` field and then rename the record class to be `SocialMediaPost`:
 
 ```
 using Clearly.Crud;
 
-public record MyFirstEntity : IEntity
+public record SocialMediaPost : IEntity
 {
     public Guid Id { get; set; }
     public string Message { get; set; }
+    public string Author { get; set; }
 }
 ```
 
-We will use this example field to store and retrieve a simple message. This is all you need to to for the system to add a new field to your endpoints and have this field be editable in the Admin interface.
+This is all you need to to for the system to add a new field to your endpoints and have this field be editable in the Admin interface.
 
+## Testing it out through the Admin UI
+
+### List of Type
+If we visit `/admin/socialmediapost` we are presented with an empty table, this table lists out all the `SocialMediaPost` instances that have been created, which is empty for now. Lets click the Add New button to create a new one.
+
+<!-- TODO: IMAGE ![This is an image](https://myoctocat.com/assets/images/base-octocat.svg) -->
+
+### Create New
+
+<!-- TODO: IMAGE ![This is an image](https://myoctocat.com/assets/images/base-octocat.svg) -->
+
+From here we can fill in our message and author fields and click Create to save a new entry. We are returned to the table from before, but now our new post in there.
+
+<!-- TODO: IMAGE ![This is an image](https://myoctocat.com/assets/images/base-octocat.svg) -->
