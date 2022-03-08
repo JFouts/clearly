@@ -3,7 +3,7 @@
 
 namespace Clearly.Crud.WebUi;
 
-public static class EntityDefinitionnExtensions
+public static class EntityDefinitionExtensions
 {
     public static EntityDefinition CreateFor<TEntity>(this IEntityDefinitionFactory factory)
     {

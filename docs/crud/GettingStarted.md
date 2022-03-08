@@ -51,11 +51,11 @@ The first step is to get a reference to the assembly that will have your Domain 
 
 Then we call `AddCrudRestApi` which will add all the required services for the CRUD Rest API to run as well as calling the ASP.MET extension `AddControllers` to enable Controller based routing on your application. 
 
-Then we follow a standard application pipeline setup. Near the top of the pipeline we add `UseCrudErrorHandler` with will and middleware to the pipeline that will catch common exception types an map them to their corresponding HTTP status code.
+Then we follow a standard application pipeline setup. Near the top of the pipeline we add `UseCrudErrorHandler` which will and middleware to the pipeline that will catch common exception types an map them to their corresponding HTTP status code.
 
 Then towards the end of the pipeline we call `MapControllers` this is the standard ASP.NET method for adding controller based routing to the pipeline and is required for Clearly CRUD to handle your API requests.
 
-### Configuring CRUD Rest API
+### Configuring CRUD Admin UI
 _Program.cs_
 ```c# 
 using Clearly.Crud.RestApi;

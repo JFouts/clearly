@@ -47,12 +47,13 @@ public class EntityCrudAdminController<T> : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListView([FromQuery] int page = 1, [FromQuery] int pageSize = 24)
+    public async Task<IActionResult> ListView([FromQuery] string q = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 24)
     {
         var entity = typeof(T);
 
         var result = await service.Search(new CrudSearchOptions
         {
+            SearchQuery = q,
             Skip = (page - 1) * pageSize,
             Take = pageSize,
         });
