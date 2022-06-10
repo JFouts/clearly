@@ -9,7 +9,7 @@ namespace Clearly.Crud.Infrastructure;
 /// <summary>
 /// Locates IEntity types within the registered assemblies
 /// </summary>
-internal class EntitiesInAssemblyProvider : ITypeProvider
+public class EntitiesInAssemblyProvider : ITypeProvider
 {
     private IEnumerable<Assembly> assemblies;
 

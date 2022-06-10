@@ -7,5 +7,5 @@ namespace Clearly.Crud.WebUi.ViewComponents.FieldEditors;
 
 public abstract class FieldEditorViewComponent : ViewComponent
 {
-    public abstract Task<IViewComponentResult> InvokeAsync(EntityFieldDefinition fieldDefinition, object value);
+    public abstract Task<IViewComponentResult> InvokeAsync(FieldDefinition fieldDefinition, object value);
 }

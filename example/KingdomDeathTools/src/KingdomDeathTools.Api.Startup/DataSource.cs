@@ -16,7 +16,7 @@ public class DataSource : DbContext
         modelBuilder.Entity<Survivor>()
             .HasOne<Settlement>()
             .WithMany()
-            .HasForeignKey(x => x.SettlementId);
+            .HasForeignKey("SettlementId");
 
         base.OnModelCreating(modelBuilder);
     }

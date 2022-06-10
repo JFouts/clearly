@@ -1,0 +1,18 @@
+@model ObjectListEditorViewModel;
+
+@if (Model == null) return;
+
+<div class="mb-3">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <div class="nav-link active">@Model.Label</div>
+      </li>
+    </ul>
+
+    <div id="@Model.Id" class="card card-body">
+        @foreach (var value in Model.Values)
+        {
+            @await Component.InvokeAsync("ObjectFieldEditor", new { fieldDefinition = Model.Definition, value })
+        }
+    </div>
+</div>

@@ -1,0 +1,144 @@
+﻿@using Clearly.Crud.Search
+@using Clearly.Crud.WebUi.Client.Models
+@using Clearly.Crud.WebUi.Client.Services
+@using Clearly.Crud.WebUi.ViewModels
+@using System.Text.Json
+
+@inject HttpClient http
+@inject IEntityApiService entityService
+@inject NavigationManager navigationManager;
+
+<section class="py-3">
+    <div class="mb-3">
+        <form method="get">
+            <input name="q" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                @foreach (var column in @TableDefinition.Columns)
+                {
+                    <th>@column.DisplayName</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Results) 
+            {
+                <tr>
+                    @foreach (var column in @TableDefinition.Columns)
+                    {
+                        JsonElement property = record.GetProperty(column.Key.ToCamelCase());
+                        <td>
+                            @property.GetRawText()
+                             @*TODO: Handle Display Templates *@
+                            @*@Html.DisplayFor(_ => value, column.DisplayTemplate, column.Key, column.Properties)*@
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="paging navigation">
+        <ul class="pagination justify-content-center">
+        
+            <li class="page-item @(IsDisabled(PreviousPage))">
+                <a class="page-link" href='@GetPageUrl(CurrentPage - 1)' aria-label="previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @foreach (int pageNumber in LinkedPages.Where(x => x > 0 && x <= PageCount).OrderBy(x => x))
+            {
+                <li class="page-item @(IsDisabled(pageNumber))">
+                    <a class="page-link" aria-label="page @pageNumber" href='@GetPageUrl(pageNumber)'>@pageNumber</a>
+                </li>
+            }
+        
+            <li class="page-item @(IsDisabled(NextPage))">
+                <a class="page-link" href='@GetPageUrl(CurrentPage + 1)' aria-label="next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</section>
+
+@code {
+    //[QueryStringParameter]
+    public string Query { get; set; } = string.Empty;
+
+    //[QueryStringParameter]
+    public int CurrentPage { get; set; } = 1;
+
+    //[QueryStringParameter]
+    public int PageCount { get; set; }
+
+    //[QueryStringParameter]
+    public int PageSize { get; set; } = 24;
+
+    public HashSet<int> LinkedPages = new ();
+
+    public int PreviousPage => CurrentPage - 1;
+
+    public int NextPage => CurrentPage + 1;
+
+    [Parameter]
+    public TableDefinition TableDefinition { get; set; } = new TableDefinition();
+
+    public CrudSearchResult<JsonElement> Data { get; set; } = new CrudSearchResult<JsonElement>();
+
+    public IEnumerable<JsonElement> Results { get; set; } = Array.Empty<JsonElement>();
+
+    protected string GetPageUrl(int pageNumber) => navigationManager.GetUriWithQueryParameter("page", pageNumber);
+
+    protected bool IsDisabled(int pageNumber) => pageNumber == CurrentPage || pageNumber < 1 || pageNumber > PageCount;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        Console.WriteLine($"Paramters Set - {TableDefinition.NameKey}");
+
+        if (string.IsNullOrWhiteSpace(TableDefinition.NameKey))
+        {
+            return;
+        }
+
+        var searchOptions = new CrudSearchOptions
+        {
+            SearchQuery = Query,
+            Skip = (CurrentPage - 1) * PageSize,
+            Take = PageSize,
+        };
+
+        Console.WriteLine($"Searching {TableDefinition.NameKey}");
+
+        Data = await entityService.Search(searchOptions, TableDefinition.NameKey);
+
+        Console.WriteLine("Searched!");
+        var results = new List<JsonElement>();
+
+        await foreach (var element in Data.Results)
+        {
+            results.Add(element);
+        }
+
+        Results = results;
+
+        // TODO: Move this to service
+        PageCount = ((Data.Count - 1) / PageSize) + 1;
+
+        // TODO: Handle changes
+        LinkedPages.Add(1);
+        LinkedPages.Add(PageCount);
+        LinkedPages.Add(CurrentPage);
+        LinkedPages.Add(CurrentPage-1);
+        LinkedPages.Add(CurrentPage-2);
+        LinkedPages.Add(CurrentPage+1);
+        LinkedPages.Add(CurrentPage+2);
+    }
+}

@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.4" />
     <PackageReference Include="Automapper" Version="11.0.1" />
     <PackageReference Include="Automapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
@@ -24,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Clearly.Crud.RestApi\Clearly.Crud.RestApi.csproj" />
+    <ProjectReference Include="..\Clearly.Crud.WebUi.Core\Clearly.Crud.WebUi.Core.csproj" />
     <ProjectReference Include="..\Clearly.Crud\Clearly.Crud.csproj" />
   </ItemGroup>
 

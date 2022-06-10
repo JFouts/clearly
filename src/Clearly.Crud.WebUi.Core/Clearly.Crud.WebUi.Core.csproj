@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Clearly.Core\Clearly.Core.csproj" />
+    <ProjectReference Include="..\Clearly.Crud\Clearly.Crud.csproj" />
+  </ItemGroup>
+
+</Project>

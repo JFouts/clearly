@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Clearly.Crud.RestApi;
 using Clearly.Crud.WebUi.Factories;
 using Clearly.Crud.WebUi.Infrastructure;
 using Clearly.Crud.WebUi.ViewComponents.FieldEditors;
@@ -53,7 +54,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped(typeof(ISearchListViewModelFactory<>), typeof(SearchListViewModelFactory<>));
         services.AddScoped(typeof(IDataSourceReader<>), typeof(AutoMapperDataSourceReader<>));
         services.AddScoped<IDataSourceFactory, DataSourceFactory>();
-        services.AddAutoMapper(assemblies.Union(new [] { typeof(ServiceCollectionExtensions).Assembly }));
+        services.AddAutoMapper(assemblies.Union(new[] { typeof(ServiceCollectionExtensions).Assembly }));
 
         services
             .Configure<RazorViewEngineOptions>(options => options.ViewLocationExpanders.Add(new GenericControllerViewLocationExpander()));

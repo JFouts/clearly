@@ -9,7 +9,7 @@ public class AttributeBasedEntityModule : EntityModule
 {
     public override void OnApplyingModule(EntityDefinition entity)
     {
-        var definitionAttributes = entity.Entity.GetCustomAttributes<EntityDefinitionAttribute>();
+        var definitionAttributes = entity.ObjectType.GetCustomAttributes<EntityDefinitionAttribute>();
 
         foreach (var definitionAttribute in definitionAttributes)
         {

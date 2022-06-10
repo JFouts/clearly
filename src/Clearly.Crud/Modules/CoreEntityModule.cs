@@ -9,12 +9,12 @@ public class CoreEntityModule : EntityModule
     {
         if (string.IsNullOrWhiteSpace(entity.DisplayName))
         {
-            entity.DisplayName = entity.Entity.Name.FormatForDisplay();
+            entity.DisplayName = entity.ObjectType.Name.FormatForDisplay();
         }
 
         if (string.IsNullOrWhiteSpace(entity.NameKey))
         {
-            entity.NameKey = entity.Entity.Name;
+            entity.NameKey = entity.ObjectType.Name;
         }
     }
 }

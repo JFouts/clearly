@@ -4,6 +4,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Clearly.Core.Exceptions;
+
 public class InvalidModelStateException : Exception
 {
     public IEnumerable<ValidationResult> ValidationErrors { get; }

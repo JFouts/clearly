@@ -4,12 +4,12 @@
 namespace Clearly.Crud.JsonLd;
 
 /// <summary>
-/// Removes the property from the linked data schema for JSON-LD
+/// Removes the property from the linked data schema for JSON-LD.
 /// </summary>
-public class NonLinkedDataAttribute : EntityFieldDefinitionAttribute
+public class NonLinkedDataAttribute : FieldDefinitionAttribute
 {
     /// <inheritdoc />
-    protected internal override void ApplyToEntityFieldDefinition(EntityDefinition entity, EntityFieldDefinition field)
+    protected internal override void ApplyToFieldDefinition(ObjectTypeDefinition objectType, FieldDefinition field)
     {
         field.Using<JsonLdFieldFeature>().ExcludeFromLinkedData = true;
     }

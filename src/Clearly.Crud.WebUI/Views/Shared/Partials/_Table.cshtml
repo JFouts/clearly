@@ -22,7 +22,6 @@
                 {
                     <td>
                         @{ var _ = record.TryGetValue(column.Key, out var value); }
-
                         @Html.DisplayFor(_ => value, column.DisplayTemplate, column.Key, column.Properties)
                     </td>
                 }

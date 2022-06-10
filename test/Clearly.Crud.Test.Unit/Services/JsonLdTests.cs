@@ -16,14 +16,15 @@ namespace Clearly.Crud.Test.Unit;
 public class JsonLdTests
 {
     private readonly IServiceCollection services;
-    private JsonLdObjectConverterFactory factory;
-    private SystemTextJsonLdOutputFormatter formatter;
     private readonly DefaultHttpContext httpContext;
     private readonly MockOutputFormatterCanWriteContext canWriteContext;
-    private MockOutputFormatterWriteContext writeContext;
-    private IEntity entity;
     private readonly Guid entityId;
     private readonly StringBuilder outputBuffer;
+    
+    private JsonLdObjectConverterFactory factory = default!;
+    private SystemTextJsonLdOutputFormatter formatter = default!;
+    private MockOutputFormatterWriteContext writeContext = default!;
+    private IEntity entity = default!;
 
     public JsonLdTests()
     {
@@ -44,11 +45,6 @@ public class JsonLdTests
         canWriteContext = new MockOutputFormatterCanWriteContext(httpContext);
 
         UsingEntity<BlankEntity>(new BlankEntity(entityId));
-    }
-
-    private TextWriter WriterFactory(Stream stream, Encoding encoding)
-    {
-        return new StringWriter(outputBuffer);
     }
 
     [Fact]
@@ -120,12 +116,13 @@ public class JsonLdTests
         // a querying properties in the JSON
         var json = Newtonsoft.Json.JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(response);
 
-        Assert.Equal("https://schema.org", (string) json["@context"]["@vocab"]);
-        Assert.Equal("Article", (string) json["@type"]);
-        Assert.Equal("Mr. Example Pants", (string) json["author"]);
+        Assert.Equal("https://schema.org", (string)json["@context"]["@vocab"]);
+        Assert.Equal("Article", (string)json["@type"]);
+        Assert.Equal("Mr. Example Pants", (string)json["author"]);
     }
 
-    private void UsingEntity<TEntity>(TEntity entity) where TEntity : IEntity
+    private void UsingEntity<TEntity>(TEntity entity)
+        where TEntity : IEntity
     {
         this.entity = entity;
 
@@ -134,6 +131,11 @@ public class JsonLdTests
 
         factory = new JsonLdObjectConverterFactory(services.BuildServiceProvider());
         formatter = new SystemTextJsonLdOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web), factory);
+    }
+
+    private TextWriter WriterFactory(Stream stream, Encoding encoding)
+    {
+        return new StringWriter(outputBuffer);
     }
 
     private class MockOutputFormatterWriteContext : OutputFormatterWriteContext

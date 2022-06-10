@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -20,5 +16,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Clearly.Core\Clearly.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Startup\" />
   </ItemGroup>
 </Project>

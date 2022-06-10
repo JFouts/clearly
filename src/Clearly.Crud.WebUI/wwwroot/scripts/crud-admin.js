@@ -16,7 +16,7 @@ $(document).ready(function () {
         if (dataType == 'create') {
             value.Id = '00000000-0000-0000-0000-000000000000';
         }
-
+        
         const url = dataType == 'edit' ? dataSource + '/' + value.Id : dataSource;
         const method = dataType == 'edit' ? 'PUT' : 'POST';
 

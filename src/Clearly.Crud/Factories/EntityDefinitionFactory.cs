@@ -24,7 +24,13 @@ public class EntityDefinitionFactory : IEntityDefinitionFactory
             return definition;
         }
 
-        definition = new EntityDefinition(entity);
+        definition = new EntityDefinition
+        {
+            ObjectType = entity,
+            NameKey = entity.Name,
+            DisplayName = entity.Name.FormatForDisplay(),
+            Fields = entity.GetProperties().Select(x => new FieldDefinition(x)).ToList(),
+        };
 
         ApplyModules(definition);
         ApplyFallbackDefaults(definition);

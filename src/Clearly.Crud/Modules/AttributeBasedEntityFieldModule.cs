@@ -7,13 +7,13 @@ namespace Clearly.Crud;
 
 public class AttributeBasedEntityFieldModule : EntityFieldModule
 {
-    public override void OnApplyingModule(EntityDefinition entity, EntityFieldDefinition field)
+    public override void OnApplyingModule(EntityDefinition entity, FieldDefinition field)
     {
-        var definitionAttributes = field.Property.GetCustomAttributes<EntityFieldDefinitionAttribute>();
+        var definitionAttributes = field.Property.GetCustomAttributes<FieldDefinitionAttribute>();
 
         foreach (var definitionAttribute in definitionAttributes)
         {
-            definitionAttribute.ApplyToEntityFieldDefinition(entity, field);
+            definitionAttribute.ApplyToFieldDefinition(entity, field);
         }
     }
 }

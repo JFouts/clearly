@@ -28,12 +28,12 @@ public class EntityDefinitionBuilder<TEntity>
     /// <returns>A field builder for continued configuration</returns>
     /// <exception cref="ArgumentException">Thrown when the selector expression is invalid</exception>
     /// <remarks>This must be a simple expression selecting a field. The expression will not be evaluated.</remarks>
-    public EntityFieldDefinitionBuilder<TEntity> Field<TProp>(Expression<Func<TEntity, TProp>> selector)
+    public FieldDefinitionBuilder<TEntity> Field<TProp>(Expression<Func<TEntity, TProp>> selector)
     {
         var selectedPropertyInfo = selector.GetPropertyInfo();
         var selectedField = definition.Fields.First(x => x.Property.Name == selectedPropertyInfo.Name);
 
-        return new EntityFieldDefinitionBuilder<TEntity>(definition, selectedField);
+        return new FieldDefinitionBuilder<TEntity>(definition, selectedField);
     }
 
     /// <summary>

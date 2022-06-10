@@ -1,0 +1,77 @@
+﻿@page "/entity/{entityName}/edit/{id}"
+@using Clearly.Crud.WebUi.ViewModels
+@using Clearly.Crud
+
+@*@inject IEntityApiService service;*@
+@inject IEntityDefinitionFactory entityDefinitionFactory;
+
+<PageTitle>CRUD Admin</PageTitle>
+
+@if (@Model != null)
+{
+    <h1><span class="text-muted small">Edit </span> @Model.DisplayName</h1>
+    <form class="default-focus" data-source="@Model.DataSourceUrl" data-type="edit">
+        @foreach (var field in Model.Fields)
+        {
+            <div class='form-field @(field.Hidden ? "hidden" : "")'>
+                @*@await Component.InvokeAsync(field.FieldEditorName, new { fieldDefinition = field.Definition, field.Value })*@
+            </div>
+        }
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public string EntityName { get; set; } = string.Empty;
+
+    [Parameter]
+    public Guid Id { get; set; } = Guid.Empty;
+
+    public EntityEditorViewModel? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //var entity = await service.GetById(Id);
+        object entity = null;
+
+        if (entity == null)
+        {
+            // TODO: Handler 404
+
+            return;
+        }
+
+        //var definition = entityDefinitionFactory.CreateForType(typeof(Entity));
+
+        //var metadata = definition.Using<CrudAdminEntityFeature>();
+
+        //Model = new EntityEditorViewModel(definition)
+        //{
+        //    DataSourceUrl = metadata.DataSourceUrl,
+        //    DisplayName = definition.DisplayName,
+        //    Fields = BuildFieldsViewModel(definition, entity).ToList(),
+        //};
+    }
+
+    private static IEnumerable<FieldEditorViewModel> BuildFieldsViewModel(EntityDefinition definition, object value)
+    {
+        foreach (var field in definition.Fields)
+        {
+            var feature = field.Using<CrudAdminFieldFeature>();
+
+            yield return BuildFieldViewModel(field, value, feature);
+        }
+    }
+
+    private static FieldEditorViewModel BuildFieldViewModel(FieldDefinition definition, object value, CrudAdminFieldFeature feature)
+    {
+        return new FieldEditorViewModel(definition)
+        {
+            FieldName = definition.Property.Name,
+            FieldEditorName = feature.EditorViewComponentName,
+            Hidden = !feature.DisplayInEditor,
+            Value = definition.Property.GetValue(value),
+        };
+    }
+}

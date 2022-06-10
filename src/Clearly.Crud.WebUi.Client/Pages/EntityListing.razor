@@ -1,0 +1,50 @@
+﻿@page "/entity/{entityName}"
+
+@using Clearly.Crud.WebUi.Client.Models
+@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Shared.Components
+@inject HttpClient http
+
+<PageTitle>CRUD Admin</PageTitle>
+
+<h1><span class="text-muted small">View all </span>  @EntityDefinition.DisplayName<span class="text-muted">(s)</span></h1>
+
+<div class="mb-3 d-flex justify-content-end">
+    <a href="./create" class="btn btn-primary">Add New</a>
+</div>
+
+<AdvancedTable TableDefinition="TableDefinition"></AdvancedTable>
+
+@code {
+    [Parameter]
+    public string EntityName { get; set; } = string.Empty;
+
+    protected EntityDefinitionDto EntityDefinition { get; set; } = new EntityDefinitionDto();
+
+    protected TableDefinition TableDefinition { get; set; } = new TableDefinition();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await http.GetAsync($"/api/entity/{EntityName}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            EntityDefinition = await response.Content.ReadFromJsonAsync<EntityDefinitionDto>()
+                ?? throw new Exception(); // TODO: Better Exception Handling
+            
+            TableDefinition = new TableDefinition
+            {
+                NameKey = EntityDefinition.NameKey,
+                Columns = EntityDefinition.Fields.Select(x => new ColumnDefinition
+                {
+                    DisplayName = x.DisplayName,
+                    Key = x.NameKey
+                })
+            };
+        }
+        else
+        {
+            // TODO: Handle error
+        }
+    }
+}

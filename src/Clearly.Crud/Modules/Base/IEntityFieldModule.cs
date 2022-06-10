@@ -5,6 +5,6 @@ namespace Clearly.Crud;
 
 public interface IEntityFieldModule : IModule
 {
-    void OnApplyingModule(EntityDefinition entity, EntityFieldDefinition field);
-    void OnApplyingFallbackDefaults(EntityDefinition entity, EntityFieldDefinition field);
+    void OnApplyingModule(EntityDefinition entity, FieldDefinition field);
+    void OnApplyingFallbackDefaults(EntityDefinition entity, FieldDefinition field);
 }

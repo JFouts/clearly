@@ -3,7 +3,9 @@
 
 namespace Clearly.Crud;
 
-public interface IEntityFeature
+/// <summary>
+/// A feature for an entity.
+/// </summary>
+public interface IEntityFeature : IObjectFeature
 {
-
 }

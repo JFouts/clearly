@@ -5,7 +5,7 @@ namespace Clearly.Crud;
 
 public class CoreEntityFieldModule : EntityFieldModule
 {
-    public override void OnApplyingFallbackDefaults(EntityDefinition entity, EntityFieldDefinition field)
+    public override void OnApplyingFallbackDefaults(EntityDefinition entity, FieldDefinition field)
     {
         if (string.IsNullOrWhiteSpace(field.DisplayName))
         {

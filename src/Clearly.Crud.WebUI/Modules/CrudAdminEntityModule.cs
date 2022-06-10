@@ -5,6 +5,7 @@ namespace Clearly.Crud.WebUi;
 
 public class CrudAdminEntityModule : EntityModule
 {
+    /// <inheritdoc/>
     public override void OnApplyingFallbackDefaults(EntityDefinition entity)
     {
         var metadata = entity.Using<CrudAdminEntityFeature>();

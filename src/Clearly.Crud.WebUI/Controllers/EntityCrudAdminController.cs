@@ -9,6 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Clearly.Crud.WebUi.Controllers;
 
+public class EntityCrudAdminRootController : Controller
+{
+    public IActionResult Index()
+    {
+        return View();
+    }
+}
+
 [GenericEntityController]
 [Route("admin/[type]")]
 public class EntityCrudAdminController<T> : Controller
