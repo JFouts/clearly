@@ -1,0 +1,35 @@
+﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Clearly.Crud.WebUi
+@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+<div class="mb-3">
+    <label for="@FieldDefinition.NameKey" class="form-label">@FieldDefinition.DisplayName</label>
+    <input id="@FieldDefinition.NameKey" type="text" class="form-control" name="@FieldDefinition.NameKey" placeholder="@FieldDefinition.DisplayName" value="@Value">
+</div>
+
+@code 
+{
+    protected string Value
+    { 
+        get
+        {
+            if (Input is JValue jValue && jValue.Type == JTokenType.String)
+            {
+                return jValue.Value<string>();
+            }
+
+            return string.Empty;
+        }
+
+        set
+        {
+            if (Input is JValue jValue)
+            {
+                jValue.Value = value;
+            }
+        }
+    }
+}

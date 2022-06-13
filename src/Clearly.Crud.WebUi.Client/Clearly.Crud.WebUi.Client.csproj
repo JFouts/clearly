@@ -13,11 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\FieldEditors\" />
-    <Folder Include="Shared\FieldViewers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Clearly.Core\Clearly.Core.csproj" />
     <ProjectReference Include="..\Clearly.Crud.WebUi.Core\Clearly.Crud.WebUi.Core.csproj" />
     <ProjectReference Include="..\Clearly.Crud\Clearly.Crud.csproj" />

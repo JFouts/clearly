@@ -3,6 +3,7 @@
 @using Clearly.Crud.WebUi.Client.Services
 @using Clearly.Crud.WebUi.ViewModels
 @using System.Text.Json
+@using Newtonsoft.Json.Linq
 
 @inject HttpClient http
 @inject IEntityApiService entityService
@@ -30,11 +31,9 @@
                 <tr>
                     @foreach (var column in @TableDefinition.Columns)
                     {
-                        JsonElement property = record.GetProperty(column.Key.ToCamelCase());
+                        JToken property = record.GetValue(column.Key.ToCamelCase());
                         <td>
-                            @property.GetRawText()
-                             @*TODO: Handle Display Templates *@
-                            @*@Html.DisplayFor(_ => value, column.DisplayTemplate, column.Key, column.Properties)*@
+                            <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property)"></DynamicComponent>
                         </td>
                     }
                 </tr>
@@ -86,16 +85,26 @@
 
     public int NextPage => CurrentPage + 1;
 
+    public Dictionary<string, object> GetParamaters(JToken property)
+    {
+        return new Dictionary<string, object> { { "Input", property } };
+    }
+
     [Parameter]
     public TableDefinition TableDefinition { get; set; } = new TableDefinition();
 
-    public CrudSearchResult<JsonElement> Data { get; set; } = new CrudSearchResult<JsonElement>();
+    public CrudSearchResult<JObject> Data { get; set; } = new CrudSearchResult<JObject>();
 
-    public IEnumerable<JsonElement> Results { get; set; } = Array.Empty<JsonElement>();
+    public IEnumerable<JObject> Results { get; set; } = Array.Empty<JObject>();
 
     protected string GetPageUrl(int pageNumber) => navigationManager.GetUriWithQueryParameter("page", pageNumber);
 
     protected bool IsDisabled(int pageNumber) => pageNumber == CurrentPage || pageNumber < 1 || pageNumber > PageCount;
+
+    protected Type GetComponentType(string type)
+    {
+        return this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -120,14 +129,8 @@
         Data = await entityService.Search(searchOptions, TableDefinition.NameKey);
 
         Console.WriteLine("Searched!");
-        var results = new List<JsonElement>();
 
-        await foreach (var element in Data.Results)
-        {
-            results.Add(element);
-        }
-
-        Results = results;
+        Results = Data.Results;
 
         // TODO: Move this to service
         PageCount = ((Data.Count - 1) / PageSize) + 1;

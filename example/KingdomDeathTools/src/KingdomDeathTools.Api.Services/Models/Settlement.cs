@@ -10,10 +10,12 @@ public record Settlement : AggregateRoot, INamedEntity
     public string Name { get; set; } = string.Empty;
 
     [FieldEditor(SystemViewComponents.DropDownList)]
-    [FieldEditorProperty("DataSource", "People of the Lantern;People of the Sun;People of the Stars")]
+    // TODO: Some way of defining this
+    //[FieldEditorProperty("DataSource", "People of the Lantern;People of the Sun;People of the Stars")]
     public string Campaign { get; set; } = string.Empty;
 
     [FieldEditor(SystemViewComponents.MultiSelectList)]
-    [FieldEditorProperty("DataSource", "Gorm;Slenderman;Man Hunter;Flower Knight;Lonely Tree")]
+    // TODO: Some way of defining this
+    //[FieldEditorProperty("DataSource", "Gorm;Slenderman;Man Hunter;Flower Knight;Lonely Tree")]
     public IEnumerable<string> Expansions { get; set; } = Array.Empty<string>();
 }

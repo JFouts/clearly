@@ -1,0 +1,10 @@
+﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Newtonsoft.Json.Linq
+
+@code {
+    [Parameter]
+    public JToken Input { get; set; } = JValue.CreateNull();
+
+    [Parameter]
+    public FieldDefinitionDto FieldDefinition { get; set; } = new FieldDefinitionDto();
+}

@@ -1,0 +1,26 @@
+﻿@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+@foreach (var element in Value)
+{
+    @element
+}
+
+@code {
+    public IEnumerable<string> Value {
+        get
+        {
+            if (Input is JArray jArray)
+            {
+                foreach (var jToken in jArray)
+                {
+                    if (jToken is JValue jValue && jValue.Type == JTokenType.String)
+                    {
+                        yield return jToken.Value<string>();
+                    }
+                }
+            }
+        }
+    }
+}

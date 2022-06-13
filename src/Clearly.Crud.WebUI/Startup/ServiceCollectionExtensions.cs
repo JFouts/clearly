@@ -17,8 +17,9 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds all the required service and initializes MVC for a Clearly Web UI
     /// </summary>
+    /// <param name="services">The service collection to register the Web UI in.</param>
     /// <param name="assemblies">Assemblies containing Entity defintions.</param>
-    /// <returns>IMvcBuilder from AddMvc()</returns>
+    /// <returns><see cref="IMvcBuilder"/> from <see cref="MvcServiceCollectionExtensions.AddMvc"/>.</returns>
     public static IMvcBuilder AddCrudWebUi(this IServiceCollection services, params Assembly[] assemblies)
     {
         return services
@@ -27,10 +28,12 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds all the required service and initializes MVC for a Clearly Web UI
+    /// Adds all the required service and initializes MVC for a Clearly Web UI.
     /// </summary>
+    /// <param name="services">The service collection to register the Web UI in.</param>
+    /// <param name="configure">Configuration function for <see cref="MvcOptions"/>.</param>
     /// <param name="assemblies">Assemblies containing Entity defintions.</param>
-    /// <returns>IMvcBuilder from AddMvc()</returns>
+    /// <returns><see cref="IMvcBuilder"/> from <see cref="MvcServiceCollectionExtensions.AddMvc"/>.</returns>
     public static IMvcBuilder AddCrudWebUi(this IServiceCollection services, Action<MvcOptions> configure, params Assembly[] assemblies)
     {
         return services
@@ -39,16 +42,20 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds the required services for Clearly CRUD's Web UI
+    /// Adds the required services for Clearly CRUD's Web UI.
     /// </summary>
     /// <remarks>
     /// Typically you should use AddCrudWebUi. Call this method only if you are manually configuring MVC for example if you are running
     /// the Clearly Web UI side by side with another Web Application or API.
     /// </remarks>
+    /// <param name="services">The service collection to register the Web UI in.</param>
+    /// <param name="assemblies">The assembiles to scan for Entites in.</param>
+    /// <returns>The passed in service collection.</returns>
     public static IServiceCollection AddCrudWebUIServices(this IServiceCollection services, params Assembly[] assemblies)
     {
-        services.AddSingleton<IEntityModule, CrudAdminEntityModule>();
-        services.AddSingleton<IEntityFieldModule, CrudAdminEntityFieldModule>();
+        // TODO: Consolidate this into a single registration for a module
+        services.AddSingleton<IEntityModule, CrudAdminModule>();
+        services.AddSingleton<IEntityFieldModule, CrudAdminModule>();
 
         services.AddScoped(typeof(IEntityEditorViewModelFactory<>), typeof(EntityEditorViewModelFactory<>));
         services.AddScoped(typeof(ISearchListViewModelFactory<>), typeof(SearchListViewModelFactory<>));

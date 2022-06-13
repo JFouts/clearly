@@ -3,6 +3,7 @@
 @using Clearly.Crud.WebUi.Client.Models
 @using Clearly.Crud.WebUi.Client.Models.Dto
 @using Clearly.Crud.WebUi.Client.Shared.Components
+@using Newtonsoft.Json
 @inject HttpClient http
 
 <PageTitle>CRUD Admin</PageTitle>
@@ -29,9 +30,12 @@
 
         if (response.IsSuccessStatusCode)
         {
-            EntityDefinition = await response.Content.ReadFromJsonAsync<EntityDefinitionDto>()
+            var json = await response.Content.ReadAsStringAsync()
                 ?? throw new Exception(); // TODO: Better Exception Handling
-            
+
+            EntityDefinition = JsonConvert.DeserializeObject<EntityDefinitionDto>(json)
+                ?? throw new Exception(); // TODO: Better Exception Handling
+
             TableDefinition = new TableDefinition
             {
                 NameKey = EntityDefinition.NameKey,

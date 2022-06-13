@@ -1,0 +1,70 @@
+﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Clearly.Crud.WebUi
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+@inject IDataSourceFactory dataSourceFactory
+@inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
+
+<div class="mb-3">
+  <label for="@FieldDefinition.NameKey">@FieldDefinition.DisplayName</label>
+  <select class="form-select" id="@FieldDefinition.NameKey" name="@FieldDefinition.NameKey">
+    @foreach (var option in Options)
+    {
+      <option value="@option.Value" selected='@(option.Value == @Value)'>@option.Label</option>  
+    }
+  </select> 
+</div>
+
+@code
+{
+    protected string Value
+    { 
+        get
+        {
+            if (Input is JValue jValue && jValue.Type == JTokenType.String)
+            {
+                return jValue.Value<string>();
+            }
+
+            return string.Empty;
+        }
+
+        set
+        {
+            if (Input is JValue jValue)
+            {
+                jValue.Value = value;
+            }
+        }
+    }
+
+    protected CrudAdminDropDownFeature Configuration { get; set; } = new CrudAdminDropDownFeature();
+
+    protected IEnumerable<DropDownOption> Options { get; set; } = Array.Empty<DropDownOption>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Configuration = FieldDefinition.Features[nameof(CrudAdminDropDownFeature)].ToObject<CrudAdminDropDownFeature>();
+
+        var dataSource = dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
+        var data = await dataSourceReader.ReadFrom(dataSource);
+
+        Options = data.Select(x => new DropDownOption
+        {
+            Value = x.Key,
+            Label = x.Value,
+        });
+    }
+
+    protected class DropDownOption
+    {
+        public string Value { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
+    }
+}

@@ -1,20 +1,31 @@
 ﻿@page "/entity/{entityName}/edit/{id}"
+
+@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Services
+@using Clearly.Crud.WebUi.Client.Shared.EditorComponents
 @using Clearly.Crud.WebUi.ViewModels
 @using Clearly.Crud
 
-@*@inject IEntityApiService service;*@
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@inject HttpClient http
+@inject IEntityApiService service;
 @inject IEntityDefinitionFactory entityDefinitionFactory;
 
 <PageTitle>CRUD Admin</PageTitle>
 
-@if (@Model != null)
+@if (@EntityDefinition != null)
 {
-    <h1><span class="text-muted small">Edit </span> @Model.DisplayName</h1>
-    <form class="default-focus" data-source="@Model.DataSourceUrl" data-type="edit">
-        @foreach (var field in Model.Fields)
+    <h1><span class="text-muted small">Edit </span> @EntityDefinition.DisplayName</h1>
+    <form class="default-focus" data-type="edit">
+    @*<form class="default-focus" data-source="@EntityDefinition.DataSourceUrl" data-type="edit">*@
+        @foreach (var field in EntityDefinition.Fields)
         {
-            <div class='form-field @(field.Hidden ? "hidden" : "")'>
-                @*@await Component.InvokeAsync(field.FieldEditorName, new { fieldDefinition = field.Definition, field.Value })*@
+            var feature = field.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>();
+
+            <div class='form-field @(feature.DisplayInEditor ? string.Empty : "hidden")'>
+                <DynamicComponent Type="GetComponentType(nameof(InputEditorComponent))" Parameters="GetParamaters(Entity.GetValue(field.NameKey))"></DynamicComponent>
             </div>
         }
         <button type="submit" class="btn btn-primary">Save</button>
@@ -28,50 +39,40 @@
     [Parameter]
     public Guid Id { get; set; } = Guid.Empty;
 
-    public EntityEditorViewModel? Model { get; set; }
+    protected EntityDefinitionDto EntityDefinition { get; set; } = new EntityDefinitionDto();
+
+    public JObject Entity { get; set; }
+
+    public Dictionary<string, object> GetParamaters(JToken property)
+    {
+        return new Dictionary<string, object> { { "Input", property } };
+    }
+
+    protected Type GetComponentType(string type)
+    {
+        return this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        //var entity = await service.GetById(Id);
-        object entity = null;
+        var response = await http.GetAsync($"/api/entity/{EntityName}");
 
-        if (entity == null)
+        if (response.IsSuccessStatusCode)
         {
-            // TODO: Handler 404
+            var json = await response.Content.ReadAsStringAsync();
 
-            return;
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                throw new Exception();
+            }
+
+            EntityDefinition = JsonConvert.DeserializeObject<EntityDefinitionDto>(json);
+
+            Entity = await service.GetById(Id, EntityDefinition.NameKey);
         }
-
-        //var definition = entityDefinitionFactory.CreateForType(typeof(Entity));
-
-        //var metadata = definition.Using<CrudAdminEntityFeature>();
-
-        //Model = new EntityEditorViewModel(definition)
-        //{
-        //    DataSourceUrl = metadata.DataSourceUrl,
-        //    DisplayName = definition.DisplayName,
-        //    Fields = BuildFieldsViewModel(definition, entity).ToList(),
-        //};
-    }
-
-    private static IEnumerable<FieldEditorViewModel> BuildFieldsViewModel(EntityDefinition definition, object value)
-    {
-        foreach (var field in definition.Fields)
+        else
         {
-            var feature = field.Using<CrudAdminFieldFeature>();
-
-            yield return BuildFieldViewModel(field, value, feature);
+            // TODO: Handle error
         }
-    }
-
-    private static FieldEditorViewModel BuildFieldViewModel(FieldDefinition definition, object value, CrudAdminFieldFeature feature)
-    {
-        return new FieldEditorViewModel(definition)
-        {
-            FieldName = definition.Property.Name,
-            FieldEditorName = feature.EditorViewComponentName,
-            Hidden = !feature.DisplayInEditor,
-            Value = definition.Property.GetValue(value),
-        };
     }
 }

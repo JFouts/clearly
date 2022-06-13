@@ -3,9 +3,9 @@
 
 using Clearly.Crud.Services;
 
-namespace Clearly.Crud.WebUi.ViewComponents.FieldEditors;
+namespace Clearly.Crud.WebUi;
 
-public interface IDataSourceFactory
+public interface IDataSourceReader<TModel>
 {
-    IDataSource Create(object sourceDefinition);
+    Task<IEnumerable<TModel>> ReadFrom(IDataSource dataSource);
 }

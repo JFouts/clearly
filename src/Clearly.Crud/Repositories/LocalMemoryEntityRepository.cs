@@ -93,7 +93,8 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
             query = query.Take(options.Take);
         }
 
-        result.Results = query.ToAsyncEnumerable();
+        result.Results = query;
+        //TODO: result.Results = query.ToAsyncEnumerable();
 
         return Task.FromResult(result);
     }

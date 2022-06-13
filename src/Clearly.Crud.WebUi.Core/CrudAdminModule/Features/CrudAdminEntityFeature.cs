@@ -3,7 +3,13 @@
 
 namespace Clearly.Crud.WebUi;
 
+/// <summary>
+/// Configuation for an Entity enabling it's use in the CRUD Admin.
+/// </summary>
 public class CrudAdminEntityFeature : IEntityFeature
 {
+    /// <summary>
+    /// Gets or sets the base URL for the API endpoints controlling this Entity.
+    /// </summary>
     public string DataSourceUrl { get; set; } = string.Empty;
 }

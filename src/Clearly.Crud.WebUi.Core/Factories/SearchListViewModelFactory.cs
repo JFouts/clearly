@@ -34,7 +34,8 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
             Columns = CreateListViewColumnFromType(definition),
             PageCount = ((result.Count - 1) / pageSize) + 1,
             CurrentPage = page,
-            Results = await result.Results.Select(e => e.ToDictionary()).ToListAsync(),
+            //TODO: Results = await result.Results.Select(e => e.ToDictionary()).ToListAsync(),
+            Results = result.Results.Select(e => e.ToDictionary()).ToList(),
         };
     }
 
@@ -70,8 +71,8 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
         {
             DisplayName = field.DisplayName,
             Key = field.Property.Name,
-            DisplayTemplate = metadata.DisplayTemplate,
-            Properties = metadata.DisplayProperties,
+            DisplayTemplate = metadata.DisplayComponentName,
+            //Properties = metadata.DisplayProperties,
         };
     }
 }

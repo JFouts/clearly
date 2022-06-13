@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingdomDeathTools.WebUI", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.WebUi.Client", "..\..\src\Clearly.Crud.WebUi.Client\Clearly.Crud.WebUi.Client.csproj", "{EFE95A75-6111-4D5F-BDC0-F41FBE8098FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clearly.Crud.WebUi.Core", "..\..\src\Clearly.Crud.WebUi.Core\Clearly.Crud.WebUi.Core.csproj", "{84120858-BC71-4452-A726-8BAD66EAFF3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.WebUi.Core", "..\..\src\Clearly.Crud.WebUi.Core\Clearly.Crud.WebUi.Core.csproj", "{84120858-BC71-4452-A726-8BAD66EAFF3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

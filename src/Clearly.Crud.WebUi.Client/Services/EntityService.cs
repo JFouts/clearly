@@ -1,17 +1,18 @@
 ﻿using Clearly.Crud.Search;
 using Clearly.Crud.Services;
-using System.Net.Http.Json;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace Clearly.Crud.WebUi.Client.Services
 {
     public interface IEntityApiService
     {
-        Task<JsonElement> GetById(Guid id, string entityNameKey);
-        Task Create(JsonElement value, string entityNameKey);
-        Task Update(Guid id, JsonElement value, string entityNameKey);
+        Task<JObject> GetById(Guid id, string entityNameKey);
+        Task Create(JObject value, string entityNameKey);
+        Task Update(Guid id, JObject value, string entityNameKey);
         Task Delete(Guid id, string entityNameKey);
-        Task<CrudSearchResult<JsonElement>> Search(CrudSearchOptions options, string entityNameKey);
+        Task<CrudSearchResult<JObject>> Search(CrudSearchOptions options, string entityNameKey);
     }
 
     public class EntityApiService : IEntityApiService
@@ -25,45 +26,45 @@ namespace Clearly.Crud.WebUi.Client.Services
             this.config = config;
         }
 
-        public async Task<JsonElement> GetById(Guid id, string entityNameKey)
+        public async Task<JObject> GetById(Guid id, string entityNameKey)
         {
-            return await Send<JsonElement>(new HttpRequestMessage
+            return await Send<JObject>(new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = Url($"/api/{entityNameKey}/{id}"),
             });
         }
 
-        public async Task Create(JsonElement value, string entityNameKey)
+        public async Task Create(JObject value, string entityNameKey)
         {
-            await Send<JsonElement>(new HttpRequestMessage
+            await Send<JObject>(new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = Url($"/api/{entityNameKey}"),
-                Content = JsonContent.Create(value),
+                Content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json"),
             });
         }
 
-        public async Task Update(Guid id, JsonElement value, string entityNameKey)
+        public async Task Update(Guid id, JObject value, string entityNameKey)
         {
-            await Send<JsonElement>(new HttpRequestMessage
+            await Send<JObject>(new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = Url($"/api/{entityNameKey}/{id}"),
-                Content = JsonContent.Create(value),
+                Content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json"),
             });
         }
 
         public async Task Delete(Guid id, string entityNameKey)
         {
-            await Send<JsonElement>(new HttpRequestMessage
+            await Send<JObject>(new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = Url($"/api/{entityNameKey}/{id}"),
             });
         }
 
-        public async Task<CrudSearchResult<JsonElement>> Search(CrudSearchOptions options, string entityNameKey)
+        public async Task<CrudSearchResult<JObject>> Search(CrudSearchOptions options, string entityNameKey)
         {
             var queryParamaters = new Dictionary<string, object>();
 
@@ -82,7 +83,7 @@ namespace Clearly.Crud.WebUi.Client.Services
                 queryParamaters["searchQuery"] = options.SearchQuery;
             }
 
-            return await Send<CrudSearchResult<JsonElement>>(new HttpRequestMessage
+            return await Send<CrudSearchResult<JObject>>(new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = Url($"/api/{entityNameKey}"),
@@ -100,7 +101,15 @@ namespace Clearly.Crud.WebUi.Client.Services
 
             response.EnsureSuccessStatusCode();
 
-            var entity = await response.Content.ReadFromJsonAsync<T>();
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (json == null)
+            {
+                // TODO: Better Exception
+                throw new Exception();
+            }
+
+            var entity = JsonConvert.DeserializeObject<T>(json);
 
             if (entity == null)
             {

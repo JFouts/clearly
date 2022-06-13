@@ -51,7 +51,7 @@ public class EntityEditorViewModelFactory<TEntity> : IEntityEditorViewModelFacto
         return new FieldEditorViewModel(definition)
         {
             FieldName = definition.Property.Name,
-            FieldEditorName = feature.EditorViewComponentName,
+            FieldEditorName = feature.EditorComponentName,
             Hidden = !feature.DisplayInEditor,
             Value = definition.Property.GetValue(value),
         };

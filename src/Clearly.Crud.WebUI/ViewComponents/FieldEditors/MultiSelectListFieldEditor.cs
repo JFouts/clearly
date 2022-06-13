@@ -29,13 +29,12 @@ public class MultiSelectListFieldEditor : FieldEditorViewComponent
         };
 
         var metadata = fieldDefinition.Using<CrudAdminFieldFeature>();
+        var dropDownFeature = fieldDefinition.Using<CrudAdminDropDownFeature>();
 
-        if (!metadata.EditorProperties.TryGetValue("DataSource", out var dataSourceDefinition))
-        {
-            throw new ArgumentNullException("DataSource");
-        }
+        ArgumentNullException.ThrowIfNull(dropDownFeature.DataSource, nameof(dropDownFeature.DataSource));
+        ArgumentNullException.ThrowIfNull(dropDownFeature.DataSourceType, nameof(dropDownFeature.DataSourceType));
 
-        var dataSource = dataSourceFactory.Create(dataSourceDefinition);
+        var dataSource = dataSourceFactory.Create(dropDownFeature.DataSourceType, dropDownFeature.DataSource);
         var data = await dataSourceReader.ReadFrom(dataSource);
 
         return View(new MultiSelectFieldEditorViewModel
