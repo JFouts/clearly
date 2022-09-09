@@ -34,12 +34,11 @@ public class ObjectListFieldEditor : FieldEditorViewComponent
         var definition = entityDefinitionFactory.CreateForType(childType);
 
         return Task.FromResult<IViewComponentResult>(
-            View(new ObjectListEditorViewModel(definition)
+            View(new ObjectListEditorViewModel(definition, listValue)
             {
                 Id = fieldDefinition.Property.Name,
                 FieldName = fieldDefinition.Property.Name,
                 Label = fieldDefinition.DisplayName,
-                Values = listValue,
             }));
     }
 }

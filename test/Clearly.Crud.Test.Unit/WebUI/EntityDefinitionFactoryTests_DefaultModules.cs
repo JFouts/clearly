@@ -45,7 +45,8 @@ public class EntityDefinitionFactoryTests_DefaultModules
         public Guid Id { get; set; }
 
         [FieldEditor("MyCustomViewComponent")]
-        [FieldEditorProperty("MyCustomProperty", "A Custom Value")]
+        // TODO: Some way of defining this:
+        // [FieldEditorProperty("MyCustomProperty", "A Custom Value")]
         public string FieldWithCustomizedEditor { get; set; } = string.Empty;
     }
 

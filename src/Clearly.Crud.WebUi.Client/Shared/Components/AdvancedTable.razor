@@ -1,9 +1,13 @@
 ﻿@using Clearly.Crud.Search
+@using Clearly.Crud.WebUi.Client.Infrastructure
 @using Clearly.Crud.WebUi.Client.Models
 @using Clearly.Crud.WebUi.Client.Services
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
 @using Clearly.Crud.WebUi.ViewModels
 @using System.Text.Json
 @using Newtonsoft.Json.Linq
+
+@implements IDisposable
 
 @inject HttpClient http
 @inject IEntityApiService entityService
@@ -23,11 +27,13 @@
                 {
                     <th>@column.DisplayName</th>
                 }
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var record in Results) 
             {
+                var id = @record.GetValue("id") is JValue v ? (string)v.Value : "";                
                 <tr>
                     @foreach (var column in @TableDefinition.Columns)
                     {
@@ -36,6 +42,7 @@
                             <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property)"></DynamicComponent>
                         </td>
                     }
+                    <td><a href="entity/@TableDefinition.NameKey.ToLower()/edit/@id">Edit</a></td>
                 </tr>
             }
         </tbody>
@@ -67,17 +74,16 @@
 </section>
 
 @code {
-    //[QueryStringParameter]
+    [QueryStringParameter]
     public string Query { get; set; } = string.Empty;
 
-    //[QueryStringParameter]
+    [QueryStringParameter("page")]
     public int CurrentPage { get; set; } = 1;
 
-    //[QueryStringParameter]
-    public int PageCount { get; set; }
-
-    //[QueryStringParameter]
+    [QueryStringParameter]
     public int PageSize { get; set; } = 24;
+
+    public int PageCount { get; set; }
 
     public HashSet<int> LinkedPages = new ();
 
@@ -87,7 +93,7 @@
 
     public Dictionary<string, object> GetParamaters(JToken property)
     {
-        return new Dictionary<string, object> { { "Input", property } };
+        return new Dictionary<string, object> { { nameof(BaseDisplayComponent.Input), property } };
     }
 
     [Parameter]
@@ -97,25 +103,63 @@
 
     public IEnumerable<JObject> Results { get; set; } = Array.Empty<JObject>();
 
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChanged;
+    }
+
     protected string GetPageUrl(int pageNumber) => navigationManager.GetUriWithQueryParameter("page", pageNumber);
 
+    // TODO: This doesn't work, we need to actually disable the links when this is true
     protected bool IsDisabled(int pageNumber) => pageNumber == CurrentPage || pageNumber < 1 || pageNumber > PageCount;
 
     protected Type GetComponentType(string type)
     {
-        return this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+
+        if (componentType == null)
+        {
+            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
+        }
+
+        return componentType;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    protected async void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        this.SetParametersFromQueryString(navigationManager);
+
+        await ReloadTable();
+
+        StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await base.OnParametersSetAsync();
-        
         Console.WriteLine($"Paramters Set - {TableDefinition.NameKey}");
 
+        await base.OnParametersSetAsync();
+
+        this.SetParametersFromQueryString(navigationManager);
+
+        await ReloadTable();
+    }
+
+    private async Task ReloadTable()
+    {
         if (string.IsNullOrWhiteSpace(TableDefinition.NameKey))
         {
             return;
         }
+
+        Console.WriteLine("PageSize:" + PageSize);
 
         var searchOptions = new CrudSearchOptions
         {
@@ -139,9 +183,9 @@
         LinkedPages.Add(1);
         LinkedPages.Add(PageCount);
         LinkedPages.Add(CurrentPage);
-        LinkedPages.Add(CurrentPage-1);
-        LinkedPages.Add(CurrentPage-2);
-        LinkedPages.Add(CurrentPage+1);
-        LinkedPages.Add(CurrentPage+2);
+        LinkedPages.Add(CurrentPage - 1);
+        LinkedPages.Add(CurrentPage - 2);
+        LinkedPages.Add(CurrentPage + 1);
+        LinkedPages.Add(CurrentPage + 2);
     }
 }

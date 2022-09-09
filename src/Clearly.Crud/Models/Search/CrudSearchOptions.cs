@@ -7,7 +7,7 @@ public class CrudSearchOptions
 {
     public int Skip { get; set; }
     public int Take { get; set; }
-    public string SearchQuery { get; set; }
+    public string SearchQuery { get; set; } = string.Empty;
     public CrudSearchFilter Filters { get; set; } = new CrudSearchFilter();
     public IEnumerable<CrudSearchSortField> SortFields { get; set; } = new List<CrudSearchSortField>();
 }

@@ -7,62 +7,6 @@ using Clearly.Crud.Search;
 
 namespace Clearly.Crud.Services;
 
-public class GenericEntityService
-{
-    private readonly HttpClient http;
-    private readonly HostedCrudApiConfiguration config;
-
-    public GenericEntityService(HttpClient http, HostedCrudApiConfiguration config)
-    {
-        this.http = http;
-        this.config = config;
-    }
-
-    public async Task<EntityDefinition> GetDefinition(string type)
-    {
-        return (EntityDefinition) await Send(
-            new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = Url($"/api/entites/{type}"),
-            }, 
-            typeof(EntityDefinition));
-    }
-
-    public async Task<object> GetById(Guid id, string typeKey)
-    {
-        return await Send(
-            new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = Url($"/api/{typeKey}/{id}"),
-            },
-            null);
-    }
-
-    private Uri Url(string path)
-    {
-        return new Uri(new Uri(config.BaseUrl), path);
-    }
-
-    private async Task<object> Send(HttpRequestMessage request, Type type)
-    {
-        var response = await http.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
-
-        var entity = await response.Content.ReadFromJsonAsync(type);
-
-        if (entity == null)
-        {
-            // TODO: Better Exception
-            throw new Exception();
-        }
-
-        return entity;
-    }
-}
-
 // TODO: Pull URLs for entity from Entity Configuration
 // TODO: Well defined exceptions that come from this class
 // TODO: Security and customization of HTTP headers (Can a named HttpClient solve this?)

@@ -1,15 +1,113 @@
-﻿@page "/entity/{entityName}/edit"
+﻿@page "/entity/{entityName}/create"
+
+@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Services
+@using Clearly.Crud.WebUi.Client.Shared.EditorComponents
+@using Clearly.Crud.WebUi.ViewModels
+@using Clearly.Crud
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@using System.Text
+
+@inject HttpClient http
+@inject IEntityApiService service
+@inject NavigationManager navigationManager
 
 <PageTitle>CRUD Admin</PageTitle>
 
-@*<h1><span class="text-muted small">Create a new</span> @Model.DisplayName</h1>
-<form class="default-focus" data-source="@Model.DataSourceUrl" data-type="create">
-    @foreach (var field in Model.Fields)
+@if (@EntityDefinition != null)
+{
+    <h1><span class="text-muted small">Create a new </span> @EntityDefinition.DisplayName</h1>
+    <EditForm class="default-focus" data-type="create" Model="Entity" OnValidSubmit="@OnSubmit">
+        @foreach (var field in EntityDefinition.Fields)
+        {
+            var feature = field.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>();
+
+            @if (feature.DisplayInEditor)
+            {
+                <div class='form-field'>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParamaters(field)"></DynamicComponent>
+                </div>
+            }
+        }
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string EntityName { get; set; } = string.Empty;
+
+    protected EntityDefinitionDto EntityDefinition { get; set; } = new EntityDefinitionDto();
+
+    public JObject Entity { get; set; } = new JObject();
+
+    public Dictionary<string, object> GetParamaters(FieldDefinitionDto fieldDefinition)
     {
-        <div class='form-field @(field.Hidden ? "hidden" : "")'>
-            @await Component.InvokeAsync(field.FieldEditorName, new { fieldDefinition = field.Definition, field.Value })
-        </div>
+        var key = fieldDefinition.NameKey.ToCamelCase();
+        var value = Entity.GetValue(key);
+
+        if (value == null)
+        {
+            value = JValue.CreateNull();
+            Entity.Add(key, value);
+        }
+
+        return new Dictionary<string, object> 
+        { 
+            { "Input", value },
+            { "FieldDefinition", fieldDefinition },
+        };
     }
-    <button class="btn btn-primary" type="sumbit">Create</button>
-</form>
-*@
+
+    protected Type GetComponentType(string type)
+    {
+        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+
+        if (componentType == null)
+        {
+            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
+        }
+
+        return componentType;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await http.GetAsync($"/api/entity/{EntityName}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                throw new Exception();
+            }
+
+            EntityDefinition = JsonConvert.DeserializeObject<EntityDefinitionDto>(json);
+        }
+        else
+        {
+            // TODO: Handle error
+        }
+    }
+
+    protected async void OnSubmit()
+    {
+        // TODO: Processing Indicator
+
+        var json = JsonConvert.SerializeObject(Entity);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await http.PostAsync($"/api/{EntityName}", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            navigationManager.NavigateTo($"/admin/entity/{EntityName}");
+        }
+        else
+        {
+            // TODO: Display Error
+        }
+    }
+}

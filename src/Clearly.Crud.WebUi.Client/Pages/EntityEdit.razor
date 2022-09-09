@@ -1,5 +1,7 @@
 ﻿@page "/entity/{entityName}/edit/{id}"
 
+@*TODO: Merge this and EntityCreate.razor to remove code duplication*@
+
 @using Clearly.Crud.WebUi.Client.Models.Dto
 @using Clearly.Crud.WebUi.Client.Services
 @using Clearly.Crud.WebUi.Client.Shared.EditorComponents
@@ -8,28 +10,31 @@
 
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
+@using System.Text
 
 @inject HttpClient http
 @inject IEntityApiService service;
-@inject IEntityDefinitionFactory entityDefinitionFactory;
+@inject NavigationManager navigationManager
 
 <PageTitle>CRUD Admin</PageTitle>
 
 @if (@EntityDefinition != null)
 {
     <h1><span class="text-muted small">Edit </span> @EntityDefinition.DisplayName</h1>
-    <form class="default-focus" data-type="edit">
-    @*<form class="default-focus" data-source="@EntityDefinition.DataSourceUrl" data-type="edit">*@
+    <EditForm class="default-focus" data-type="edit" Model="Entity" OnValidSubmit="@OnSubmit">
         @foreach (var field in EntityDefinition.Fields)
         {
             var feature = field.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>();
 
-            <div class='form-field @(feature.DisplayInEditor ? string.Empty : "hidden")'>
-                <DynamicComponent Type="GetComponentType(nameof(InputEditorComponent))" Parameters="GetParamaters(Entity.GetValue(field.NameKey))"></DynamicComponent>
-            </div>
+            @if (feature.DisplayInEditor)
+            {
+                <div class='form-field'>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParamaters(field)"></DynamicComponent>
+                </div>
+            }
         }
         <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+    </EditForm>
 }
 
 @code {
@@ -37,20 +42,40 @@
     public string EntityName { get; set; } = string.Empty;
 
     [Parameter]
-    public Guid Id { get; set; } = Guid.Empty;
+    public string Id { get; set; } = Guid.Empty.ToString();
 
     protected EntityDefinitionDto EntityDefinition { get; set; } = new EntityDefinitionDto();
 
-    public JObject Entity { get; set; }
+    public JObject Entity { get; set; } = new JObject();
 
-    public Dictionary<string, object> GetParamaters(JToken property)
+    public Dictionary<string, object> GetParamaters(FieldDefinitionDto fieldDefinition)
     {
-        return new Dictionary<string, object> { { "Input", property } };
+        var key = fieldDefinition.NameKey.ToCamelCase();
+        var value = Entity.GetValue(key);
+
+        if (value == null)
+        {
+            value = JValue.CreateNull();
+            Entity.Add(key, value);
+        }
+
+        return new Dictionary<string, object>
+        {
+            { "Input", value },
+            { "FieldDefinition", fieldDefinition },
+        };
     }
 
     protected Type GetComponentType(string type)
     {
-        return this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+
+        if (componentType == null)
+        {
+            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
+        }
+
+        return componentType;
     }
 
     protected override async Task OnInitializedAsync()
@@ -68,11 +93,30 @@
 
             EntityDefinition = JsonConvert.DeserializeObject<EntityDefinitionDto>(json);
 
-            Entity = await service.GetById(Id, EntityDefinition.NameKey);
+            // TODO: Figure out how to do a Guid route param or make this Parse less error prone
+            Entity = await service.GetById(Guid.Parse(Id), EntityDefinition.NameKey);
         }
         else
         {
             // TODO: Handle error
+        }
+    }
+
+    protected async void OnSubmit()
+    {
+        // TODO: Processing Indicator
+
+        var json = JsonConvert.SerializeObject(Entity);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await http.PutAsync($"/api/{EntityName}/{Id}", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            navigationManager.NavigateTo($"/admin/entity/{EntityName}");
+        }
+        else
+        {
+            // TODO: Display Error
         }
     }
 }

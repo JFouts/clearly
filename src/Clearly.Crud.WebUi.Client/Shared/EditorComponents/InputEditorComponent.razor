@@ -7,11 +7,12 @@
 
 <div class="mb-3">
     <label for="@FieldDefinition.NameKey" class="form-label">@FieldDefinition.DisplayName</label>
-    <input id="@FieldDefinition.NameKey" type="text" class="form-control" name="@FieldDefinition.NameKey" placeholder="@FieldDefinition.DisplayName" value="@Value">
+    <input id="@FieldDefinition.NameKey" type="text" class="form-control" name="@FieldDefinition.NameKey" placeholder="@FieldDefinition.DisplayName" @bind="Value" />
 </div>
 
 @code 
 {
+    private string _value = string.Empty;
     protected string Value
     { 
         get
@@ -29,6 +30,7 @@
             if (Input is JValue jValue)
             {
                 jValue.Value = value;
+                _value = value;
             }
         }
     }

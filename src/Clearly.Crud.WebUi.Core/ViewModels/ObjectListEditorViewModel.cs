@@ -13,8 +13,9 @@ public record ObjectListEditorViewModel
     public ObjectTypeDefinition Definition { get; set; }
     public IEnumerable Values { get; set; }
 
-    public ObjectListEditorViewModel(EntityDefinition definition)
+    public ObjectListEditorViewModel(EntityDefinition definition, IEnumerable values)
     {
         Definition = definition;
+        Values = values;
     }
 }

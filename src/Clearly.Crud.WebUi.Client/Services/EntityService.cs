@@ -1,5 +1,6 @@
 ﻿using Clearly.Crud.Search;
 using Clearly.Crud.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -66,16 +67,16 @@ namespace Clearly.Crud.WebUi.Client.Services
 
         public async Task<CrudSearchResult<JObject>> Search(CrudSearchOptions options, string entityNameKey)
         {
-            var queryParamaters = new Dictionary<string, object>();
+            var queryParamaters = new Dictionary<string, string>();
 
             if (options.Skip > 0)
             {
-                queryParamaters["skip"] = options.Skip;
+                queryParamaters["skip"] = options.Skip.ToString();
             }
 
             if (options.Take > 0)
             {
-                queryParamaters["take"] = options.Take;
+                queryParamaters["take"] = options.Take.ToString();
             }
 
             if (!string.IsNullOrWhiteSpace(options.SearchQuery))
@@ -83,10 +84,13 @@ namespace Clearly.Crud.WebUi.Client.Services
                 queryParamaters["searchQuery"] = options.SearchQuery;
             }
 
+            var url = Url($"/api/{entityNameKey}");
+            url = new Uri(QueryHelpers.AddQueryString(url.ToString(), queryParamaters));
+
             return await Send<CrudSearchResult<JObject>>(new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = Url($"/api/{entityNameKey}"),
+                RequestUri = url,
             });
         }
 

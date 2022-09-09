@@ -24,19 +24,18 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
     }
 
     /// <inheritdoc/>
-    public async Task<ListViewModel> Build(CrudSearchResult<TEntity> result, int page, int pageSize)
+    public Task<ListViewModel> Build(CrudSearchResult<TEntity> result, int page, int pageSize)
     {
         var definition = entityDefinitionFactory.CreateForEntity<TEntity>();
 
-        return new ListViewModel
+        return Task.FromResult(new ListViewModel
         {
             DisplayName = definition.DisplayName,
             Columns = CreateListViewColumnFromType(definition),
             PageCount = ((result.Count - 1) / pageSize) + 1,
             CurrentPage = page,
-            //TODO: Results = await result.Results.Select(e => e.ToDictionary()).ToListAsync(),
             Results = result.Results.Select(e => e.ToDictionary()).ToList(),
-        };
+        });
     }
 
     private IEnumerable<TableColumnViewModel> CreateListViewColumnFromType(EntityDefinition entity)
