@@ -1,0 +1,86 @@
+﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Clearly.Crud.WebUi
+@using Clearly.Crud.WebUi.Core
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@*TODO: This shares a lot of code with EntityCreate.razor... remove code duplication*@
+
+@inherits BaseDisplayComponent
+
+<div class="mb-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <div class="nav-link active">@FieldDefinition.DisplayName</div>
+        </li>
+    </ul>
+
+    <div id="@FieldDefinition.NameKey" class="card card-body">
+        @foreach (var field in EntityDefinition.Fields)
+        {
+            var feature = field.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>();
+
+            @if (feature.DisplayInEditor)
+            {
+                <div class='form-field'>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParamaters(field)"></DynamicComponent>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    // TODO: How do we populate this?
+    private EntityDefinitionDto EntityDefinition;
+
+    protected JObject Value
+    {
+        get
+        {
+            if (Input.Value.Type == JTokenType.Object && Input.Value is JObject jObject)
+            {
+                return jObject;
+            }
+
+            return new JObject();
+        }
+
+        set
+        {
+            Input.Value = (JToken?)value ?? JValue.CreateNull();
+        }
+    }
+
+    public Dictionary<string, object> GetParamaters(FieldDefinitionDto fieldDefinition)
+    {
+        var key = fieldDefinition.NameKey.ToCamelCase();
+        var property = Value.Property(key);
+
+        if (property == null)
+        {
+            property = new JProperty(key, JValue.CreateNull());
+            Value.Add(property);
+        }
+
+        return new Dictionary<string, object>
+        {
+            { "Input", property },
+            { "FieldDefinition", fieldDefinition },
+        };
+    }
+
+    protected Type GetComponentType(string type)
+    {
+        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+
+        if (componentType == null)
+        {
+            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
+        }
+
+        return componentType;
+    }
+}

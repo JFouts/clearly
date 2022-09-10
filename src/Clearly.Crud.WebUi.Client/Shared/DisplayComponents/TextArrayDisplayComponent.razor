@@ -2,25 +2,18 @@
 
 @inherits BaseDisplayComponent
 
-@foreach (var element in Value)
-{
-    @element
-}
+@string.Join(", ", Value)
 
 @code {
     public IEnumerable<string> Value {
         get
         {
-            if (Input is JArray jArray)
+            if (Input.Value.Type == JTokenType.Array)
             {
-                foreach (var jToken in jArray)
-                {
-                    if (jToken is JValue jValue && jValue.Type == JTokenType.String)
-                    {
-                        yield return jToken.Value<string>();
-                    }
-                }
+                return Input.Value.ToObject<string[]>();
             }
+
+            return Array.Empty<string>();
         }
     }
 }

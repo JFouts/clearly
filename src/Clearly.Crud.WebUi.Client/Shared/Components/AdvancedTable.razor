@@ -37,7 +37,7 @@
                 <tr>
                     @foreach (var column in @TableDefinition.Columns)
                     {
-                        JToken property = record.GetValue(column.Key.ToCamelCase());
+                        var property = record.Property(column.Key.ToCamelCase());
                         <td>
                             <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property)"></DynamicComponent>
                         </td>
@@ -91,7 +91,7 @@
 
     public int NextPage => CurrentPage + 1;
 
-    public Dictionary<string, object> GetParamaters(JToken property)
+    public Dictionary<string, object> GetParamaters(JProperty property)
     {
         return new Dictionary<string, object> { { nameof(BaseDisplayComponent.Input), property } };
     }
@@ -143,8 +143,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Console.WriteLine($"Paramters Set - {TableDefinition.NameKey}");
-
         await base.OnParametersSetAsync();
 
         this.SetParametersFromQueryString(navigationManager);
@@ -159,8 +157,6 @@
             return;
         }
 
-        Console.WriteLine("PageSize:" + PageSize);
-
         var searchOptions = new CrudSearchOptions
         {
             SearchQuery = Query,
@@ -168,12 +164,7 @@
             Take = PageSize,
         };
 
-        Console.WriteLine($"Searching {TableDefinition.NameKey}");
-
         Data = await entityService.Search(searchOptions, TableDefinition.NameKey);
-
-        Console.WriteLine("Searched!");
-
         Results = Data.Results;
 
         // TODO: Move this to service

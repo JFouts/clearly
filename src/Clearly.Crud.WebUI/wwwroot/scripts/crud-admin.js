@@ -20,8 +20,6 @@ $(document).ready(function () {
         const url = dataType == 'edit' ? dataSource + '/' + value.Id : dataSource;
         const method = dataType == 'edit' ? 'PUT' : 'POST';
 
-        console.log(value)
-
         $.ajax({
             url: url,
             type: method,

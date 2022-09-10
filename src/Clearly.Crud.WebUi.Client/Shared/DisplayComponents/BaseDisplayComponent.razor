@@ -3,7 +3,7 @@
 
 @code {
     [Parameter]
-    public JToken Input { get; set; } = JValue.CreateNull();
+    public JProperty Input { get; set; } = new JProperty("null", JValue.CreateNull());
 
     [Parameter]
     public FieldDefinitionDto FieldDefinition { get; set; } = new FieldDefinitionDto();

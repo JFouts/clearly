@@ -129,6 +129,21 @@ public class CrudAdminModule : IEntityModule, IEntityFieldModule
             case TypeCode.Single:
                 return "NumberDisplayComponent";
             case TypeCode.Object:
+                if (type == typeof(Guid))
+                {
+                    return "TextDisplayComponent";
+                }
+
+                if (type.IsAssignableTo(typeof(IEnumerable<string>)))
+                {
+                    return "TextArrayDisplayComponent";
+                }
+
+                if (type.IsAssignableTo(typeof(IEnumerable)))
+                {
+                    return "ObjectArrayDisplayComponent";
+                }
+
                 return "ObjectDisplayComponent";
             case TypeCode.Boolean:
                 return "CheckBoxDisplayComponent";

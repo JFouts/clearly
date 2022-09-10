@@ -13,14 +13,11 @@
     public long Value {
         get
         {
-            if (Input is JValue jValue)
+            if (Input.Value.Type == JTokenType.Integer)
             {
-                if (jValue.Type == JTokenType.Integer)
-                {
-                    IsValid = true;
+                IsValid = true;
 
-                    return jValue.Value<long>();
-                }
+                return Input.Value.Value<long>();
             }
 
             IsValid = false;

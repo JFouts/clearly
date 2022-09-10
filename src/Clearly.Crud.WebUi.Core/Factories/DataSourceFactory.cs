@@ -2,46 +2,45 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Crud.Services;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Clearly.Crud.WebUi;
+namespace Clearly.Crud.WebUi.Core;
 
 public class DataSourceFactory : IDataSourceFactory
 {
-    private readonly IServiceProvider serviceLocator;
-    private readonly IEntityDefinitionFactory entityDefinitionFactory;
-    private readonly ITypeProvider entityTypeProvider;
+    //private readonly IServiceProvider serviceLocator;
+    //private readonly IEntityDefinitionFactory entityDefinitionFactory;
+    //private readonly ITypeProvider entityTypeProvider;
 
-    public DataSourceFactory(IServiceProvider serviceLocator, IEntityDefinitionFactory entityDefinitionFactory, ITypeProvider entityTypeProvider)
-    {
-        this.serviceLocator = serviceLocator;
-        this.entityDefinitionFactory = entityDefinitionFactory;
-        this.entityTypeProvider = entityTypeProvider;
-    }
+    //public DataSourceFactory(IServiceProvider serviceLocator, IEntityDefinitionFactory entityDefinitionFactory, ITypeProvider entityTypeProvider)
+    //{
+    //    this.serviceLocator = serviceLocator;
+    //    this.entityDefinitionFactory = entityDefinitionFactory;
+    //    this.entityTypeProvider = entityTypeProvider;
+    //}
 
     public IDataSource Create(string dataSourceType, string dataSource)
     {
         switch (dataSourceType)
         {
-            case "EntityDataSource":
+            //case "EntityDataSource":
                 // TODO: We should have a way to get the entity defintion from an entities NameKey
-                var entityType = entityTypeProvider.GetTypes().FirstOrDefault(x => string.Equals(x.Name, dataSource, StringComparison.InvariantCultureIgnoreCase)); 
+                //var entityType = entityTypeProvider.GetTypes().FirstOrDefault(x => string.Equals(x.Name, dataSource, StringComparison.InvariantCultureIgnoreCase)); 
 
-                if (entityType == null)
-                {
-                    throw new ArgumentException($"Entity of type {dataSource} could not be found.", nameof(dataSource));
-                }
+                //if (entityType == null)
+                //{
+                //    throw new ArgumentException($"Entity of type {dataSource} could not be found.", nameof(dataSource));
+                //}
 
-                var definition = entityDefinitionFactory.CreateForType(entityType);
+                //var definition = entityDefinitionFactory.CreateForType(entityType);
 
-                var dataSourceObject = serviceLocator.GetRequiredService(typeof(EntityDataSource<>).MakeGenericType(definition.ObjectType)) as IDataSource;
+                //var dataSourceObject = serviceLocator.GetRequiredService(typeof(EntityDataSource<>).MakeGenericType(definition.ObjectType)) as IDataSource;
 
-                if (dataSourceObject == null)
-                {
-                    throw new Exception();
-                }
+                //if (dataSourceObject == null)
+                //{
+                //    throw new Exception();
+                //}
 
-                return dataSourceObject;
+                //return dataSourceObject;
             case "StaticList":
                 const string recordSeperator = ";";
                 const string valueSeperator = ",";

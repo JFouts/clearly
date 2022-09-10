@@ -1,13 +1,13 @@
-﻿@using Newtonsoft.Json.Linq
+﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Newtonsoft.Json.Linq
 
 @inherits BaseDisplayComponent
 
-@Value
-
-@code {
-    public bool IsValid { get; set; }
-
-    public string Value {
+@code
+{
+    protected string Value
+    {
         get
         {
             if (Input.Value.Type == JTokenType.String)
@@ -16,6 +16,11 @@
             }
 
             return string.Empty;
+        }
+
+        set
+        {
+            Input.Value = value;
         }
     }
 }

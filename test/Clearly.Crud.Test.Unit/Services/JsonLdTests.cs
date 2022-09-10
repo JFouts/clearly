@@ -24,7 +24,6 @@ public class JsonLdTests
     private JsonLdObjectConverterFactory factory = default!;
     private SystemTextJsonLdOutputFormatter formatter = default!;
     private MockOutputFormatterWriteContext writeContext = default!;
-    private IEntity entity = default!;
 
     public JsonLdTests()
     {
@@ -36,15 +35,15 @@ public class JsonLdTests
             .AddSingleton<IEntityModule, AttributeBasedEntityModule>()
             .AddSingleton<IEntityFieldModule, CoreEntityFieldModule>()
             .AddSingleton<IEntityModule, CoreEntityModule>()
-            .AddSingleton<IEntityModule, CrudAdminEntityModule>()
-            .AddSingleton<IEntityFieldModule, CrudAdminEntityFieldModule>()
+            .AddSingleton<IEntityModule, CrudAdminModule>()
+            .AddSingleton<IEntityFieldModule, CrudAdminModule>()
             .AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>();
 
         httpContext = new DefaultHttpContext();
         httpContext.Response.Body = new MemoryStream();
         canWriteContext = new MockOutputFormatterCanWriteContext(httpContext);
 
-        UsingEntity<BlankEntity>(new BlankEntity(entityId));
+        UsingEntity(new BlankEntity(entityId));
     }
 
     [Fact]
@@ -104,7 +103,7 @@ public class JsonLdTests
     [Fact]
     public async Task Formatter_ReadsTypeOverride()
     {
-        UsingEntity<Article>(new Article { Id = entityId, Author = "Mr. Example Pants" });
+        UsingEntity(new Article { Id = entityId, Author = "Mr. Example Pants" });
 
         await formatter.WriteResponseBodyAsync(writeContext, Encoding.UTF8);
 
@@ -124,8 +123,6 @@ public class JsonLdTests
     private void UsingEntity<TEntity>(TEntity entity)
         where TEntity : IEntity
     {
-        this.entity = entity;
-
         services.AddSingleton<JsonLdObjectConverter<TEntity>>();
         writeContext = new MockOutputFormatterWriteContext(httpContext, WriterFactory, entity.GetType(), entity);
 

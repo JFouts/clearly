@@ -42,7 +42,8 @@
                 Columns = EntityDefinition.Fields.Select(x => new ColumnDefinition
                 {
                     DisplayName = x.DisplayName,
-                    Key = x.NameKey
+                    Key = x.NameKey,
+                    DisplayComponent = x.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>().DisplayComponentName
                 })
             };
         }

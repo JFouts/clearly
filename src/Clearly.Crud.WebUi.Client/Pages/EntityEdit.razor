@@ -51,17 +51,17 @@
     public Dictionary<string, object> GetParamaters(FieldDefinitionDto fieldDefinition)
     {
         var key = fieldDefinition.NameKey.ToCamelCase();
-        var value = Entity.GetValue(key);
+        var property = Entity.Property(key);
 
-        if (value == null)
+        if (property == null)
         {
-            value = JValue.CreateNull();
-            Entity.Add(key, value);
+            property = new JProperty(key, JValue.CreateNull());
+            Entity.Add(property);
         }
 
         return new Dictionary<string, object>
         {
-            { "Input", value },
+            { "Input", property },
             { "FieldDefinition", fieldDefinition },
         };
     }

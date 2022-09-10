@@ -5,14 +5,14 @@
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 
-@inherits BaseStringEditorComponent
+@inherits BaseDisplayComponent
 
 @inject IDataSourceFactory dataSourceFactory
 @inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
 
 <div class="mb-3">
   <label for="@FieldDefinition.NameKey">@FieldDefinition.DisplayName</label>
-  <select class="form-select" id="@FieldDefinition.NameKey" name="@FieldDefinition.NameKey" @bind="Value">
+  <select class="form-select" id="@FieldDefinition.NameKey" name="@FieldDefinition.NameKey" @bind="Value" multiple>
     @foreach (var option in Options)
     {
       <option value="@option.Value">@option.Label</option>  
@@ -22,9 +22,27 @@
 
 @code
 {
+    protected string[] Value
+    {
+        get
+        {
+            if (Input.Value.Type == JTokenType.Array)
+            {
+                return Input.Value.ToObject<string[]>();
+            }
+
+            return Array.Empty<string>();
+        }
+
+        set
+        {
+            Input.Value = JArray.FromObject(value);
+        }
+    }
+
     protected CrudAdminDropDownFeature Configuration { get; set; } = new CrudAdminDropDownFeature();
 
-    protected IEnumerable<DropDownOption> Options { get; set; } = Array.Empty<DropDownOption>();
+    protected IEnumerable<MultiSelectOption> Options { get; set; } = Array.Empty<MultiSelectOption>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,14 +53,14 @@
         var dataSource = dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
         var data = await dataSourceReader.ReadFrom(dataSource);
 
-        Options = data.Select(x => new DropDownOption
+        Options = data.Select(x => new MultiSelectOption
         {
             Value = x.Key,
             Label = x.Value,
         });
     }
 
-    protected class DropDownOption
+    protected class MultiSelectOption
     {
         public string Value { get; set; } = string.Empty;
         public string Label { get; set; } = string.Empty;

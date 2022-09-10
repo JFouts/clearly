@@ -19,7 +19,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDefaultsDisplayNameToDisplayFriendlyName_WhenNoModulesAreSet()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Equal("Fully Specified Entity", entity.DisplayName);
@@ -29,7 +29,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDefaultsNameKeyToEntityName_WhenNoModulesAreSet()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Equal(nameof(FullySpecifiedEntity), entity.NameKey);
@@ -39,7 +39,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItAddsFieldsForProperties_WhenNoModulesAreSet()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name == nameof(FullySpecifiedEntity.Id));
@@ -49,7 +49,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesNotAddFieldsForClassFields()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Field"));
@@ -59,7 +59,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForClassProperties()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Property"));
@@ -69,7 +69,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesNotAddFieldsForPrivateClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Private"));
@@ -79,7 +79,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesNotAddFieldsForInternalClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Internal"));
@@ -89,7 +89,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesNotAddFieldsForProtectedClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Protected"));
@@ -99,7 +99,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForPublicClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Public"));
@@ -109,7 +109,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForBaseClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Base"));
@@ -119,7 +119,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForHiddenClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Hidden"));
@@ -129,7 +129,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForOverriddenClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Overridden"));
@@ -139,7 +139,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForVirtualClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Virtual"));
@@ -149,7 +149,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForComputedClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Contains
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Computed"));
@@ -159,7 +159,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItDoesAddFieldsForReadonlyClassMembers()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
  
         // Assert
         Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Readonly"));
@@ -169,7 +169,7 @@ public class EntityDefinitionFactoryTests_NoModules
     public void ItOnlyAddsEachFieldOnce()
     {
         // Act
-        var entity = factory.CreateFor<FullySpecifiedEntity>();
+        var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
         Assert.Empty(entity.Fields.GroupBy(x => x.Property.Name).Where(x => x.Count() > 1));

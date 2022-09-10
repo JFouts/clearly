@@ -17,14 +17,14 @@ public class EntityDefinitionFactoryTests_DefaultModules
         {
             new AttributeBasedEntityModule(),
             new CoreEntityModule(),
-            new CrudAdminEntityModule(),
+            new CrudAdminModule(),
         };
 
         var fieldModules = new IEntityFieldModule[]
         {
             new AttributeBasedEntityFieldModule(),
             new CoreEntityFieldModule(),
-            new CrudAdminEntityFieldModule(),
+            new CrudAdminModule(),
         };
 
         factory = new EntityDefinitionFactory(entityModules, fieldModules);
@@ -34,7 +34,7 @@ public class EntityDefinitionFactoryTests_DefaultModules
     public void ItSetsDataSourceUrl()
     {
         // Act
-        var entity = factory.CreateFor<BlankEntity>();
+        var entity = factory.CreateForEntity<BlankEntity>();
 
         // Assert
         Assert.Equal("/api/blankentity", entity.Using<CrudAdminEntityFeature>().DataSourceUrl);
@@ -54,29 +54,30 @@ public class EntityDefinitionFactoryTests_DefaultModules
     public void ItSetsEditorViewComponentWhenDecorated()
     {
         // Act
-        var entity = factory.CreateFor<DecoratedEntity>();
+        var entity = factory.CreateForEntity<DecoratedEntity>();
 
         // Assert
         Assert.Equal(
             "MyCustomViewComponent", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-                .Using<CrudAdminEntityFieldFeature>().EditorViewComponentName);
+                .Using<CrudAdminFieldFeature>().EditorComponentName);
     }
 
-    [Fact]
-    public void ItSetsEditorPropertiesWhenDecorated()
-    {
-        // Act
-        var entity = factory.CreateFor<DecoratedEntity>();
-
-        // Assert
-        Assert.Equal(
-            "A Custom Value", 
-            entity.Fields
-                .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-                .Using<CrudAdminEntityFieldFeature>().EditorProperties["MyCustomProperty"]);
-    }
+    // TODO: Fix this test when we have a way to set custom properties on editors
+    // [Fact]
+    // public void ItSetsEditorPropertiesWhenDecorated()
+    // {
+    //     // Act
+    //     var entity = factory.CreateForEntity<DecoratedEntity>();
+    // 
+    //     // Assert
+    //     Assert.Equal(
+    //         "A Custom Value", 
+    //         entity.Fields
+    //             .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
+    //             .Using<CrudAdminFieldFeature>().EditorProperties["MyCustomProperty"]);
+    // }
     
     public record BasicEntity : IEntity
     {
@@ -92,81 +93,81 @@ public class EntityDefinitionFactoryTests_DefaultModules
     public void ItSetsDisplayTemplateForStrings()
     {
         // Act
-        var entity = factory.CreateFor<BasicEntity>();
+        var entity = factory.CreateForEntity<BasicEntity>();
 
         // Assert
         Assert.Equal(
-            "String", 
+            "TextDisplayComponent", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.StringProperty))
-                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
+                .Using<CrudAdminFieldFeature>().DisplayComponentName);
     }
 
     [Fact]
     public void ItSetsDisplayTemplateForInts()
     {
         // Act
-        var entity = factory.CreateFor<BasicEntity>();
+        var entity = factory.CreateForEntity<BasicEntity>();
 
         // Assert
         Assert.Equal(
-            "Int32", 
+            "NumberDisplayComponent", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.IntProperty))
-                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
+                .Using<CrudAdminFieldFeature>().DisplayComponentName);
     }
     
     [Fact]
     public void ItSetsDisplayTemplateForGuids()
     {
         // Act
-        var entity = factory.CreateFor<BasicEntity>();
+        var entity = factory.CreateForEntity<BasicEntity>();
 
         // Assert
         Assert.Equal(
-            "Guid", 
+            "TextDisplayComponent", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.GuidProperty))
-                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
+                .Using<CrudAdminFieldFeature>().DisplayComponentName);
     }
        
     [Fact]
     public void ItSetsDisplayTemplateForEnumerable()
     {
         // Act
-        var entity = factory.CreateFor<BasicEntity>();
+        var entity = factory.CreateForEntity<BasicEntity>();
 
         // Assert
         Assert.Equal(
-            "IEnumerable`1", 
+            "TextArrayDisplayComponent", 
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.StringListProperty))
-                .Using<CrudAdminEntityFieldFeature>().DisplayTemplate);
+                .Using<CrudAdminFieldFeature>().DisplayComponentName);
     }
        
     [Fact]
     public void ItSetsIdToHideOnSearch()
     {
         // Act
-        var entity = factory.CreateFor<BasicEntity>();
+        var entity = factory.CreateForEntity<BasicEntity>();
 
         // Assert
         Assert.False(
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.Id))
-                .Using<CrudAdminEntityFieldFeature>().DisplayOnSearch);
+                .Using<CrudAdminFieldFeature>().DisplayOnSearch);
     }
 
-    [Fact(Skip = "Not Yet Implemented")]
+    [Fact]
     public void ItSetsIdToHideInEditor()
     {
         // Act
-        var entity = factory.CreateFor<BasicEntity>();
+        var entity = factory.CreateForEntity<BasicEntity>();
 
         // Assert
         Assert.False(
             entity.Fields
                 .Single(x => x.Property.Name == nameof(BasicEntity.Id))
-                .Using<CrudAdminEntityFieldFeature>().DisplayInEditor);
+                .Using<CrudAdminFieldFeature>().DisplayInEditor);
     }
 }

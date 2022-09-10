@@ -1,6 +1,7 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Clearly.Crud.WebUi.Core;
 using Clearly.Crud.WebUi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 

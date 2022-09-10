@@ -4,6 +4,7 @@
 using System.Collections;
 using AutoMapper;
 using Clearly.Crud.Services;
+using Clearly.Crud.WebUi.Core;
 
 namespace Clearly.Crud.WebUi.ViewComponents.FieldEditors;
 
