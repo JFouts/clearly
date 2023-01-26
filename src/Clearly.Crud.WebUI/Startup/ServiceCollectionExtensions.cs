@@ -55,8 +55,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCrudWebUIServices(this IServiceCollection services, params Assembly[] assemblies)
     {
         // TODO: Consolidate this into a single registration for a module
-        services.AddSingleton<IEntityModule, CrudAdminModule>();
-        services.AddSingleton<IEntityFieldModule, CrudAdminModule>();
+        services.AddSingleton<IDefinitionNodeModule, CrudAdminModule>();
 
         services.AddScoped(typeof(IEntityEditorViewModelFactory<>), typeof(EntityEditorViewModelFactory<>));
         services.AddScoped(typeof(ISearchListViewModelFactory<>), typeof(SearchListViewModelFactory<>));

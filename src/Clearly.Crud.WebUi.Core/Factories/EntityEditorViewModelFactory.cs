@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.WebUi.ViewModels;
 
 namespace Clearly.Crud.WebUi.Factories;
@@ -10,13 +11,13 @@ namespace Clearly.Crud.WebUi.Factories;
 public class EntityEditorViewModelFactory<TEntity> : IEntityEditorViewModelFactory<TEntity>
     where TEntity : IEntity
 {
-    private readonly IEntityDefinitionFactory entityDefinitionFactory;
+    private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityEditorViewModelFactory{TEntity}"/> class.
     /// </summary>
-    /// <param name="entityDefinitionFactory">The factory used to create entity definitons.</param>
-    public EntityEditorViewModelFactory(IEntityDefinitionFactory entityDefinitionFactory)
+    /// <param name="entityDefinitionFactory">The factory used to create entity definitions.</param>
+    public EntityEditorViewModelFactory(IEntityDefinitionGraphFactory entityDefinitionFactory)
     {
         this.entityDefinitionFactory = entityDefinitionFactory;
     }
@@ -36,17 +37,17 @@ public class EntityEditorViewModelFactory<TEntity> : IEntityEditorViewModelFacto
         };
     }
 
-    private static IEnumerable<FieldEditorViewModel> BuildFieldsViewModel(EntityDefinition definition, TEntity value)
+    private static IEnumerable<FieldEditorViewModel> BuildFieldsViewModel(EntityTypeDefinitionNode definition, TEntity value)
     {
-        foreach (var field in definition.Fields)
+        foreach (var field in definition.Properties)
         {
-            var feature = field.Using<CrudAdminFieldFeature>();
+            var feature = field.Using<CrudAdminPropertyFeature>();
 
             yield return BuildFieldViewModel(field, value, feature);
         }
     }
 
-    private static FieldEditorViewModel BuildFieldViewModel(FieldDefinition definition, TEntity value, CrudAdminFieldFeature feature)
+    private static FieldEditorViewModel BuildFieldViewModel(PropertyDefinitionNode definition, TEntity value, CrudAdminPropertyFeature feature)
     {
         return new FieldEditorViewModel(definition)
         {

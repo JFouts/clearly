@@ -2,18 +2,19 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Clearly.Crud.Models.EntityGraph;
 
 namespace Clearly.Crud;
 
-public class AttributeBasedEntityModule : EntityModule
+public class AttributeBasedEntityModule : DefinitionNodeModule<EntityTypeDefinitionNode>
 {
-    public override void OnApplyingModule(EntityDefinition entity)
+    public override void OnApplyingModule(EntityTypeDefinitionNode entity)
     {
-        var definitionAttributes = entity.ObjectType.GetCustomAttributes<EntityDefinitionAttribute>();
+        var definitionAttributes = entity.Type.GetCustomAttributes<ObjectTypeDefinitionNodeAttribute>();
 
         foreach (var definitionAttribute in definitionAttributes)
         {
-            definitionAttribute.ApplyToEntityDefinition(entity);
+            definitionAttribute.ApplyToDefinition(entity);
         }
     }
 }

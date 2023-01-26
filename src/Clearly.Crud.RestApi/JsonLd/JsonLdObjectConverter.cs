@@ -5,15 +5,16 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 
 namespace Clearly.Crud.JsonLd;
 
 public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
     where TEntity : IEntity
 {
-    private IEntityDefinitionFactory entityDefinitionFactory;
+    private IEntityDefinitionGraphFactory entityDefinitionFactory;
 
-    public JsonLdObjectConverter(IEntityDefinitionFactory entityDefinitionFactory)
+    public JsonLdObjectConverter(IEntityDefinitionGraphFactory entityDefinitionFactory)
     {
         this.entityDefinitionFactory = entityDefinitionFactory;
     }
@@ -36,12 +37,12 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         var responseBody = new JsonObject();
 
         // TODO: Consider this being already Lower on the definition
-        var nameKey = definition.NameKey.ToLower();
+        var nameKey = definition.NodeKey.ToLower();
 
         var typeJsonMetadata = definition.Using<JsonLdTypeFeature>();
         var vocab = $"{baseUrl}/schema/{nameKey}#";
 
-        // TODO: Move this fallback logic to defintion generation
+        // TODO: Move this fallback logic to definition generation
         if (!string.IsNullOrWhiteSpace(typeJsonMetadata.TermsDefaultVocab))
         {
             vocab = typeJsonMetadata.TermsDefaultVocab;
@@ -49,7 +50,7 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
 
         var typeIri = $"{baseUrl}/schema/{nameKey}";
 
-        // TODO: Move this fallback logic to defintion generation
+        // TODO: Move this fallback logic to definition generation
         if (!string.IsNullOrWhiteSpace(typeJsonMetadata.TypeIri))
         {
             typeIri = typeJsonMetadata.TypeIri;
@@ -62,7 +63,7 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         writer.WriteNumber("@version", 1.1);
         writer.WriteString("@vocab", vocab);
 
-        foreach (var field in definition.Fields)
+        foreach (var field in definition.Properties)
         {
             var fieldJsonMetadata = field.Using<JsonLdFieldFeature>();
             var propertyToken = options.PropertyNamingPolicy?.ConvertName(field.Property.Name) ?? field.Property.Name;
@@ -82,9 +83,9 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         writer.WriteEndObject(); // End of @context
 
         writer.WriteString("@type", typeIri);
-        writer.WriteString("@id", $"{baseUrl}/api/{nameKey}/{value.Id}"); // TODO: Should be set of defintion
+        writer.WriteString("@id", $"{baseUrl}/api/{nameKey}/{value.Id}"); // TODO: Should be set of definition
         
-        foreach (var field in definition.Fields)
+        foreach (var field in definition.Properties)
         {
             var fieldJsonMetadata = field.Using<JsonLdFieldFeature>();
             var propertyToken = options.PropertyNamingPolicy?.ConvertName(field.Property.Name) ?? field.Property.Name;

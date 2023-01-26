@@ -4,6 +4,7 @@
 using System.Reflection;
 using Clearly.Crud.Infrastructure;
 using Clearly.Crud.JsonLd;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.RestApi.Infrastructure;
 using Clearly.Crud.Services;
 using Clearly.EntityRepository;
@@ -31,7 +32,7 @@ public static class ServiceCollectionExtensions
 
         return services
             .AddCoreModules()
-            .AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>()
+            .AddSingleton<IEntityDefinitionGraphFactory, EntityDefinitionGraphFactory>()
             .AddScoped(typeof(IEntityApiService<>), typeof(LocalEntityApiService<>))
             .AddScoped(typeof(ICrudService<>), typeof(CrudEntityService<>))
             .AddScoped(typeof(EntityDataSource<>));
@@ -71,7 +72,7 @@ public static class ServiceCollectionExtensions
     /// Adds required MVC Features for Clearly CRUD
     /// </summary>
     /// <param name="builder">The MVC builder to modify.</param>
-    /// <param name="assemblies">The assmblies to scan for entities.</param>
+    /// <param name="assemblies">The assemblies to scan for entities.</param>
     /// <returns>The passed builder.</returns>
     public static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, params Assembly[] assemblies)
     {
@@ -115,7 +116,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds all the required service and initializes MVC Controllers for a Clearly CRUD API
     /// </summary>
-    /// <param name="assemblies">Assemblies containing Entity defintions.</param>
+    /// <param name="assemblies">Assemblies containing Entity definitions.</param>
     /// <returns>IMvcBuilder from AddControllers()</returns>
     /// <remarks>
     /// This will automatically configure AddControllers(), to manually configure MVC in your project's startup
@@ -129,7 +130,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// All required service and initializes MVC Controllers for a Clearly CRUD API
     /// </summary>
-    /// <param name="assemblies">Assemblies containing Entity defintions.</param>
+    /// <param name="assemblies">Assemblies containing Entity definitions.</param>
     /// <returns>IMvcBuilder from AddControllers()</returns>
     /// <remarks>
     /// This will automatically configure AddControllers(), to manually configure MVC in your project's startup
@@ -154,7 +155,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<JsonLdObjectConverterFactory>()
             .AddSingleton(typeof(JsonLdObjectConverter<>));
 
-        // TODO: I hate this, it feels so against how aspnetcore want you to setup Formatters, but we need EntityDefinitions in our formatter
+        // TODO: I hate this, it feels so against how aspnetcore wants you to setup Formatters, but we need EntityDefinitions in our formatter
         // Look into ways to rework this so that the DI container doesn't need to be fully initialized when we create our Formatter
         services.AddScoped(x => 
             new SystemTextJsonLdOutputFormatter(
@@ -173,10 +174,10 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services, nameof(services));
 
         return services
-            .AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>()
-            .AddSingleton<IEntityModule, AttributeBasedEntityModule>()
-            .AddSingleton<IEntityFieldModule, CoreEntityFieldModule>()
-            .AddSingleton<IEntityModule, CoreEntityModule>();
+            .AddSingleton<IDefinitionNodeModule, AttributeBasedEntityFieldModule>()
+            .AddSingleton<IDefinitionNodeModule, AttributeBasedEntityModule>()
+            .AddSingleton<IDefinitionNodeModule, CoreEntityFieldModule>()
+            .AddSingleton<IDefinitionNodeModule, CoreEntityModule>();
     }
 
     private static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, ITypeProvider typeProvider)

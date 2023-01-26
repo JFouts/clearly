@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clearly.Crud.RestApi.JsonLd;
@@ -11,9 +12,9 @@ namespace Clearly.Crud.RestApi.JsonLd;
 public class SchemaController<TEntity> : ControllerBase
     where TEntity : IEntity
 {
-    private readonly IEntityDefinitionFactory entityDefinitionFactory;
+    private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
 
-    public SchemaController(IEntityDefinitionFactory entityDefinitionFactory)
+    public SchemaController(IEntityDefinitionGraphFactory entityDefinitionFactory)
     {
         this.entityDefinitionFactory = entityDefinitionFactory;
     }
@@ -26,7 +27,7 @@ public class SchemaController<TEntity> : ControllerBase
         
         var def = new
         {
-            @id = $"{baseUrl}/schema/{entity.NameKey}",
+            @id = $"{baseUrl}/schema/{entity.NodeKey}",
         };
 
         return Ok(def);

@@ -1,15 +1,17 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Clearly.Crud.Models.EntityGraph;
+
 namespace Clearly.Crud;
 
-public class CoreEntityFieldModule : EntityFieldModule
+public class CoreEntityFieldModule : DefinitionNodeModule<PropertyDefinitionNode>
 {
-    public override void OnApplyingFallbackDefaults(EntityDefinition entity, FieldDefinition field)
+    public override void OnApplyingFallbackDefaults(PropertyDefinitionNode property)
     {
-        if (string.IsNullOrWhiteSpace(field.DisplayName))
+        if (string.IsNullOrWhiteSpace(property.DisplayName))
         {
-            field.DisplayName = field.Property.Name.FormatForDisplay();
+            property.DisplayName = property.Property.Name.FormatForDisplay();
         }
     }
 }

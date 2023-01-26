@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.WebUi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,19 +11,19 @@ namespace Clearly.Crud.WebUi.ViewComponents.FieldEditors;
 [ViewComponent]
 public class ObjectListFieldEditor : FieldEditorViewComponent
 {
-    private readonly IEntityDefinitionFactory entityDefinitionFactory;
+    private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ObjectListFieldEditor"/> class.
     /// </summary>
     /// <param name="entityDefinitionFactory">Factory used to create the defintion for the objects being rendered.</param>
-    public ObjectListFieldEditor(IEntityDefinitionFactory entityDefinitionFactory)
+    public ObjectListFieldEditor(IEntityDefinitionGraphFactory entityDefinitionFactory)
     {
         this.entityDefinitionFactory = entityDefinitionFactory;
     }
 
     /// <inheritdoc/>
-    public override Task<IViewComponentResult> InvokeAsync(FieldDefinition fieldDefinition, object value)
+    public override Task<IViewComponentResult> InvokeAsync(PropertyDefinitionNode fieldDefinition, object value)
     {
         if (value is not IEnumerable listValue)
         {

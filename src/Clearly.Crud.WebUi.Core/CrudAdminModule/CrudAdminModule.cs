@@ -3,36 +3,52 @@
 
 using System.Collections;
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 
 namespace Clearly.Crud.WebUi;
 
 /// <summary>
 /// A Clearly module for applying the CRUD admin on top of the CRUD API.
 /// </summary>
-public class CrudAdminModule : IEntityModule, IEntityFieldModule
+public class CrudAdminModule : IDefinitionNodeModule
 {
-    /// <inheritdoc/>
-    public void OnApplyingModule(EntityDefinition entity)
+    public void OnApplyingModule(DefinitionNode node)
     {
+        if (node is PropertyDefinitionNode propertyNode)
+        {
+            OnApplyingModule(propertyNode);
+        }
     }
 
+    public void OnApplyingFallbackDefaults(DefinitionNode node)
+    {
+        if (node is EntityTypeDefinitionNode entityNode)
+        {
+            OnApplyingFallbackDefaults(entityNode);
+        }
+        else if (node is PropertyDefinitionNode propertyNode)
+        {
+            OnApplyingFallbackDefaults(propertyNode);
+        }
+    }
+    
     /// <inheritdoc/>
-    public void OnApplyingFallbackDefaults(EntityDefinition entity)
+    public void OnApplyingFallbackDefaults(EntityTypeDefinitionNode entity)
     {
         var metadata = entity.Using<CrudAdminEntityFeature>();
 
         if (string.IsNullOrWhiteSpace(metadata.DataSourceUrl))
         {
-            metadata.DataSourceUrl = $"/api/{entity.NameKey.ToLower()}";
+            metadata.DataSourceUrl = $"/api/{entity.NodeKey.ToLower()}";
         }
     }
 
     /// <inheritdoc/>
-    public void OnApplyingModule(EntityDefinition entity, FieldDefinition field)
+    public void OnApplyingModule(PropertyDefinitionNode property)
     {
-        var metadata = field.Using<CrudAdminFieldFeature>();
+        var metadata = property.Using<CrudAdminPropertyFeature>();
 
-        if (field.Property.Name == nameof(IEntity.Id))
+        if (property.Property.Name == nameof(IEntity.Id))
         {
             metadata.DisplayInEditor = false;
             metadata.DisplayOnSearch = false;
@@ -40,24 +56,24 @@ public class CrudAdminModule : IEntityModule, IEntityFieldModule
     }
 
     /// <inheritdoc/>
-    public void OnApplyingFallbackDefaults(EntityDefinition entity, FieldDefinition field)
+    public void OnApplyingFallbackDefaults(PropertyDefinitionNode property)
     {
-        var metadata = field.Using<CrudAdminFieldFeature>();
+        var metadata = property.Using<CrudAdminPropertyFeature>();
 
         if (string.IsNullOrWhiteSpace(metadata.EditorComponentName))
         {
-            ConfigureDefaultEditorFeature(metadata, field);
+            ConfigureDefaultEditorFeature(metadata, property);
         }
 
         if (string.IsNullOrWhiteSpace(metadata.DisplayComponentName))
         {
-            metadata.DisplayComponentName = GetDefaultDisplayComponentForType(field.Property.PropertyType);
+            metadata.DisplayComponentName = GetDefaultDisplayComponentForType(property.Property.PropertyType);
         }
     }
 
-    private static void ConfigureDefaultEditorFeature(CrudAdminFieldFeature feature, FieldDefinition field)
+    private static void ConfigureDefaultEditorFeature(CrudAdminPropertyFeature feature, PropertyDefinitionNode property)
     {
-        var type = field.Property.PropertyType;
+        var type = property.Property.PropertyType;
 
         if (type == typeof(string))
         {
@@ -69,8 +85,8 @@ public class CrudAdminModule : IEntityModule, IEntityFieldModule
         if (type.IsEnum)
         {
             feature.EditorComponentName = "DropDownEditorComponent";
-            field.Using<CrudAdminDropDownFeature>().DataSource = string.Join(";", type.GetEnumValues().OfType<object>().Select(x => $"{x},{type.GetEnumName(x)?.FormatForDisplay()}"));
-            field.Using<CrudAdminDropDownFeature>().DataSourceType = "StaticList";
+            property.Using<CrudAdminDropDownFeature>().DataSource = string.Join(";", type.GetEnumValues().OfType<object>().Select(x => $"{x},{type.GetEnumName(x)?.FormatForDisplay()}"));
+            property.Using<CrudAdminDropDownFeature>().DataSourceType = "StaticList";
 
             return;
         }
@@ -78,8 +94,8 @@ public class CrudAdminModule : IEntityModule, IEntityFieldModule
         if (type.IsAssignableTo(typeof(IEntity)))
         {
             feature.EditorComponentName = "DropDownEditorComponent";
-            field.Using<CrudAdminDropDownFeature>().DataSource = type.Name; // TODO: Get the name key
-            field.Using<CrudAdminDropDownFeature>().DataSourceType = "EntityDataSource";
+            property.Using<CrudAdminDropDownFeature>().DataSource = type.Name; // TODO: Get the name key
+            property.Using<CrudAdminDropDownFeature>().DataSourceType = "EntityDataSource";
 
             return;
         }
@@ -91,8 +107,8 @@ public class CrudAdminModule : IEntityModule, IEntityFieldModule
             if (enumerableType.IsAssignableTo(typeof(IEntity)))
             {
                 feature.EditorComponentName = "MultiSelectEditorComponent";
-                field.Using<CrudAdminDropDownFeature>().DataSource = enumerableType.Name; // TODO: Get the name key
-                field.Using<CrudAdminDropDownFeature>().DataSourceType = "EntityDataSource";
+                property.Using<CrudAdminDropDownFeature>().DataSource = enumerableType.Name; // TODO: Get the name key
+                property.Using<CrudAdminDropDownFeature>().DataSourceType = "EntityDataSource";
             }
             else
             {
@@ -157,4 +173,5 @@ public class CrudAdminModule : IEntityModule, IEntityFieldModule
                 return "TextDisplayComponent";
         }
     }
+
 }

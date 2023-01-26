@@ -1,8 +1,6 @@
 ﻿@using Clearly.Crud.WebUi.Client.Models.Dto
 @using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
 @using Clearly.Crud.WebUi
-@using Clearly.Crud.WebUi.Core
-@using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 
 @*TODO: This shares a lot of code with EntityCreate.razor... remove code duplication*@
@@ -12,14 +10,14 @@
 <div class="mb-3">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <div class="nav-link active">@FieldDefinition.DisplayName</div>
+            <div class="nav-link active">@PropertyDefinitionNode.DisplayName</div>
         </li>
     </ul>
 
-    <div id="@FieldDefinition.NameKey" class="card card-body">
+    <div id="@PropertyDefinitionNode.NameKey" class="card card-body">
         @foreach (var field in EntityDefinition.Fields)
         {
-            var feature = field.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>();
+            var feature = field.Features[nameof(CrudAdminPropertyFeature)].ToObject<CrudAdminPropertyFeature>();
 
             @if (feature.DisplayInEditor)
             {
@@ -68,7 +66,7 @@
         return new Dictionary<string, object>
         {
             { "Input", property },
-            { "FieldDefinition", fieldDefinition },
+            { "PropertyDefinitionNode", fieldDefinition },
         };
     }
 

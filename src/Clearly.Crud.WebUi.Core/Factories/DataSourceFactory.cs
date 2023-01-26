@@ -8,10 +8,10 @@ namespace Clearly.Crud.WebUi.Core;
 public class DataSourceFactory : IDataSourceFactory
 {
     //private readonly IServiceProvider serviceLocator;
-    //private readonly IEntityDefinitionFactory entityDefinitionFactory;
+    //private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
     //private readonly ITypeProvider entityTypeProvider;
 
-    //public DataSourceFactory(IServiceProvider serviceLocator, IEntityDefinitionFactory entityDefinitionFactory, ITypeProvider entityTypeProvider)
+    //public DataSourceFactory(IServiceProvider serviceLocator, IEntityDefinitionGraphFactory entityDefinitionFactory, ITypeProvider entityTypeProvider)
     //{
     //    this.serviceLocator = serviceLocator;
     //    this.entityDefinitionFactory = entityDefinitionFactory;

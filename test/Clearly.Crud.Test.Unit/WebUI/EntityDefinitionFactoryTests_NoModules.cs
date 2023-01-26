@@ -1,6 +1,7 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.WebUi;
 using Xunit;
 
@@ -8,11 +9,11 @@ namespace Clearly.Crud.Test.Unit;
 
 public class EntityDefinitionFactoryTests_NoModules
 {
-    private readonly EntityDefinitionFactory factory;
+    private readonly EntityDefinitionGraphFactory factory;
 
     public EntityDefinitionFactoryTests_NoModules()
     {
-        factory = new EntityDefinitionFactory(new IEntityModule[0], new IEntityFieldModule[0]);
+        factory = new EntityDefinitionGraphFactory(new IDefinitionNodeModule[0]);
     }
 
     [Fact]
@@ -32,137 +33,137 @@ public class EntityDefinitionFactoryTests_NoModules
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Equal(nameof(FullySpecifiedEntity), entity.NameKey);
+        Assert.Equal("fullySpecifiedEntity", entity.NodeKey);
     }
     
     [Fact]
-    public void ItAddsFieldsForProperties_WhenNoModulesAreSet()
+    public void ItAddsPropertiesForProperties_WhenNoModulesAreSet()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name == nameof(FullySpecifiedEntity.Id));
+        Assert.Contains(entity.Properties, x => x.Property.Name == nameof(FullySpecifiedEntity.Id));
     }
 
     [Fact]
-    public void ItDoesNotAddFieldsForClassFields()
+    public void ItDoesNotAddPropertiesForClassProperties()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Field"));
+        Assert.DoesNotContain(entity.Properties, x => x.Property.Name.Contains("Field"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForClassProperties()
+    public void ItDoesAddPropertiesForClassProperties()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Property"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Property"));
     }
 
     [Fact]
-    public void ItDoesNotAddFieldsForPrivateClassMembers()
+    public void ItDoesNotAddPropertiesForPrivateClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Private"));
+        Assert.DoesNotContain(entity.Properties, x => x.Property.Name.Contains("Private"));
     }
 
     [Fact]
-    public void ItDoesNotAddFieldsForInternalClassMembers()
+    public void ItDoesNotAddPropertiesForInternalClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Internal"));
+        Assert.DoesNotContain(entity.Properties, x => x.Property.Name.Contains("Internal"));
     }
 
     [Fact]
-    public void ItDoesNotAddFieldsForProtectedClassMembers()
+    public void ItDoesNotAddPropertiesForProtectedClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.DoesNotContain(entity.Fields, x => x.Property.Name.Contains("Protected"));
+        Assert.DoesNotContain(entity.Properties, x => x.Property.Name.Contains("Protected"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForPublicClassMembers()
+    public void ItDoesAddPropertiesForPublicClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Public"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Public"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForBaseClassMembers()
+    public void ItDoesAddPropertiesForBaseClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Base"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Base"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForHiddenClassMembers()
+    public void ItDoesAddPropertiesForHiddenClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Hidden"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Hidden"));
     }
     
     [Fact]
-    public void ItDoesAddFieldsForOverriddenClassMembers()
+    public void ItDoesAddPropertiesForOverriddenClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Overridden"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Overridden"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForVirtualClassMembers()
+    public void ItDoesAddPropertiesForVirtualClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Virtual"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Virtual"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForComputedClassMembers()
+    public void ItDoesAddPropertiesForComputedClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Contains
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Computed"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Computed"));
     }
 
     [Fact]
-    public void ItDoesAddFieldsForReadonlyClassMembers()
+    public void ItDoesAddPropertiesForReadonlyClassMembers()
     {
         // Act
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
  
         // Assert
-        Assert.Contains(entity.Fields, x => x.Property.Name.Contains("Readonly"));
+        Assert.Contains(entity.Properties, x => x.Property.Name.Contains("Readonly"));
     }
     
     [Fact]
@@ -172,6 +173,6 @@ public class EntityDefinitionFactoryTests_NoModules
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Empty(entity.Fields.GroupBy(x => x.Property.Name).Where(x => x.Count() > 1));
+        Assert.Empty(entity.Properties.GroupBy(x => x.Property.Name).Where(x => x.Count() > 1));
     }
 }

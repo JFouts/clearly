@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.Search;
 using Clearly.Crud.WebUi.Extensions;
 using Clearly.Crud.WebUi.ViewModels;
@@ -12,13 +13,13 @@ namespace Clearly.Crud.WebUi.Factories;
 public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<TEntity>
     where TEntity : IEntity
 {
-    private readonly IEntityDefinitionFactory entityDefinitionFactory;
+    private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchListViewModelFactory{TEntity}"/> class.
     /// </summary>
-    /// <param name="entityDefinitionFactory">The factory used to create entity definitons.</param>
-    public SearchListViewModelFactory(IEntityDefinitionFactory entityDefinitionFactory)
+    /// <param name="entityDefinitionFactory">The factory used to create entity definitions.</param>
+    public SearchListViewModelFactory(IEntityDefinitionGraphFactory entityDefinitionFactory)
     {
         this.entityDefinitionFactory = entityDefinitionFactory;
     }
@@ -38,11 +39,11 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
         });
     }
 
-    private IEnumerable<TableColumnViewModel> CreateListViewColumnFromType(EntityDefinition entity)
+    private IEnumerable<TableColumnViewModel> CreateListViewColumnFromType(EntityTypeDefinitionNode entity)
     {
         var columns = entity
-            .Fields
-            .Where(x => x.Using<CrudAdminFieldFeature>().DisplayOnSearch)
+            .Properties
+            .Where(x => x.Using<CrudAdminPropertyFeature>().DisplayOnSearch)
             .Select(BuildColumnViewModel)
             .ToList();
 
@@ -62,14 +63,14 @@ public class SearchListViewModelFactory<TEntity> : ISearchListViewModelFactory<T
         return columns;
     }
 
-    private TableColumnViewModel BuildColumnViewModel(FieldDefinition field)
+    private TableColumnViewModel BuildColumnViewModel(PropertyDefinitionNode property)
     {
-        var metadata = field.Using<CrudAdminFieldFeature>();
+        var metadata = property.Using<CrudAdminPropertyFeature>();
 
         return new TableColumnViewModel
         {
-            DisplayName = field.DisplayName,
-            Key = field.Property.Name,
+            DisplayName = property.DisplayName,
+            Key = property.Property.Name,
             DisplayTemplate = metadata.DisplayComponentName,
             //Properties = metadata.DisplayProperties,
         };

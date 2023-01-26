@@ -2,8 +2,6 @@
 
 @using Clearly.Crud.WebUi.Client.Models.Dto
 @using Clearly.Crud.WebUi.Client.Services
-@using Clearly.Crud.WebUi.Client.Shared.EditorComponents
-@using Clearly.Crud.WebUi.ViewModels
 @using Clearly.Crud
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
@@ -21,7 +19,7 @@
     <EditForm class="default-focus" data-type="create" Model="Entity" OnValidSubmit="@OnSubmit">
         @foreach (var field in EntityDefinition.Fields)
         {
-            var feature = field.Features[nameof(CrudAdminFieldFeature)].ToObject<CrudAdminFieldFeature>();
+            var feature = field.Features[nameof(CrudAdminPropertyFeature)].ToObject<CrudAdminPropertyFeature>();
 
             @if (feature.DisplayInEditor)
             {
@@ -56,7 +54,7 @@
         return new Dictionary<string, object>
         {
             { "Input", property },
-            { "FieldDefinition", fieldDefinition },
+            { "PropertyDefinitionNode", fieldDefinition },
         };
     }
 

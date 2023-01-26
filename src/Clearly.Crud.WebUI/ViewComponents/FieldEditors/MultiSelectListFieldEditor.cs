@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.WebUi.Core;
 using Clearly.Crud.WebUi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ public class MultiSelectListFieldEditor : FieldEditorViewComponent
         this.dataSourceReader = dataSourceReader;
     }
 
-    public override async Task<IViewComponentResult> InvokeAsync(FieldDefinition fieldDefinition, object value)
+    public override async Task<IViewComponentResult> InvokeAsync(PropertyDefinitionNode fieldDefinition, object value)
     {
         IEnumerable<string> typedValue = value switch
         {
@@ -29,7 +30,7 @@ public class MultiSelectListFieldEditor : FieldEditorViewComponent
             _ => throw new ArgumentException($"{nameof(MultiSelectListFieldEditor)} parameter {nameof(value)} is of an unsupported type.", nameof(value)),
         };
 
-        var metadata = fieldDefinition.Using<CrudAdminFieldFeature>();
+        var metadata = fieldDefinition.Using<CrudAdminPropertyFeature>();
         var dropDownFeature = fieldDefinition.Using<CrudAdminDropDownFeature>();
 
         ArgumentNullException.ThrowIfNull(dropDownFeature.DataSource, nameof(dropDownFeature.DataSource));

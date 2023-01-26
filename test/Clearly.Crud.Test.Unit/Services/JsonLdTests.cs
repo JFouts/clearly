@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Clearly.Core;
 using Clearly.Crud.JsonLd;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.WebUi;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -31,13 +32,12 @@ public class JsonLdTests
         entityId = Guid.Parse("1dc64d2b-d3f4-472b-9b41-5e95d8d888ed");
 
         services = new ServiceCollection()
-            .AddSingleton<IEntityFieldModule, AttributeBasedEntityFieldModule>()
-            .AddSingleton<IEntityModule, AttributeBasedEntityModule>()
-            .AddSingleton<IEntityFieldModule, CoreEntityFieldModule>()
-            .AddSingleton<IEntityModule, CoreEntityModule>()
-            .AddSingleton<IEntityModule, CrudAdminModule>()
-            .AddSingleton<IEntityFieldModule, CrudAdminModule>()
-            .AddSingleton<IEntityDefinitionFactory, EntityDefinitionFactory>();
+            .AddSingleton<IDefinitionNodeModule, AttributeBasedEntityFieldModule>()
+            .AddSingleton<IDefinitionNodeModule, AttributeBasedEntityModule>()
+            .AddSingleton<IDefinitionNodeModule, CoreEntityFieldModule>()
+            .AddSingleton<IDefinitionNodeModule, CoreEntityModule>()
+            .AddSingleton<IDefinitionNodeModule, CrudAdminModule>()
+            .AddSingleton<IEntityDefinitionGraphFactory, EntityDefinitionGraphFactory>();
 
         httpContext = new DefaultHttpContext();
         httpContext.Response.Body = new MemoryStream();

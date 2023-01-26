@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
+using Clearly.Crud.Models.EntityGraph;
 using Clearly.Crud.WebUi;
 using Xunit;
 
@@ -9,25 +10,21 @@ namespace Clearly.Crud.Test.Unit;
 
 public class EntityDefinitionFactoryTests_DefaultModules
 {
-    private readonly EntityDefinitionFactory factory;
+    private readonly EntityDefinitionGraphFactory factory;
 
     public EntityDefinitionFactoryTests_DefaultModules()
     {
-        var entityModules = new IEntityModule[]
+        var modules = new IDefinitionNodeModule[]
         {
             new AttributeBasedEntityModule(),
             new CoreEntityModule(),
             new CrudAdminModule(),
-        };
-
-        var fieldModules = new IEntityFieldModule[]
-        {
             new AttributeBasedEntityFieldModule(),
             new CoreEntityFieldModule(),
             new CrudAdminModule(),
         };
 
-        factory = new EntityDefinitionFactory(entityModules, fieldModules);
+        factory = new EntityDefinitionGraphFactory(modules);
     }
 
     [Fact]
@@ -59,9 +56,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
         // Assert
         Assert.Equal(
             "MyCustomViewComponent", 
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-                .Using<CrudAdminFieldFeature>().EditorComponentName);
+                .Using<CrudAdminPropertyFeature>().EditorComponentName);
     }
 
     // TODO: Fix this test when we have a way to set custom properties on editors
@@ -74,9 +71,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
     //     // Assert
     //     Assert.Equal(
     //         "A Custom Value", 
-    //         entity.Fields
+    //         entity.Properties
     //             .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-    //             .Using<CrudAdminFieldFeature>().EditorProperties["MyCustomProperty"]);
+    //             .Using<CrudAdminPropertyFeature>().EditorProperties["MyCustomProperty"]);
     // }
     
     public record BasicEntity : IEntity
@@ -98,9 +95,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
         // Assert
         Assert.Equal(
             "TextDisplayComponent", 
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(BasicEntity.StringProperty))
-                .Using<CrudAdminFieldFeature>().DisplayComponentName);
+                .Using<CrudAdminPropertyFeature>().DisplayComponentName);
     }
 
     [Fact]
@@ -112,9 +109,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
         // Assert
         Assert.Equal(
             "NumberDisplayComponent", 
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(BasicEntity.IntProperty))
-                .Using<CrudAdminFieldFeature>().DisplayComponentName);
+                .Using<CrudAdminPropertyFeature>().DisplayComponentName);
     }
     
     [Fact]
@@ -126,9 +123,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
         // Assert
         Assert.Equal(
             "TextDisplayComponent", 
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(BasicEntity.GuidProperty))
-                .Using<CrudAdminFieldFeature>().DisplayComponentName);
+                .Using<CrudAdminPropertyFeature>().DisplayComponentName);
     }
        
     [Fact]
@@ -140,9 +137,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
         // Assert
         Assert.Equal(
             "TextArrayDisplayComponent", 
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(BasicEntity.StringListProperty))
-                .Using<CrudAdminFieldFeature>().DisplayComponentName);
+                .Using<CrudAdminPropertyFeature>().DisplayComponentName);
     }
        
     [Fact]
@@ -153,9 +150,9 @@ public class EntityDefinitionFactoryTests_DefaultModules
 
         // Assert
         Assert.False(
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(BasicEntity.Id))
-                .Using<CrudAdminFieldFeature>().DisplayOnSearch);
+                .Using<CrudAdminPropertyFeature>().DisplayOnSearch);
     }
 
     [Fact]
@@ -166,8 +163,8 @@ public class EntityDefinitionFactoryTests_DefaultModules
 
         // Assert
         Assert.False(
-            entity.Fields
+            entity.Properties
                 .Single(x => x.Property.Name == nameof(BasicEntity.Id))
-                .Using<CrudAdminFieldFeature>().DisplayInEditor);
+                .Using<CrudAdminPropertyFeature>().DisplayInEditor);
     }
 }

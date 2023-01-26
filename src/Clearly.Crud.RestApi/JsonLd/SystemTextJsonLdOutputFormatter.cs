@@ -43,7 +43,7 @@ public class SystemTextJsonLdOutputFormatter : SystemTextJsonOutputFormatter
             return false;
         }
 
-        // var factory = context.HttpContext.RequestServices.GetRequiredService<IEntityDefinitionFactory>();
+        // var factory = context.HttpContext.RequestServices.GetRequiredService<IEntityDefinitionGraphFactory>();
         // var entity = factory.CreateForType(context.GetType());
 
         // TODO: Better checking for if Type Definition can be used for JSON-LD

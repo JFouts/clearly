@@ -1,6 +1,8 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Clearly.Crud.Models.EntityGraph;
+
 namespace Clearly.Crud.JsonLd;
 
 /// <summary>
@@ -18,7 +20,7 @@ namespace Clearly.Crud.JsonLd;
 /// 
 /// This way for example term "name" will resolve to  http://schema.org/name rather than http://schema.org/Person#name
 /// </remarks>
-public class TypeSchemaAttribute : EntityDefinitionAttribute
+public class TypeSchemaAttribute : ObjectTypeDefinitionNodeAttribute
 {
     /// <summary>
     /// The IRI (typically a URL) uniquely identifying this type.
@@ -51,8 +53,8 @@ public class TypeSchemaAttribute : EntityDefinitionAttribute
         Iri = iri;
     }
 
-    /// <inheritdoc />    
-    protected internal override void ApplyToEntityDefinition(EntityDefinition entity)
+    /// <inheritdoc />
+    protected internal override void ApplyToDefinition(ObjectTypeDefinitionNode entity)
     {
         var jsonLdFeature = entity.Using<JsonLdTypeFeature>();
         jsonLdFeature.TypeIri = Iri;

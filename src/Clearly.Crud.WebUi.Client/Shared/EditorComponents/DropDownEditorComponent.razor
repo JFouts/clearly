@@ -11,8 +11,8 @@
 @inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
 
 <div class="mb-3">
-  <label for="@FieldDefinition.NameKey">@FieldDefinition.DisplayName</label>
-  <select class="form-select" id="@FieldDefinition.NameKey" name="@FieldDefinition.NameKey" @bind="Value">
+  <label for="@PropertyDefinitionNode.NameKey">@PropertyDefinitionNode.DisplayName</label>
+  <select class="form-select" id="@PropertyDefinitionNode.NameKey" name="@PropertyDefinitionNode.NameKey" @bind="Value">
     @foreach (var option in Options)
     {
       <option value="@option.Value">@option.Label</option>  
@@ -30,7 +30,7 @@
     {
         await base.OnInitializedAsync();
 
-        Configuration = FieldDefinition.Features[nameof(CrudAdminDropDownFeature)].ToObject<CrudAdminDropDownFeature>();
+        Configuration = PropertyDefinitionNode.Features[nameof(CrudAdminDropDownFeature)].ToObject<CrudAdminDropDownFeature>();
 
         var dataSource = dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
         var data = await dataSourceReader.ReadFrom(dataSource);

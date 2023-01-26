@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Net.Http.Json;
+using Clearly.Crud.Models.EntityGraph;
 
 namespace Clearly.Crud.Services;
 
@@ -16,15 +17,15 @@ public class GenericEntityService
         this.config = config;
     }
 
-    public async Task<EntityDefinition> GetDefinition(string type)
+    public async Task<EntityTypeDefinitionNode> GetDefinition(string type)
     {
-        return (EntityDefinition)await Send(
+        return (EntityTypeDefinitionNode)await Send(
             new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = Url($"/api/entites/{type}"),
+                RequestUri = Url($"/api/entities/{type}"),
             }, 
-            typeof(EntityDefinition));
+            typeof(EntityTypeDefinitionNode));
     }
 
     public async Task<object> GetById(Guid id, string typeKey)
