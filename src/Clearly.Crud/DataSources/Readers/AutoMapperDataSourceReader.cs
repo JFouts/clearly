@@ -8,6 +8,8 @@ using Clearly.Crud.WebUi.Core;
 
 namespace Clearly.Crud.WebUi;
 
+// TODO: Can we do something like this without AutoMapper? Is it worth having this dependency?
+
 public class AutoMapperDataSourceReader<TModel> : IDataSourceReader<TModel>
 {
     private readonly IMapper mapper;

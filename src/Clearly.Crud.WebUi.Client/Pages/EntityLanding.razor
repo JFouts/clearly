@@ -1,6 +1,6 @@
 ﻿@page "/entity"
 
-@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.EntityGraph
 
 @inject HttpClient http;
 
@@ -12,7 +12,7 @@
     <ul>
         @foreach (var entity in Entites)
         {
-            var link = $"entity/{entity.NameKey.ToLower()}";
+            var link = $"entity/{entity.NodeKey.ToLower()}";
             <li>
                 <NavLink class="nav-link" href="@link" Match="NavLinkMatch.All">
                     @entity.DisplayName
@@ -23,7 +23,7 @@
 </nav>
 
 @code {
-    protected IEnumerable<EntityDefinitionDto> Entites { get; set; } = Array.Empty<EntityDefinitionDto>();
+    protected IEnumerable<TypeDefinitionNodeFlattened> Entites { get; set; } = Array.Empty<TypeDefinitionNodeFlattened>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,7 +31,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            Entites = await response.Content.ReadFromJsonAsync<IEnumerable<EntityDefinitionDto>>()
+            Entites = await response.Content.ReadFromJsonAsync<IEnumerable<TypeDefinitionNodeFlattened>>()
                 ?? throw new Exception(); // TODO: Better Exception Handling
         }
         else

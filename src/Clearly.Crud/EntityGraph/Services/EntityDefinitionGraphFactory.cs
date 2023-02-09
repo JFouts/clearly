@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using Clearly.Core;
 
-namespace Clearly.Crud.Models.EntityGraph;
+namespace Clearly.Crud.EntityGraph;
 
 public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
 {
@@ -31,73 +31,6 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
         return rootNode;
     }
 
-    public Dictionary<string, TypeDefinitionNodeFlattened> CreateFlattenedForType(Type type)
-    {
-        var root = CreateForType(type);
-        return Flatten(root);
-    }
-    
-    public Dictionary<string, TypeDefinitionNodeFlattened> Flatten(TypeDefinitionNode rootNode)
-    {
-
-        var flattenedNodes = new Dictionary<string, TypeDefinitionNodeFlattened>();
-
-        Flatten(rootNode, flattenedNodes);
-
-        return flattenedNodes;
-    }
-
-    private void Flatten(TypeDefinitionNode node, Dictionary<string, TypeDefinitionNodeFlattened> flattenedNodes)
-    {
-        if (flattenedNodes.ContainsKey(node.NodeKey))
-        {
-            return;
-        }
-
-        switch (node)
-        {
-            case EntityTypeDefinitionNode entityNode:
-                FlattenObjectTypeNode(entityNode, new EntityTypeDefinitionNodeFlattened(), flattenedNodes);
-                break;
-            case ObjectTypeDefinitionNode objectNode:
-                FlattenObjectTypeNode(objectNode, new ObjectTypeDefinitionNodeFlattened(), flattenedNodes);
-                break;
-            case ValueTypeDefinitionNode:
-                FlattenTypeNode(node, new ValueTypeDefinitionNodeFlattened(), flattenedNodes);
-                break;
-            default:
-                // TODO: Better errors
-                throw new Exception();
-        }
-    }
-
-    private void FlattenTypeNode(TypeDefinitionNode node, TypeDefinitionNodeFlattened flatNode, Dictionary<string, TypeDefinitionNodeFlattened> flattenedNodes)
-    {
-        flatNode.DisplayName = node.DisplayName;
-        flatNode.NodeKey = node.NodeKey;
-        flatNode.Features = node.RegisteredFeatures;
-
-        flattenedNodes[node.NodeKey] = flatNode;
-    }
-
-    private void FlattenObjectTypeNode(ObjectTypeDefinitionNode node, ObjectTypeDefinitionNodeFlattened flatNode, Dictionary<string, TypeDefinitionNodeFlattened> flattenedNodes)
-    {
-        FlattenTypeNode(node, flatNode, flattenedNodes);
-
-        flatNode.Properties = node.Properties.Select(x => new PropertyDefinitionNodeFlattened
-        {
-            DisplayName = x.DisplayName,
-            NodeKey = x.NodeKey,
-            TypeNodeKey = x.Type.NodeKey,
-            Features = x.RegisteredFeatures,
-        });
-
-        foreach (var property in node.Properties)
-        {
-            Flatten(property.Type, flattenedNodes);
-        }
-    }
-
     protected ObjectTypeDefinitionNode CreateForType(Type type, Dictionary<Type, ObjectTypeDefinitionNode> visited)
     {
         if (visited.TryGetValue(type, out var visitedNode))
@@ -116,7 +49,7 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
             node = new ObjectTypeDefinitionNode(type);
         }
 
-        node.NodeKey = type.Name.ToCamelCase();
+        node.NodeKey = type.Name.ToLowerInvariant();
         node.DisplayName = type.Name.FormatForDisplay();
 
         visited[type] = node;
@@ -143,7 +76,7 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
         var node = new PropertyDefinitionNode(property, CreateForType(property.PropertyType))
         {
             DisplayName = property.Name.FormatForDisplay(),
-            NodeKey = property.Name.ToCamelCase(),
+            NodeKey = property.Name.ToLowerInvariant(),
         };
 
         ApplyModules(node);

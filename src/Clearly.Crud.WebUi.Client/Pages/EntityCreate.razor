@@ -1,7 +1,7 @@
 ﻿@page "/entity/{entityName}/create"
 
-@using Clearly.Crud.WebUi.Client.Models.Dto
-@using Clearly.Crud.WebUi.Client.Services
+@using Clearly.Crud.EntityGraph
+@using Clearly.Crud.WebUi.Core.Services
 @using Clearly.Crud
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
@@ -10,6 +10,7 @@
 @inject HttpClient http
 @inject IEntityApiService service
 @inject NavigationManager navigationManager
+@inject IEntityDefinitionApiService entityDefinitionService
 
 <PageTitle>CRUD Admin</PageTitle>
 
@@ -17,9 +18,9 @@
 {
     <h1><span class="text-muted small">Create a new </span> @EntityDefinition.DisplayName</h1>
     <EditForm class="default-focus" data-type="create" Model="Entity" OnValidSubmit="@OnSubmit">
-        @foreach (var field in EntityDefinition.Fields)
+        @foreach (var field in EntityDefinition.Properties)
         {
-            var feature = field.Features[nameof(CrudAdminPropertyFeature)].ToObject<CrudAdminPropertyFeature>();
+            var feature = field.GetFeature<CrudAdminPropertyFeature>();
 
             @if (feature.DisplayInEditor)
             {
@@ -36,13 +37,13 @@
     [Parameter]
     public string EntityName { get; set; } = string.Empty;
 
-    protected EntityDefinitionDto EntityDefinition { get; set; } = new EntityDefinitionDto();
+    protected TypeDefinitionNodeFlattened EntityDefinition { get; set; } = new TypeDefinitionNodeFlattened();
 
     public JObject Entity { get; set; } = new JObject();
 
-    public Dictionary<string, object> GetParamaters(FieldDefinitionDto fieldDefinition)
+    public Dictionary<string, object> GetParamaters(PropertyDefinitionNodeFlattened fieldDefinition)
     {
-        var key = fieldDefinition.NameKey.ToCamelCase();
+        var key = fieldDefinition.NodeKey.ToCamelCase();
         var property = Entity.Property(key);
 
         if (property == null)
@@ -72,18 +73,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await http.GetAsync($"/api/entity/{EntityName}");
+        var response = await entityDefinitionService.GetById(EntityName);
 
-        if (response.IsSuccessStatusCode)
+        if (response != null)
         {
-            var json = await response.Content.ReadAsStringAsync();
-
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                throw new Exception();
-            }
-
-            EntityDefinition = JsonConvert.DeserializeObject<EntityDefinitionDto>(json);
+            EntityDefinition = response;
         }
         else
         {

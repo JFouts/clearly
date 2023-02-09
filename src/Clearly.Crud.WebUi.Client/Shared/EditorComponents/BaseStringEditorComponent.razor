@@ -1,4 +1,4 @@
-﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+﻿
 @using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
 @using Newtonsoft.Json.Linq
 
@@ -12,7 +12,7 @@
         {
             if (Input.Value.Type == JTokenType.String)
             {
-                return Input.Value.Value<string>();
+                return Input.Value.Value<string>() ?? string.Empty;
             }
 
             return string.Empty;

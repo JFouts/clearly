@@ -4,7 +4,7 @@
 using System.Reflection;
 using Clearly.Crud.Infrastructure;
 using Clearly.Crud.JsonLd;
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 using Clearly.Crud.RestApi.Infrastructure;
 using Clearly.Crud.Services;
 using Clearly.EntityRepository;
@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
         return services
             .AddCoreModules()
             .AddSingleton<IEntityDefinitionGraphFactory, EntityDefinitionGraphFactory>()
+            .AddSingleton<IEntityDefinitionGraphMapper, EntityDefinitionGraphMapper>()
             .AddScoped(typeof(IEntityApiService<>), typeof(LocalEntityApiService<>))
             .AddScoped(typeof(ICrudService<>), typeof(CrudEntityService<>))
             .AddScoped(typeof(EntityDataSource<>));
@@ -164,6 +165,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped(x => 
             new SystemTextJsonOutputFormatter(
                 x.GetRequiredService<IOptions<JsonOptions>>().Value.JsonSerializerOptions));
+
+        services.Configure<JsonOptions>(x => x.JsonSerializerOptions.Converters.Add(new JTokenJsonConverter()));
 
         return services
             .AddCrudServices();

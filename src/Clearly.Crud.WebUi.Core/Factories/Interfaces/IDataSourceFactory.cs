@@ -7,5 +7,5 @@ namespace Clearly.Crud.WebUi;
 
 public interface IDataSourceFactory
 {
-    IDataSource Create(string dataSourceType, string dataSource);
+    Task<IDataSource> Create(string dataSourceType, string dataSource);
 }

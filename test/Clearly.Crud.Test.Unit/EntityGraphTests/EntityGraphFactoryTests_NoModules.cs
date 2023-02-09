@@ -1,19 +1,18 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Clearly.Crud.Models.EntityGraph;
-using Clearly.Crud.WebUi;
+using Clearly.Crud.EntityGraph;
 using Xunit;
 
 namespace Clearly.Crud.Test.Unit;
 
-public class EntityDefinitionFactoryTests_NoModules
+public class EntityGraphFactoryTests_NoModules
 {
     private readonly EntityDefinitionGraphFactory factory;
 
-    public EntityDefinitionFactoryTests_NoModules()
+    public EntityGraphFactoryTests_NoModules()
     {
-        factory = new EntityDefinitionGraphFactory(new IDefinitionNodeModule[0]);
+        factory = new EntityDefinitionGraphFactory(ModulePresets.NoModules);
     }
 
     [Fact]
@@ -33,7 +32,7 @@ public class EntityDefinitionFactoryTests_NoModules
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Equal("fullySpecifiedEntity", entity.NodeKey);
+        Assert.Equal("fullyspecifiedentity", entity.NodeKey);
     }
     
     [Fact]

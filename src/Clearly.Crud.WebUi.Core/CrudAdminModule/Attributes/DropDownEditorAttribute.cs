@@ -1,19 +1,19 @@
 // Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 
 namespace Clearly.Crud.WebUi;
 
-public class DropDownFieldEditorAttribute : PropertyDefinitionNodeAttribute
+public class DropDownEditorAttribute : PropertyDefinitionNodeAttribute
 {
     private readonly string options;
 
     /// <summary>
-    /// Sets the Editor Component for this Field in the Admin to use a Drop Down Editor.
+    /// Sets the Editor Component for this Property in the Admin to use a Drop Down Editor.
     /// </summary>
     /// <param name="options">A static set of options in the for of key value pairs. ex. "key1,value1;key2,value2"</param>
-    public DropDownFieldEditorAttribute(string options)
+    public DropDownEditorAttribute(string options)
     {
         this.options = options;
     }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Clearly.Core;
 using Clearly.Crud.JsonLd;
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 using Clearly.Crud.WebUi;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;

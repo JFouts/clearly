@@ -1,9 +1,6 @@
-﻿@using Clearly.Crud.WebUi.Client.Models.Dto
-@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+﻿@using Clearly.Crud.EntityGraph
 @using Clearly.Crud.WebUi
 @using Clearly.Crud.WebUi.Core
-@using Newtonsoft.Json
-@using Newtonsoft.Json.Linq
 
 @inherits BaseStringEditorComponent
 
@@ -11,8 +8,8 @@
 @inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
 
 <div class="mb-3">
-  <label for="@PropertyDefinitionNode.NameKey">@PropertyDefinitionNode.DisplayName</label>
-  <select class="form-select" id="@PropertyDefinitionNode.NameKey" name="@PropertyDefinitionNode.NameKey" @bind="Value">
+  <label for="@PropertyDefinitionNode.NodeKey">@PropertyDefinitionNode.DisplayName</label>
+  <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="Value">
     @foreach (var option in Options)
     {
       <option value="@option.Value">@option.Label</option>  
@@ -30,9 +27,9 @@
     {
         await base.OnInitializedAsync();
 
-        Configuration = PropertyDefinitionNode.Features[nameof(CrudAdminDropDownFeature)].ToObject<CrudAdminDropDownFeature>();
+        Configuration = PropertyDefinitionNode.GetFeature<CrudAdminDropDownFeature>();
 
-        var dataSource = dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
+        var dataSource = await dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
         var data = await dataSourceReader.ReadFrom(dataSource);
 
         Options = data.Select(x => new DropDownOption

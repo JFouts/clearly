@@ -4,6 +4,7 @@
 using System.Reflection;
 using Clearly.Crud.RestApi;
 using Clearly.Crud.WebUi.Core;
+using Clearly.Crud.WebUi.Core.Services;
 using Clearly.Crud.WebUi.Factories;
 using Clearly.Crud.WebUi.Infrastructure;
 using Clearly.Crud.WebUi.ViewComponents.FieldEditors;
@@ -60,7 +61,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped(typeof(IEntityEditorViewModelFactory<>), typeof(EntityEditorViewModelFactory<>));
         services.AddScoped(typeof(ISearchListViewModelFactory<>), typeof(SearchListViewModelFactory<>));
         services.AddScoped(typeof(IDataSourceReader<>), typeof(AutoMapperDataSourceReader<>));
-        services.AddScoped<IDataSourceFactory, DataSourceFactory>();
+        // services.AddScoped<IDataSourceFactory, DataSourceFactory>();
+        
+        // TODO: These should not be needed server side
+        // services.AddScoped(sp => new HttpClient());
+        // services.AddScoped<IEntityApiService, EntityApiService>();
+        // services.AddScoped<IEntityDefinitionApiService, EntityDefinitionApiService>();
+
         services.AddAutoMapper(assemblies.Union(new[] { typeof(ServiceCollectionExtensions).Assembly }));
 
         services

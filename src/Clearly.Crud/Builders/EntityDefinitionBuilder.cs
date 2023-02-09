@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 using Clearly.Core;
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 
 namespace Clearly.Crud;
 

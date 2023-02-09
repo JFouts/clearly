@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 
 namespace Clearly.Crud;
 

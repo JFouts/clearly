@@ -1,11 +1,6 @@
-﻿@using Clearly.Crud.WebUi.Client.Models.Dto
-@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
-@using Clearly.Crud.WebUi
-@using Newtonsoft.Json.Linq
-
-@inherits BaseStringEditorComponent
+﻿@inherits BaseStringEditorComponent
 
 <div class="mb-3">
-    <label for="@PropertyDefinitionNode.NameKey" class="form-label">@PropertyDefinitionNode.DisplayName</label>
-    <input id="@PropertyDefinitionNode.NameKey" type="text" class="form-control" name="@PropertyDefinitionNode.NameKey" placeholder="@PropertyDefinitionNode.DisplayName" @bind="Value" />
+    <label for="@PropertyDefinitionNode.NodeKey" class="form-label">@PropertyDefinitionNode.DisplayName</label>
+    <input id="@PropertyDefinitionNode.NodeKey" type="text" class="form-control" name="@PropertyDefinitionNode.NodeKey" placeholder="@PropertyDefinitionNode.DisplayName" @bind="Value" />
 </div>

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Justin Fouts All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clearly.Crud.RestApi;
@@ -11,16 +11,18 @@ public class EntityDefinitionController : ControllerBase
 {
     private readonly ITypeProvider entityTypeProvider;
     private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
+    private readonly IEntityDefinitionGraphMapper entityDefinitionMapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityDefinitionController"/> class.
     /// </summary>
     /// <param name="entityTypeProvider"></param>
     /// <param name="entityDefinitionFactory"></param>
-    public EntityDefinitionController(ITypeProvider entityTypeProvider, IEntityDefinitionGraphFactory entityDefinitionFactory)
+    public EntityDefinitionController(ITypeProvider entityTypeProvider, IEntityDefinitionGraphFactory entityDefinitionFactory, IEntityDefinitionGraphMapper entityDefinitionMapper)
     {
         this.entityTypeProvider = entityTypeProvider;
         this.entityDefinitionFactory = entityDefinitionFactory;
+        this.entityDefinitionMapper = entityDefinitionMapper;
     }
 
     [HttpGet]
@@ -48,6 +50,6 @@ public class EntityDefinitionController : ControllerBase
             return NotFound();
         }
 
-        return Ok(entityDefinitionFactory.Flatten(supportedType));
+        return Ok(entityDefinitionMapper.Flatten(supportedType));
     }
 }

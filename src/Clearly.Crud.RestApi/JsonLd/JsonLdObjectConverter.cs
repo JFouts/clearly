@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Clearly.Core;
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 
 namespace Clearly.Crud.JsonLd;
 

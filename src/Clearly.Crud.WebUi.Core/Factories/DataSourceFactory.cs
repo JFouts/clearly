@@ -2,55 +2,50 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Crud.Services;
+using Clearly.Crud.WebUi.Core.Services;
 
 namespace Clearly.Crud.WebUi.Core;
 
 public class DataSourceFactory : IDataSourceFactory
 {
-    //private readonly IServiceProvider serviceLocator;
-    //private readonly IEntityDefinitionGraphFactory entityDefinitionFactory;
-    //private readonly ITypeProvider entityTypeProvider;
+    private readonly IEntityDefinitionApiService _entityDefinitionApiService;
+    private readonly IEntityApiService _entityApiService;
 
-    //public DataSourceFactory(IServiceProvider serviceLocator, IEntityDefinitionGraphFactory entityDefinitionFactory, ITypeProvider entityTypeProvider)
-    //{
-    //    this.serviceLocator = serviceLocator;
-    //    this.entityDefinitionFactory = entityDefinitionFactory;
-    //    this.entityTypeProvider = entityTypeProvider;
-    //}
+    public DataSourceFactory(IEntityDefinitionApiService entityDefinitionApiService, IEntityApiService entityApiService)
+    {
+        _entityDefinitionApiService = entityDefinitionApiService;
+        _entityApiService = entityApiService;
+    }
 
-    public IDataSource Create(string dataSourceType, string dataSource)
+    public async Task<IDataSource> Create(string dataSourceType, string dataSource)
     {
         switch (dataSourceType)
         {
-            //case "EntityDataSource":
-                // TODO: We should have a way to get the entity defintion from an entities NameKey
-                //var entityType = entityTypeProvider.GetTypes().FirstOrDefault(x => string.Equals(x.Name, dataSource, StringComparison.InvariantCultureIgnoreCase)); 
+            case "EntityDataSource":
+                // TODO: We should have a way to get the entity definition from an entities NameKey
+                var definition =await  _entityDefinitionApiService.GetById(dataSource.ToLowerInvariant()); 
 
-                //if (entityType == null)
-                //{
-                //    throw new ArgumentException($"Entity of type {dataSource} could not be found.", nameof(dataSource));
-                //}
+                if (definition == null)
+                {
+                   throw new ArgumentException($"Entity definition of type {dataSource} could not be found.", nameof(dataSource));
+                }
 
-                //var definition = entityDefinitionFactory.CreateForType(entityType);
+                return new FuncDataSource<KeyValuePair<string,string>>(async () =>
+                {
+                    var results = await _entityApiService.Search(new Search.CrudSearchOptions(), definition.NodeKey);
+                    return results.Results.Select(x => new KeyValuePair<string, string>(x["id"].ToString(), x["name"].ToString()));
+                });
 
-                //var dataSourceObject = serviceLocator.GetRequiredService(typeof(EntityDataSource<>).MakeGenericType(definition.ObjectType)) as IDataSource;
-
-                //if (dataSourceObject == null)
-                //{
-                //    throw new Exception();
-                //}
-
-                //return dataSourceObject;
             case "StaticList":
-                const string recordSeperator = ";";
-                const string valueSeperator = ",";
+                const string recordSeparator = ";";
+                const string valueSeparator = ",";
 
                 var data = new List<KeyValuePair<string, string>>();
-                var records = dataSource.Split(recordSeperator);
+                var records = dataSource.Split(recordSeparator);
 
                 foreach (var record in records)
                 {
-                    var values = record.Split(valueSeperator);
+                    var values = record.Split(valueSeparator);
 
                     if (values.Any())
                     {

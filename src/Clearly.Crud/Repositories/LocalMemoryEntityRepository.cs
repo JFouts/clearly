@@ -65,9 +65,9 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
         if (!string.IsNullOrWhiteSpace(options.SearchQuery))
         {
             Expression? condition = null;
-            var paramater = Parameter(typeof(T), "x");
+            var parameter = Parameter(typeof(T), "x");
 
-            // TODO: Configureable in Entity Defintion
+            // TODO: Configurable in Entity Definition
             foreach (var property in typeof(T).GetProperties())
             {
                 if (property.PropertyType.IsAssignableTo(typeof(string)))
@@ -76,7 +76,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
                     // Maybe there is a way for the expressions to be build when the entity definition is built
                     // Then they can just use a where clause in their repo.
                     var match = Call(
-                        Property(paramater, property),
+                        Property(parameter, property),
                         typeof(string).GetMethod("Contains", new [] 
                         { 
                             typeof(string),
@@ -94,7 +94,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
 
             if (condition != null)
             {
-                query = query.Where((Expression<Func<T, bool>>)Lambda(condition, "WhereClause", new [] { paramater }));
+                query = query.Where((Expression<Func<T, bool>>)Lambda(condition, "WhereClause", new [] { parameter }));
             }
         }
 

@@ -1,10 +1,13 @@
 ﻿@page "/entity/{entityName}"
 
+@using Clearly.Crud.EntityGraph
 @using Clearly.Crud.WebUi.Client.Models
-@using Clearly.Crud.WebUi.Client.Models.Dto
+@using Clearly.Crud.WebUi.Core.Services
+
 @using Clearly.Crud.WebUi.Client.Shared.Components
-@using Newtonsoft.Json
+
 @inject HttpClient http
+@inject IEntityDefinitionApiService entityDefinitionService
 
 <PageTitle>CRUD Admin</PageTitle>
 
@@ -20,30 +23,26 @@
     [Parameter]
     public string EntityName { get; set; } = string.Empty;
 
-    protected EntityDefinitionDto EntityDefinition { get; set; } = new EntityDefinitionDto();
+    protected TypeDefinitionNodeFlattened EntityDefinition { get; set; } = new TypeDefinitionNodeFlattened();
 
     protected TableDefinition TableDefinition { get; set; } = new TableDefinition();
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await http.GetAsync($"/api/entity/{EntityName}");
+        var response = await entityDefinitionService.GetById(EntityName);
 
-        if (response.IsSuccessStatusCode)
+        if (response != null)
         {
-            var json = await response.Content.ReadAsStringAsync()
-                ?? throw new Exception(); // TODO: Better Exception Handling
-
-            EntityDefinition = JsonConvert.DeserializeObject<EntityDefinitionDto>(json)
-                ?? throw new Exception(); // TODO: Better Exception Handling
+            EntityDefinition = response;
 
             TableDefinition = new TableDefinition
             {
-                NameKey = EntityDefinition.NameKey,
-                Columns = EntityDefinition.Fields.Select(x => new ColumnDefinition
+                NameKey = EntityDefinition.NodeKey,
+                Columns = EntityDefinition.Properties.Select(x => new ColumnDefinition
                 {
                     DisplayName = x.DisplayName,
-                    Key = x.NameKey,
-                    DisplayComponent = x.Features[nameof(CrudAdminPropertyFeature)].ToObject<CrudAdminPropertyFeature>().DisplayComponentName
+                    Key = x.NodeKey,
+                    DisplayComponent = x.GetFeature<CrudAdminPropertyFeature>().DisplayComponentName
                 })
             };
         }

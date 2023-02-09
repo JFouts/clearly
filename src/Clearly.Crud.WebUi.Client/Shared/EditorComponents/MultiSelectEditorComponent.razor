@@ -1,8 +1,7 @@
-﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+﻿@using Clearly.Crud.EntityGraph
 @using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
 @using Clearly.Crud.WebUi
 @using Clearly.Crud.WebUi.Core
-@using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 
 @inherits BaseDisplayComponent
@@ -11,8 +10,8 @@
 @inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
 
 <div class="mb-3">
-  <label for="@PropertyDefinitionNode.NameKey">@PropertyDefinitionNode.DisplayName</label>
-  <select class="form-select" id="@PropertyDefinitionNode.NameKey" name="@PropertyDefinitionNode.NameKey" @bind="Value" multiple>
+  <label for="@PropertyDefinitionNode.NodeKey">@PropertyDefinitionNode.DisplayName</label>
+  <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="Value" multiple>
     @foreach (var option in Options)
     {
       <option value="@option.Value">@option.Label</option>  
@@ -22,16 +21,16 @@
 
 @code
 {
-    protected string[] Value
+    protected JArray Value
     {
         get
         {
-            if (Input.Value.Type == JTokenType.Array)
+            if (Input.Value.Type == JTokenType.Object && Input.Value is JArray jArray)
             {
-                return Input.Value.ToObject<string[]>();
+                return jArray;
             }
 
-            return Array.Empty<string>();
+            return new JArray();
         }
 
         set
@@ -48,9 +47,9 @@
     {
         await base.OnInitializedAsync();
 
-        Configuration = PropertyDefinitionNode.Features[nameof(CrudAdminDropDownFeature)].ToObject<CrudAdminDropDownFeature>();
+        Configuration = PropertyDefinitionNode.GetFeature<CrudAdminDropDownFeature>();
 
-        var dataSource = dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
+        var dataSource = await dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
         var data = await dataSourceReader.ReadFrom(dataSource);
 
         Options = data.Select(x => new MultiSelectOption

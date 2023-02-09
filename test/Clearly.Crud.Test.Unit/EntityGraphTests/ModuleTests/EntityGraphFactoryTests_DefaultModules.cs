@@ -2,29 +2,19 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
-using Clearly.Crud.Models.EntityGraph;
+using Clearly.Crud.EntityGraph;
 using Clearly.Crud.WebUi;
 using Xunit;
 
 namespace Clearly.Crud.Test.Unit;
 
-public class EntityDefinitionFactoryTests_DefaultModules
+public class EntityGraphFactoryTests_DefaultModules
 {
     private readonly EntityDefinitionGraphFactory factory;
 
-    public EntityDefinitionFactoryTests_DefaultModules()
+    public EntityGraphFactoryTests_DefaultModules()
     {
-        var modules = new IDefinitionNodeModule[]
-        {
-            new AttributeBasedEntityModule(),
-            new CoreEntityModule(),
-            new CrudAdminModule(),
-            new AttributeBasedEntityFieldModule(),
-            new CoreEntityFieldModule(),
-            new CrudAdminModule(),
-        };
-
-        factory = new EntityDefinitionGraphFactory(modules);
+        factory = new EntityDefinitionGraphFactory(ModulePresets.DefaultModules);
     }
 
     [Fact]

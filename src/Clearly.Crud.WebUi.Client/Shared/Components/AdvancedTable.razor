@@ -1,10 +1,8 @@
 ﻿@using Clearly.Crud.Search
 @using Clearly.Crud.WebUi.Client.Infrastructure
 @using Clearly.Crud.WebUi.Client.Models
-@using Clearly.Crud.WebUi.Client.Services
+@using Clearly.Crud.WebUi.Core.Services
 @using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
-@using Clearly.Crud.WebUi.ViewModels
-@using System.Text.Json
 @using Newtonsoft.Json.Linq
 
 @implements IDisposable
@@ -125,11 +123,13 @@
         return componentType;
     }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         base.OnInitialized();
 
         navigationManager.LocationChanged += OnLocationChanged;
+        
+        await ReloadTable();
     }
 
     protected async void OnLocationChanged(object? sender, LocationChangedEventArgs args)
@@ -137,8 +137,6 @@
         this.SetParametersFromQueryString(navigationManager);
 
         await ReloadTable();
-
-        StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -152,6 +150,8 @@
 
     private async Task ReloadTable()
     {
+        Console.WriteLine($"Reloading table {TableDefinition.NameKey}");
+
         if (string.IsNullOrWhiteSpace(TableDefinition.NameKey))
         {
             return;
@@ -178,5 +178,7 @@
         LinkedPages.Add(CurrentPage - 2);
         LinkedPages.Add(CurrentPage + 1);
         LinkedPages.Add(CurrentPage + 2);
+
+        StateHasChanged();
     }
 }

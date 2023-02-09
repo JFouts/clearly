@@ -1,4 +1,6 @@
-﻿@using Clearly.Crud.WebUi.Client.Models.Dto
+﻿
+
+@using Clearly.Crud.EntityGraph
 @using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
 @using Clearly.Crud.WebUi
 @using Newtonsoft.Json.Linq
@@ -14,10 +16,10 @@
         </li>
     </ul>
 
-    <div id="@PropertyDefinitionNode.NameKey" class="card card-body">
-        @foreach (var field in EntityDefinition.Fields)
+    <div id="@PropertyDefinitionNode.NodeKey" class="card card-body">
+        @foreach (var field in EntityDefinition.Properties)
         {
-            var feature = field.Features[nameof(CrudAdminPropertyFeature)].ToObject<CrudAdminPropertyFeature>();
+            var feature = field.GetFeature<CrudAdminPropertyFeature>();
 
             @if (feature.DisplayInEditor)
             {
@@ -32,7 +34,7 @@
 @code
 {
     // TODO: How do we populate this?
-    private EntityDefinitionDto EntityDefinition;
+    private TypeDefinitionNodeFlattened EntityDefinition = new TypeDefinitionNodeFlattened();
 
     protected JObject Value
     {
@@ -52,9 +54,9 @@
         }
     }
 
-    public Dictionary<string, object> GetParamaters(FieldDefinitionDto fieldDefinition)
+    public Dictionary<string, object> GetParamaters(PropertyDefinitionNodeFlattened fieldDefinition)
     {
-        var key = fieldDefinition.NameKey.ToCamelCase();
+        var key = fieldDefinition.NodeKey.ToCamelCase();
         var property = Value.Property(key);
 
         if (property == null)

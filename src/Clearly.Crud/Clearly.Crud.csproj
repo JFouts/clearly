@@ -12,6 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Linq.Async" Version="5.1.0" />
+    <PackageReference Include="Automapper" Version="11.0.1" />
   </ItemGroup>
 
   <ItemGroup>

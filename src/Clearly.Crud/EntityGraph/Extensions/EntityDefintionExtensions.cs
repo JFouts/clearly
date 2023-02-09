@@ -2,9 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Clearly.Core;
-using Clearly.Crud.Models.EntityGraph;
 
-namespace Clearly.Crud.WebUi;
+namespace Clearly.Crud.EntityGraph;
 
 /// <summary>
 /// Collection of extension methods for <see cref="EntityTypeDefinitionNode"/>

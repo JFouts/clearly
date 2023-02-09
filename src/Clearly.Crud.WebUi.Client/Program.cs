@@ -1,8 +1,7 @@
-using Clearly.Core;
 using Clearly.Crud.Services;
 using Clearly.Crud.WebUi;
 using Clearly.Crud.WebUi.Client;
-using Clearly.Crud.WebUi.Client.Services;
+using Clearly.Crud.WebUi.Core.Services;
 using Clearly.Crud.WebUi.Core;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -14,6 +13,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddScoped<IEntityApiService, EntityApiService>();
+builder.Services.AddScoped<IEntityDefinitionApiService, EntityDefinitionApiService>();
 
 // TODO: Use IOptions?
 builder.Services.AddScoped(sp => new HostedCrudApiConfiguration { BaseUrl = builder.HostEnvironment.BaseAddress });
