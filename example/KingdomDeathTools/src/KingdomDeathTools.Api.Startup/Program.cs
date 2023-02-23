@@ -11,8 +11,6 @@ builder.Services.AddCrudRestApi(domain);
 builder.Services.AddCrudWebUi(domain);
 // builder.Services.AddModule<AdminEditorDefinition>();
 
-builder.Services.AddRazorPages();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x => {
@@ -45,13 +43,14 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseBlazorFrameworkFiles("/clearlycrudwebui");
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.MapRazorPages();
+
 app.MapControllers();
-app.MapControllerRoute("clearlycrudwebui-fallback", "{**catchall}", new { controller = "EntityCrudAdminRoot", action = "Index" });
+
+app.UseClearlyAdmin();
 
 app.Run();
