@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Clearly.Core.Exceptions;
 using Xunit;
 
@@ -8,13 +7,13 @@ namespace Clearly.Core.Unit
     public class ValidatedCommandFactoryTests
     {
         private readonly ValidatedCommandFactory _factory;
-        private readonly Command _commmand;
+        private readonly Command _command;
         private readonly Command _commandWithInvalidModelState;
 
         public ValidatedCommandFactoryTests()
         {
             _factory = new ValidatedCommandFactory();
-            _commmand = new MockCommand();
+            _command = new MockCommand();
             _commandWithInvalidModelState = GetInvalidCommand();
         }
 
@@ -22,13 +21,13 @@ namespace Clearly.Core.Unit
         // Given an instantiation method that returns a command
         // When a factory creates a new instance with the instantiation method
         // Then the created instance should be the same command
-        public void ItRetrunsCommandFromInstantiationMethod()
+        public void ItReturnsCommandFromInstantiationMethod()
         {
-            Command InstantiationMethod() => _commmand;
+            Command InstantiationMethod() => _command;
 
             var createdInstance = _factory.Create(InstantiationMethod);
 
-            Assert.Same(_commmand, createdInstance);
+            Assert.Same(_command, createdInstance);
         }
 
         [Fact]
@@ -48,6 +47,7 @@ namespace Clearly.Core.Unit
         {
             var c = new MockCommand();
             c.SetInvalidModelState();
+
             return c;
         }
 
@@ -57,9 +57,8 @@ namespace Clearly.Core.Unit
 
             public void SetInvalidModelState()
             {
-                Required = null;
+                Required = null!;
             }
-
         }
     }
 }

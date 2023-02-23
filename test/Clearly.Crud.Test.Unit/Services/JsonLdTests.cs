@@ -115,9 +115,12 @@ public class JsonLdTests
         // a querying properties in the JSON
         var json = Newtonsoft.Json.JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(response);
 
-        Assert.Equal("https://schema.org", (string)json["@context"]["@vocab"]);
-        Assert.Equal("Article", (string)json["@type"]);
-        Assert.Equal("Mr. Example Pants", (string)json["author"]);
+        Assert.NotNull(json);
+        var context = json!["@context"];
+        Assert.NotNull(context);
+        Assert.Equal("https://schema.org", (string?)context!["@vocab"]);
+        Assert.Equal("Article", (string?)json["@type"]);
+        Assert.Equal("Mr. Example Pants", (string?)json["author"]);
     }
 
     private void UsingEntity<TEntity>(TEntity entity)
