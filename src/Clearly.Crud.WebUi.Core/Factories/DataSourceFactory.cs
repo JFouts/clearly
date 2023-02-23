@@ -33,7 +33,8 @@ public class DataSourceFactory : IDataSourceFactory
                 return new FuncDataSource<KeyValuePair<string,string>>(async () =>
                 {
                     var results = await _entityApiService.Search(new Search.CrudSearchOptions(), definition.NodeKey);
-                    return results.Results.Select(x => new KeyValuePair<string, string>(x["id"].ToString(), x["name"].ToString()));
+                    
+                    return results.Results.Select(x => new KeyValuePair<string, string>(x["id"]?.ToString() ?? string.Empty, x["name"]?.ToString() ?? string.Empty));
                 });
 
             case "StaticList":

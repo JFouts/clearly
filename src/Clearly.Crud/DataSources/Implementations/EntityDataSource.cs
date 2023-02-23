@@ -24,7 +24,7 @@ public class EntityDataSource<TEntity> : DataSource<TEntity>
     {
         var response = await service.Search(new CrudSearchOptions());
 
-        return response.Results.ToList();
         // TODO: return await response.Results.ToListAsync();
+        return response.Results.ToList();
     }
 }

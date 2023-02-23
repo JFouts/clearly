@@ -9,12 +9,12 @@ namespace Clearly.Crud.EntityGraph;
 
 public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
 {
-    private readonly IEnumerable<IDefinitionNodeModule> _modules;
+    private readonly IEnumerable<IDefinitionNodeModule> modules;
     private readonly ConcurrentDictionary<Type, ObjectTypeDefinitionNode> typeDefinitionPool = new ();
 
     public EntityDefinitionGraphFactory(IEnumerable<IDefinitionNodeModule> modules)
     {
-        _modules = modules;
+        this.modules = modules;
     }
 
     public ObjectTypeDefinitionNode CreateForType(Type type)
@@ -86,12 +86,12 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
 
     private void ApplyModules(DefinitionNode node)
     {
-        foreach (var module in _modules)
+        foreach (var module in modules)
         {
             module.OnApplyingModule(node);
         }
         
-        foreach (var module in _modules)
+        foreach (var module in modules)
         {
             module.OnApplyingFallbackDefaults(node);
         }

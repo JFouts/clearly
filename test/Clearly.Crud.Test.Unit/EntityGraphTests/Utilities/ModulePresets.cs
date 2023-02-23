@@ -7,13 +7,14 @@ namespace Clearly.Crud.Test.Unit;
 
 public static class ModulePresets
 {
-    public static IEnumerable<IDefinitionNodeModule> DefaultModules = new IDefinitionNodeModule[]
+    public static IEnumerable<IDefinitionNodeModule> DefaultModules { get; } = new IDefinitionNodeModule[]
     {
         new AttributeBasedEntityModule(),
         new CoreEntityModule(),
         new CrudAdminModule(),
         new AttributeBasedEntityFieldModule(),
-        new CoreEntityFieldModule()
+        new CoreEntityFieldModule(),
     };
-    public static IEnumerable<IDefinitionNodeModule> NoModules = new IDefinitionNodeModule[0];
+
+    public static IEnumerable<IDefinitionNodeModule> NoModules { get; } = new IDefinitionNodeModule[0];
 }

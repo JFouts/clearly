@@ -9,7 +9,6 @@ public class EntityDefinitionGraphMapper : IEntityDefinitionGraphMapper
 {
     public Dictionary<string, TypeDefinitionNodeFlattened> Flatten(TypeDefinitionNode rootNode)
     {
-
         var flattenedNodes = new Dictionary<string, TypeDefinitionNodeFlattened>();
 
         Flatten(rootNode, flattenedNodes);
@@ -33,7 +32,7 @@ public class EntityDefinitionGraphMapper : IEntityDefinitionGraphMapper
                 FlattenObjectTypeNode(objectNode, new TypeDefinitionNodeFlattened { NodeType = TypeDefinitionNodeType.Object }, flattenedNodes);
                 break;
             case ValueTypeDefinitionNode:
-                FlattenTypeNode(node, new TypeDefinitionNodeFlattened  { NodeType = TypeDefinitionNodeType.ValueType }, flattenedNodes);
+                FlattenTypeNode(node, new TypeDefinitionNodeFlattened { NodeType = TypeDefinitionNodeType.ValueType }, flattenedNodes);
                 break;
             default:
                 // TODO: Better errors

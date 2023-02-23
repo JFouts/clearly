@@ -8,8 +8,13 @@ namespace Clearly.Crud;
 public abstract class DefinitionNodeModule<TNode> : IDefinitionNodeModule
     where TNode : DefinitionNode
 {
-    public virtual void OnApplyingModule(TNode node) { }
-    public virtual void OnApplyingFallbackDefaults(TNode node) { }
+    public virtual void OnApplyingModule(TNode node) 
+    {
+    }
+
+    public virtual void OnApplyingFallbackDefaults(TNode node)
+    {
+    }
 
     public void OnApplyingModule(DefinitionNode node)
     {

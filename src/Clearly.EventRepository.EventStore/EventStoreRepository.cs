@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Clearly.Core.Interfaces;
+﻿using Clearly.Core.Interfaces;
 using Clearly.Core.Utilities.Interfaces;
 using EventStore.ClientAPI;
 
@@ -33,7 +29,7 @@ namespace Clearly.EventRepository.EventStore
             await eventStore.AppendToStreamAsync(stream, aggregateVersion, data);
         }
 
-        public async Task<AggregateEventList> RetriveEventsAsync<T>(Guid id)
+        public async Task<AggregateEventList> RetrieveEventsAsync<T>(Guid id)
         {
             var stream = GetStream<T>(id);
             //TODO: Handle this limit of 4000
@@ -50,10 +46,17 @@ namespace Clearly.EventRepository.EventStore
         {
             if (!settings.EventTypes.ContainsKey(@event.Event.EventType))
             {
-                return null;
+                throw new KeyNotFoundException($"No event type of {@event.Event.EventType} has been registered.");
             }
 
-            return jsonByteConverter.Deserialize(@event.Event.Data, settings.EventTypes[@event.Event.EventType]) as IDomainEvent;
+            var domainEvent = jsonByteConverter.Deserialize(@event.Event.Data, settings.EventTypes[@event.Event.EventType]) as IDomainEvent;
+
+            if (domainEvent == null)
+            {
+                throw new NullReferenceException($"Event {@event.Event.EventId} could not be deserialized as an {nameof(IDomainEvent)} ");
+            }
+
+            return domainEvent;
         }
 
         private string GetStream<T>(Guid id)

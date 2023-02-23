@@ -51,21 +51,6 @@ public class EntityGraphFactoryTests_DefaultModules
                 .Using<CrudAdminPropertyFeature>().EditorComponentName);
     }
 
-    // TODO: Fix this test when we have a way to set custom properties on editors
-    // [Fact]
-    // public void ItSetsEditorPropertiesWhenDecorated()
-    // {
-    //     // Act
-    //     var entity = factory.CreateForEntity<DecoratedEntity>();
-    // 
-    //     // Assert
-    //     Assert.Equal(
-    //         "A Custom Value", 
-    //         entity.Properties
-    //             .Single(x => x.Property.Name == nameof(DecoratedEntity.FieldWithCustomizedEditor))
-    //             .Using<CrudAdminPropertyFeature>().EditorProperties["MyCustomProperty"]);
-    // }
-    
     public record BasicEntity : IEntity
     {
         public Guid Id { get; set; }

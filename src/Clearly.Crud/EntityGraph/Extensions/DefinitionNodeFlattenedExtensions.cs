@@ -7,7 +7,8 @@ namespace Clearly.Crud.EntityGraph;
 
 public static class DefinitionNodeFlattenedExtensions
 {
-    public static T GetFeature<T>(this DefinitionNodeFlattened node) where T : IDefinitionFeature, new()
+    public static T GetFeature<T>(this DefinitionNodeFlattened node)
+        where T : IDefinitionFeature, new()
     {
         var key = typeof(T).Name.ToLowerInvariant();
 

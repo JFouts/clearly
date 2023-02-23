@@ -7,5 +7,5 @@ public enum TypeDefinitionNodeType
 {
     Entity,
     Object,
-    ValueType
+    ValueType,
 }

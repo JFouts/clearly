@@ -9,13 +9,3 @@ public interface IDataSourceReader<TModel>
 {
     Task<IEnumerable<TModel>> ReadFrom(IDataSource dataSource);
 }
-
-//public class DataSourceReader<TModel> : IDataSourceReader<TModel>
-//{
-//    public async Task<IEnumerable<TModel>> ReadFrom(IDataSource dataSource)
-//    {
-//        var data = await dataSource.Load();
-
-//        return data.OfType<TModel>();
-//    }
-//}

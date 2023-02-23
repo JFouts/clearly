@@ -27,7 +27,7 @@ public class NewtonsoftJsonConverter : IJsonConverter
 
     public object Deserialize(string json, Type type)
     {
-        var response =  JsonConvert.DeserializeObject(json, type);
+        var response = JsonConvert.DeserializeObject(json, type);
 
         if (response == null)
         {

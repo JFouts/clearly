@@ -19,9 +19,9 @@ namespace Clearly.EventRepository.LocalMemory
             return Task.CompletedTask;
         }
 
-        public Task<AggregateEventList> RetriveEventsAsync<T>(Guid id)
+        public Task<AggregateEventList> RetrieveEventsAsync<T>(Guid id)
         {
-            return Task.FromResult(RetriveEvents(id));
+            return Task.FromResult(RetrieveEvents(id));
         }
 
         private void SaveNewStreamEvents(Guid id, IEnumerable<IDomainEvent> domainEvents)
@@ -37,7 +37,7 @@ namespace Clearly.EventRepository.LocalMemory
             }
         }
 
-        private AggregateEventList RetriveEvents(Guid id)
+        private AggregateEventList RetrieveEvents(Guid id)
         {
             if (!_eventStreams.TryGetValue(id, out var stream))
             {
@@ -54,7 +54,7 @@ namespace Clearly.EventRepository.LocalMemory
             return new AggregateEventList
             {
                 AggregateVersion = snapshot.Version,
-                DomainEvents = snapshot.Events.Select(x => x as IDomainEvent)
+                DomainEvents = snapshot.Events.OfType<IDomainEvent>()
             };
         }
     }

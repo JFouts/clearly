@@ -66,7 +66,7 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Assert.True(flatNodes["blankentity"].Properties.Any(x => x.NodeKey == "id"));
+        Enumerable.Any(flatNodes["blankentity"].Properties, x => x.NodeKey == "id");
     }
 
     [Fact]

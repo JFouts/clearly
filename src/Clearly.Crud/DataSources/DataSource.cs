@@ -6,7 +6,6 @@ using System.Collections;
 namespace Clearly.Crud.Services;
 
 // TODO: Extend DataSource's to handle pagination
-
 public abstract class DataSource<T> : IDataSource<T>
 {
     public abstract Task<IEnumerable<T>> Load();

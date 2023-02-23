@@ -10,6 +10,7 @@ public static class ApplicationBuilderExtensions
     public static WebApplication UseClearlyAdmin(this WebApplication app)
     {
         app.UseBlazorFrameworkFiles("/clearlycrudwebui");
+        
         // TODO: Don't hard code the /admin route use Options pattern to allow user to change
         app.MapControllerRoute("clearlycrudwebui-fallback", "admin/{**catchall}", new { controller = "EntityCrudAdminRoot", action = "Index" });
 
