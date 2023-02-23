@@ -18,7 +18,7 @@ We are always happy to see PRs from community members both for bug fixes as well
 
 ### Finding an issue to work on
 
-If you are looking to contribute by making a change to the repository you can check out the issues taged as [Help Wanted](https://github.com/JFouts/domainmodeling/labels/help%20wanted). These issues are hand picked for community support.
+If you are looking to contribute by making a change to the repository you can check out the issues tagged as [Help Wanted](https://github.com/JFouts/domainmodeling/labels/help%20wanted). These issues are hand picked for community support.
 
 If you would like to make a contribution to an area not documented here, first open an issue with a description of the change you would like to make and the problem it solves so it can be discussed before a pull request is submitted.
 

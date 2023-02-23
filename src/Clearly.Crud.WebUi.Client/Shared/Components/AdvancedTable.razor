@@ -39,9 +39,9 @@
                         
                         <td>
                             @* TODO: Better error logging on Blazor app  *@
-                            if (property != null)
+                            @if (property != null)
                             {
-                                <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property!)"></DynamicComponent>
+                                <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property)"></DynamicComponent>
                             }
                         </td>
                     }
