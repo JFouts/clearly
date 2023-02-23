@@ -10,7 +10,7 @@
         {
             if (Input.Value.Type == JTokenType.Array)
             {
-                return Input.Value.ToObject<string[]>();
+                return Input.Value.ToObject<string[]>() ?? Array.Empty<string>();
             }
 
             return Array.Empty<string>();

@@ -12,7 +12,7 @@
         {
             if (Input.Value.Type == JTokenType.String)
             {
-                return Input.Value.Value<string>();
+                return Input.Value.Value<string>() ?? string.Empty;
             }
 
             return string.Empty;

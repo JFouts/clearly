@@ -31,13 +31,18 @@
         <tbody>
             @foreach (var record in Results) 
             {
-                var id = @record.GetValue("id") is JValue v ? (string)v.Value : "";                
+                var id = @record.GetValue("id") is JValue v ? (v.Value as string) ?? string.Empty : string.Empty;                
                 <tr>
                     @foreach (var column in @TableDefinition.Columns)
                     {
                         var property = record.Property(column.Key.ToCamelCase());
+                        
                         <td>
-                            <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property)"></DynamicComponent>
+                            @* TODO: Better error logging on Blazor app  *@
+                            if (property != null)
+                            {
+                                <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property!)"></DynamicComponent>
+                            }
                         </td>
                     }
                     <td><a href="entity/@TableDefinition.NameKey.ToLower()/edit/@id">Edit</a></td>
