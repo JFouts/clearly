@@ -8,4 +8,7 @@
 
     [Parameter]
     public PropertyDefinitionNodeFlattened PropertyDefinitionNode { get; set; } = new PropertyDefinitionNodeFlattened();
+
+    [Parameter]
+    public Dictionary<string, TypeDefinitionNodeFlattened> TypeDefinitionGraph { get; set; } = new Dictionary<string, TypeDefinitionNodeFlattened>();
 }

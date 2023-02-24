@@ -15,7 +15,7 @@ public class EntityDefinitionApiService : IEntityDefinitionApiService
         this.config = config;
     }
 
-    public async Task<TypeDefinitionNodeFlattened> GetById(string entityNameKey)
+    public async Task<Dictionary<string, TypeDefinitionNodeFlattened>> GetById(string entityNameKey)
     {
         var definitions = await Send<Dictionary<string, TypeDefinitionNodeFlattened>>(new HttpRequestMessage
         {
@@ -23,8 +23,7 @@ public class EntityDefinitionApiService : IEntityDefinitionApiService
             RequestUri = Url($"/api/entity/{entityNameKey}"),
         });
 
-        // TODO: Error handling
-        return definitions[entityNameKey];
+        return definitions;
     }
 
     // TODO: Move into base class

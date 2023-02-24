@@ -1,16 +1,10 @@
 ﻿@page "/entity/{entityName}/create"
 
 @using Clearly.Crud.EntityGraph
-@using Clearly.Crud.WebUi.Core.Services
-@using Clearly.Crud
-@using Newtonsoft.Json
-@using Newtonsoft.Json.Linq
-@using System.Text
 
 @inject HttpClient http
-@inject IEntityApiService service
-@inject NavigationManager navigationManager
-@inject IEntityDefinitionApiService entityDefinitionService
+
+@inherits EntityEditorBase
 
 <PageTitle>CRUD Admin</PageTitle>
 
@@ -25,7 +19,7 @@
             @if (feature.DisplayInEditor)
             {
                 <div class='form-field'>
-                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParamaters(field)"></DynamicComponent>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParameters(field)"></DynamicComponent>
                 </div>
             }
         }
@@ -34,72 +28,8 @@
 }
 
 @code {
-    [Parameter]
-    public string EntityName { get; set; } = string.Empty;
-
-    protected TypeDefinitionNodeFlattened EntityDefinition { get; set; } = new TypeDefinitionNodeFlattened();
-
-    public JObject Entity { get; set; } = new JObject();
-
-    public Dictionary<string, object> GetParamaters(PropertyDefinitionNodeFlattened fieldDefinition)
+    protected override async Task<HttpResponseMessage> SaveJsonContent(StringContent content)
     {
-        var key = fieldDefinition.NodeKey.ToCamelCase();
-        var property = Entity.Property(key);
-
-        if (property == null)
-        {
-            property = new JProperty(key, JValue.CreateNull());
-            Entity.Add(property);
-        }
-
-        return new Dictionary<string, object>
-        {
-            { "Input", property },
-            { "PropertyDefinitionNode", fieldDefinition },
-        };
-    }
-
-    protected Type GetComponentType(string type)
-    {
-        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
-
-        if (componentType == null)
-        {
-            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
-        }
-
-        return componentType;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var response = await entityDefinitionService.GetById(EntityName);
-
-        if (response != null)
-        {
-            EntityDefinition = response;
-        }
-        else
-        {
-            // TODO: Handle error
-        }
-    }
-
-    protected async void OnSubmit()
-    {
-        // TODO: Processing Indicator
-
-        var json = JsonConvert.SerializeObject(Entity);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await http.PostAsync($"/api/{EntityName}", content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            navigationManager.NavigateTo($"/admin/entity/{EntityName}");
-        }
-        else
-        {
-            // TODO: Display Error
-        }
+        return await http.PostAsync($"/api/{EntityName}", content);
     }
 }

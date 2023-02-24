@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Clearly.Crud.RestApi;
 
 /// <summary>
-/// Manages the CRUD opprations for entites.
+/// Manages the CRUD operations for entities.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity object.</typeparam>
 [GenericEntityController]
@@ -22,7 +22,7 @@ public class EntityCrudController<TEntity> : ControllerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityCrudController{TEntity}"/> class.
     /// </summary>
-    /// <param name="service">The service for applying business logic to the CRUD opperations.</param>
+    /// <param name="service">The service for applying business logic to the CRUD operations.</param>
     public EntityCrudController(ICrudService<TEntity> service)
     {
         this.service = service;
@@ -50,7 +50,7 @@ public class EntityCrudController<TEntity> : ControllerBase
     }
     
     /// <summary>
-    /// Retrievs a single entity object by it's id.
+    /// Retrieves a single entity object by it's id.
     /// </summary>
     /// <param name="id">The id of the entity object to retrieve.</param>
     /// <returns>The entity object for the passed id.</returns>
@@ -67,7 +67,7 @@ public class EntityCrudController<TEntity> : ControllerBase
     /// Creates a new entity object.
     /// </summary>
     /// <param name="value">The values for the state of the entity to be created.</param>
-    /// <returns>A refrence link for the entity object that was created.</returns>
+    /// <returns>A reference link for the entity object that was created.</returns>
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] TEntity value)
     {
@@ -87,7 +87,7 @@ public class EntityCrudController<TEntity> : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the entity object to update.</param>
     /// <param name="value">The values for the updated state of the entity object.</param>
-    /// <returns>A refrence link for the entity object that was updated.</returns>
+    /// <returns>A reference link for the entity object that was updated.</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(Guid id, [FromBody] TEntity value)
     {

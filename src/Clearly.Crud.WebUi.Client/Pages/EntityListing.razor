@@ -29,26 +29,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await entityDefinitionService.GetById(EntityName);
+        var entityGraph = await entityDefinitionService.GetById(EntityName);
+        EntityDefinition = entityGraph[EntityName];
 
-        if (response != null)
+        TableDefinition = new TableDefinition
         {
-            EntityDefinition = response;
-
-            TableDefinition = new TableDefinition
+            NameKey = EntityDefinition.NodeKey,
+            Columns = EntityDefinition.Properties.Select(x => new ColumnDefinition
             {
-                NameKey = EntityDefinition.NodeKey,
-                Columns = EntityDefinition.Properties.Select(x => new ColumnDefinition
-                {
-                    DisplayName = x.DisplayName,
-                    Key = x.NodeKey,
-                    DisplayComponent = x.GetFeature<CrudAdminPropertyFeature>().DisplayComponentName
-                })
-            };
-        }
-        else
-        {
-            // TODO: Handle error
-        }
+                DisplayName = x.DisplayName,
+                Key = x.NodeKey,
+                DisplayComponent = x.GetFeature<CrudAdminPropertyFeature>().DisplayComponentName
+            })
+        };
     }
 }

@@ -50,7 +50,7 @@
 
         set
         {
-            Input.Value = (JToken?)value ?? JValue.CreateNull();
+            Input.Value = (JToken?)value ?? new JObject();
         }
     }
 
@@ -69,7 +69,20 @@
         {
             { "Input", property },
             { "PropertyDefinitionNode", fieldDefinition },
+            { "TypeDefinitionGraph", TypeDefinitionGraph },
         };
+    }
+
+    protected override void OnInitialized()
+    {
+        EntityDefinition = TypeDefinitionGraph[PropertyDefinitionNode.TypeNodeKey];
+
+        if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+        {
+            Value = new JObject();
+        }
+
+        base.OnInitialized();
     }
 
     protected Type GetComponentType(string type)
@@ -84,3 +97,4 @@
         return componentType;
     }
 }
+

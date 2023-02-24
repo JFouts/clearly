@@ -20,7 +20,25 @@
 
         set
         {
-            Input.Value = value;
+            if (this.PropertyDefinitionNode.TypeNodeKey == "int32")
+            {
+                Input.Value = JValue.FromObject(int.TryParse(value, out var intValue) ? intValue : 0);
+            }
+            else
+            {
+                Input.Value = value;
+            }
         }
     }
+
+    protected override void OnInitialized()
+    {
+        if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+        {
+            Value = string.Empty;
+        }
+        
+        base.OnInitialized();
+    }
 }
+

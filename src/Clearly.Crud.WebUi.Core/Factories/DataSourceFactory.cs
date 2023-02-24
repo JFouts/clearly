@@ -23,7 +23,10 @@ public class DataSourceFactory : IDataSourceFactory
         {
             case "EntityDataSource":
                 // TODO: We should have a way to get the entity definition from an entities NameKey
-                var definition =await  _entityDefinitionApiService.GetById(dataSource.ToLowerInvariant()); 
+                // TODO: I think a lot of this could be moved into the definition of the data source rather than queried on the fly
+                var nameKey = dataSource.ToLowerInvariant();
+                var definitionGraph = await _entityDefinitionApiService.GetById(nameKey); 
+                var definition = definitionGraph[nameKey]; 
 
                 if (definition == null)
                 {

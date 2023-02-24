@@ -1,6 +1,7 @@
 ﻿@using Clearly.Crud.EntityGraph
 @using Clearly.Crud.WebUi
 @using Clearly.Crud.WebUi.Core
+@using Newtonsoft.Json.Linq
 
 @inherits BaseStringEditorComponent
 
@@ -12,36 +13,51 @@
   <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="Value">
     @foreach (var option in Options)
     {
-      <option value="@option.Value">@option.Label</option>  
+      <option value="@option.Value">@option.Label</option>
     }
-  </select> 
+  </select>
 </div>
 
 @code
 {
-    protected CrudAdminDropDownFeature Configuration { get; set; } = new CrudAdminDropDownFeature();
+  protected CrudAdminDropDownFeature Configuration { get; set; } = new CrudAdminDropDownFeature();
 
-    protected IEnumerable<DropDownOption> Options { get; set; } = Array.Empty<DropDownOption>();
+  protected IEnumerable<DropDownOption> Options { get; set; } = Array.Empty<DropDownOption>();
 
-    protected override async Task OnInitializedAsync()
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    Configuration = PropertyDefinitionNode.GetFeature<CrudAdminDropDownFeature>();
+
+    var dataSource = await dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
+    var data = await dataSourceReader.ReadFrom(dataSource);
+
+    Options = data.Select(x => new DropDownOption
     {
-        await base.OnInitializedAsync();
+      Value = x.Key,
+      Label = x.Value,
+    });
 
-        Configuration = PropertyDefinitionNode.GetFeature<CrudAdminDropDownFeature>();
-
-        var dataSource = await dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
-        var data = await dataSourceReader.ReadFrom(dataSource);
-
-        Options = data.Select(x => new DropDownOption
-        {
-            Value = x.Key,
-            Label = x.Value,
-        });
-    }
-
-    protected class DropDownOption
+    if (Input.Value == null || Input.Value.Type == JTokenType.Null)
     {
-        public string Value { get; set; } = string.Empty;
-        public string Label { get; set; } = string.Empty;
+      var defaultValue = Options.FirstOrDefault();
+      if (defaultValue != null)
+      {
+        Value = defaultValue.Value;
+        this.StateHasChanged();
+      }
     }
+  }
+
+  protected class DropDownOption
+  {
+    public string Value { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+  }
 }

@@ -4,5 +4,5 @@ namespace Clearly.Crud.WebUi.Core.Services;
 
 public interface IEntityDefinitionApiService
 {
-    Task<TypeDefinitionNodeFlattened> GetById(string entityNameKey);
+    Task<Dictionary<string, TypeDefinitionNodeFlattened>> GetById(string entityNameKey);
 }

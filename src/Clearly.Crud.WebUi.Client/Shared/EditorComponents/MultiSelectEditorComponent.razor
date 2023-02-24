@@ -11,7 +11,7 @@
 
 <div class="mb-3">
   <label for="@PropertyDefinitionNode.NodeKey">@PropertyDefinitionNode.DisplayName</label>
-  <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="Value" multiple>
+  <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="SelectedKeys" multiple>
     @foreach (var option in Options)
     {
       <option value="@option.Value">@option.Label</option>  
@@ -21,21 +21,39 @@
 
 @code
 {
-    protected JArray Value
+    protected string[] SelectedKeys
     {
         get
         {
-            if (Input.Value.Type == JTokenType.Object && Input.Value is JArray jArray)
+            if (Input.Value is JArray jArray)
             {
-                return jArray;
+                switch (Configuration.DataSourceType)
+                {
+                    case "StaticList":
+                        return jArray.Values<string>().OfType<string>().ToArray();
+                    case "EntityDataSource":
+                        Console.WriteLine(jArray.Children().Select(x => x["id"]?.Value<string>() ?? string.Empty).ToArray());
+                        return jArray.Children().Select(x => x["id"]?.Value<string>() ?? string.Empty).ToArray();
+                }
             }
 
-            return new JArray();
+            return Array.Empty<string>();
         }
 
         set
         {
-            Input.Value = JArray.FromObject(value);
+            value ??= Array.Empty<string>();
+            switch (Configuration.DataSourceType)
+            {
+                case "StaticList":
+                    Input.Value = JArray.FromObject(value);
+                    break;
+                case "EntityDataSource":
+                    Input.Value = JArray.FromObject(value.Select(x => JObject.FromObject(new { id = x })));
+                    break;
+                default:
+                    throw new Exception($"Unsupported DataSource for MultiSelectEditorComponent of {Configuration.DataSourceType}");
+            }
         }
     }
 
@@ -57,6 +75,11 @@
             Value = x.Key,
             Label = x.Value,
         });
+        
+        if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+        {
+            SelectedKeys = Array.Empty<string>();
+        }
     }
 
     protected class MultiSelectOption
