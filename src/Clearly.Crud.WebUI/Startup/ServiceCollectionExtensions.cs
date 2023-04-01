@@ -60,7 +60,7 @@ public static class ServiceCollectionExtensions
         
         services.AddAutoMapper(assemblies.Union(new[] { typeof(ServiceCollectionExtensions).Assembly }));
 
-        return services.AddCrudServices();
+        return services;// services.AddCrudServices();
     }
 
     private static IMvcBuilder AddCrudWebUiInternal(this IServiceCollection services, Action<MvcOptions>? configure, params Assembly[] assemblies)

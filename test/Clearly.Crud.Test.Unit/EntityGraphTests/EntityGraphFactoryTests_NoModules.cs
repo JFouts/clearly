@@ -32,7 +32,7 @@ public class EntityGraphFactoryTests_NoModules
         var entity = factory.CreateForEntity<FullySpecifiedEntity>();
 
         // Assert
-        Assert.Equal("fullyspecifiedentity", entity.NodeKey);
+        Assert.Equal("fullySpecifiedEntity", entity.NodeKey);
     }
     
     [Fact]

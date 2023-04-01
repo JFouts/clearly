@@ -27,7 +27,7 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Assert.True(flatNodes.ContainsKey("blankentity"));
+        Assert.True(flatNodes.ContainsKey("blankEntity"));
     }
     
     [Fact]
@@ -40,7 +40,7 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Assert.Equal("blankentity", flatNodes["blankentity"].NodeKey);
+        Assert.Equal("blankEntity", flatNodes["blankEntity"].NodeKey);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Assert.Equal("Blank Entity", flatNodes["blankentity"].DisplayName);
+        Assert.Equal("Blank Entity", flatNodes["blankEntity"].DisplayName);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Enumerable.Any(flatNodes["blankentity"].Properties, x => x.NodeKey == "id");
+        Enumerable.Any(flatNodes["blankEntity"].Properties, x => x.NodeKey == "id");
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Assert.True(flatNodes["blankentity"].Features.ContainsKey("crudadminentityfeature"));
+        Assert.True(flatNodes["blankEntity"].Features.ContainsKey("crudadminentityfeature"));
     }
 
     [Fact]
@@ -92,6 +92,6 @@ public class EntityGraphFlattenedTests
         var flatNodes = mapper.Flatten(graph);
 
         // Assert
-        Assert.Equal("{\"DataSourceUrl\":\"/api/blankentity\"}", flatNodes["blankentity"].Features["crudadminentityfeature"].ToString(Newtonsoft.Json.Formatting.None));
+        Assert.Equal("{\"DataSourceUrl\":\"/api/blankentity\"}", flatNodes["blankEntity"].Features["crudadminentityfeature"].ToString(Newtonsoft.Json.Formatting.None));
     }
 }

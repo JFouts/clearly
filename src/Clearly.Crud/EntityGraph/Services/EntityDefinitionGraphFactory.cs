@@ -24,6 +24,7 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
             return poolNode;
         }
 
+        Console.WriteLine($"Creating for type {type.Name}");
         var rootNode = CreateForType(type, new Dictionary<Type, ObjectTypeDefinitionNode>());
 
         typeDefinitionPool.AddOrUpdate(type, rootNode, (_, existingNode) => rootNode);
@@ -38,6 +39,8 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
             return visitedNode;
         }
 
+        Console.WriteLine($"Visiting {type.Name}");
+
         ObjectTypeDefinitionNode node;
 
         if (type.IsAssignableTo(typeof(IEntity)))
@@ -49,12 +52,17 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
             node = new ObjectTypeDefinitionNode(type);
         }
 
-        node.NodeKey = type.Name.ToLowerInvariant();
+        node.NodeKey = type.Name.ToCamelCase();
         node.DisplayName = type.Name.FormatForDisplay();
+
+
+        Console.WriteLine($"Marking Visited {type.Name}");
 
         visited[type] = node;
 
         ApplyChildrenToType(node);
+
+        Console.WriteLine($"Apply Modules for {type.Name}");
 
         ApplyModules(node);
 
@@ -76,7 +84,7 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
         var node = new PropertyDefinitionNode(property, CreateForType(property.PropertyType))
         {
             DisplayName = property.Name.FormatForDisplay(),
-            NodeKey = property.Name.ToLowerInvariant(),
+            NodeKey = property.Name.ToCamelCase(),
         };
 
         ApplyModules(node);
@@ -88,6 +96,7 @@ public class EntityDefinitionGraphFactory : IEntityDefinitionGraphFactory
     {
         foreach (var module in modules)
         {
+            Console.WriteLine($"Applying Module {module.GetType().Name} to {node.DisplayName}:{node.GetType().Name}");
             module.OnApplyingModule(node);
         }
         

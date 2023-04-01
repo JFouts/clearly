@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Routing;
+using AutoMapper;
+using System.Text.Json.Serialization;
 
 namespace Clearly.Crud.RestApi;
 
@@ -36,7 +39,20 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IEntityDefinitionGraphMapper, EntityDefinitionGraphMapper>()
             .AddScoped(typeof(IEntityApiService<>), typeof(LocalEntityApiService<>))
             .AddScoped(typeof(ICrudService<>), typeof(CrudEntityService<>))
-            .AddScoped(typeof(EntityDataSource<>));
+            .AddScoped(typeof(EntityDataSource<>))
+            // .AddSingleton(typeof(IRouteMapper<,>), typeof(RouteMapper<,>))
+            // .AddSingleton(typeof(IRouteHandler<,>), typeof(RouteHandler<,>))
+            .AddSingleton(typeof(RouteMapper<,,>))
+            .AddScoped(typeof(RouteHandler<,>))
+            .AddSingleton<IEntityDtoCompiler, EntityDtoCompiler>()
+            .AddSingleton<IEntityReferenceTypeCompiler, EntityReferenceTypeCompiler>()
+            .AddScoped<EntityDtoMapperProfile>()
+            .AddScoped<IMapper>(x => new Mapper(CreateMapperConfiguration(x)));
+    }
+
+    private static AutoMapper.IConfigurationProvider CreateMapperConfiguration(IServiceProvider services)
+    {
+        return new MapperConfiguration(y => y.AddProfile(services.GetRequiredService<EntityDtoMapperProfile>()));
     }
 
     /// <summary>
@@ -98,6 +114,46 @@ public static class ServiceCollectionExtensions
 
         builder.Services.Configure(name, configure);
         return builder;
+    }
+
+    // TODO: This needs a lot of clean up
+    public static IEndpointRouteBuilder MapEntityCrud(this IEndpointRouteBuilder app, Action<RouteHandlerBuilder> configure)
+    {
+        var typeProvider = app.ServiceProvider.GetRequiredService<ITypeProvider>();
+        var definitionGraphFactory = app.ServiceProvider.GetRequiredService<IEntityDefinitionGraphFactory>();
+
+        var typeDefinitions = typeProvider.GetTypes().Select(x => definitionGraphFactory.CreateForType(x));
+
+        foreach (var typeDefinition in typeDefinitions)
+        {
+            var feature = typeDefinition.Using<CrudApiFeature>();
+
+            if (feature.DtoType == null)
+            {
+                // TODO: Better Exceptions
+                throw new Exception($"No CRUD API DTO Type is defined for {typeDefinition.NodeKey}!");
+            }
+            if (feature.RefType == null)
+            {
+                // TODO: Better Exceptions
+                throw new Exception($"No CRUD API Ref Type is defined for {typeDefinition.NodeKey}!");
+            }
+
+            var routeMapperType = typeof(RouteMapper<,,>).MakeGenericType(feature.DtoType, feature.RefType, typeDefinition.Type);
+            var routeMapper = app.ServiceProvider.GetRequiredService(routeMapperType);
+
+            var mappingMethod = routeMapperType.GetMethod("MapEntities");
+
+            mappingMethod?.Invoke(routeMapper, new object[] { app, configure });
+        }
+
+        return app;
+    }
+
+    public static IEndpointRouteBuilder MapEntityCrud(this IEndpointRouteBuilder app)
+    {
+        return MapEntityCrud(app, x => x
+            .WithMetadata());
     }
 
     /// <summary>
@@ -167,6 +223,8 @@ public static class ServiceCollectionExtensions
                 x.GetRequiredService<IOptions<JsonOptions>>().Value.JsonSerializerOptions));
 
         services.Configure<JsonOptions>(x => x.JsonSerializerOptions.Converters.Add(new JTokenJsonConverter()));
+        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(x => x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(x => x.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         return services
             .AddCrudServices();
@@ -180,21 +238,24 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDefinitionNodeModule, AttributeBasedEntityFieldModule>()
             .AddSingleton<IDefinitionNodeModule, AttributeBasedEntityModule>()
             .AddSingleton<IDefinitionNodeModule, CoreEntityFieldModule>()
-            .AddSingleton<IDefinitionNodeModule, CoreEntityModule>();
+            .AddSingleton<IDefinitionNodeModule, CoreEntityModule>()
+            .AddSingleton<IDefinitionNodeModule, CrudApiModule>();
     }
 
     private static IMvcBuilder AddCrudFeature(this IMvcBuilder builder, ITypeProvider typeProvider)
     {
         builder.Services.AddSingleton(typeProvider);
 
-        return builder
-            .ConfigureApplicationPartManager(x =>
-            {
-                if (!x.FeatureProviders.Any(y => y is GenericControllerFeatureProvider))
-                {
-                    x.FeatureProviders.Add(new GenericControllerFeatureProvider(typeProvider));
-                }
-            });
+        // return builder
+        //     .ConfigureApplicationPartManager(x =>
+        //     {
+        //         if (!x.FeatureProviders.Any(y => y is GenericControllerFeatureProvider))
+        //         {
+        //             x.FeatureProviders.Add(new GenericControllerFeatureProvider(typeProvider));
+        //         }
+        //     });
+
+        return builder;
     }
 
     private static IMvcBuilder AddCrudRestApiInternal(this IServiceCollection services, Action<MvcOptions>? configure, params Assembly[] assemblies)

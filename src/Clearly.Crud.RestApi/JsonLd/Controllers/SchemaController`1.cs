@@ -27,7 +27,7 @@ public class SchemaController<TEntity> : ControllerBase
         
         var def = new
         {
-            @id = $"{baseUrl}/schema/{entity.NodeKey}",
+            @id = $"{baseUrl}/schema/{entity.NodeKey.ToLowerInvariant()}",
         };
 
         return Ok(def);

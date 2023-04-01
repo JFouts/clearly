@@ -22,6 +22,8 @@ builder.Services.AddSwaggerGen(x => {
 
 var app = builder.Build();
 
+app.MapGet("/", () => "Hello World!");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -48,6 +50,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapRazorPages();
+
+app.MapEntityCrud();
 
 app.MapControllers();
 

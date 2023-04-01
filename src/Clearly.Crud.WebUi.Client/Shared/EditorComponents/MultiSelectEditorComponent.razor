@@ -27,14 +27,15 @@
         {
             if (Input.Value is JArray jArray)
             {
-                switch (Configuration.DataSourceType)
+                return jArray.Values<string>().OfType<string>().ToArray();
+                @* switch (Configuration.DataSourceType)
                 {
                     case "StaticList":
                         return jArray.Values<string>().OfType<string>().ToArray();
                     case "EntityDataSource":
                         Console.WriteLine(jArray.Children().Select(x => x["id"]?.Value<string>() ?? string.Empty).ToArray());
                         return jArray.Children().Select(x => x["id"]?.Value<string>() ?? string.Empty).ToArray();
-                }
+                } *@
             }
 
             return Array.Empty<string>();
@@ -43,6 +44,8 @@
         set
         {
             value ??= Array.Empty<string>();
+            Input.Value = JArray.FromObject(value);
+@*             
             switch (Configuration.DataSourceType)
             {
                 case "StaticList":
@@ -53,7 +56,7 @@
                     break;
                 default:
                     throw new Exception($"Unsupported DataSource for MultiSelectEditorComponent of {Configuration.DataSourceType}");
-            }
+            } *@
         }
     }
 

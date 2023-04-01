@@ -12,14 +12,18 @@ namespace Clearly.Crud.WebUi;
 /// </summary>
 public class CrudAdminModule : IDefinitionNodeModule
 {
+    /// <inheritdoc/>
     public void OnApplyingModule(DefinitionNode node)
     {
-        if (node is PropertyDefinitionNode propertyNode)
+        switch (node)
         {
-            OnApplyingModule(propertyNode);
+            case PropertyDefinitionNode propertyDefinitionNode:
+                OnApplyingModule(propertyDefinitionNode);
+                break;
         }
     }
 
+    /// <inheritdoc/>
     public void OnApplyingFallbackDefaults(DefinitionNode node)
     {
         if (node is EntityTypeDefinitionNode entityNode)
@@ -32,8 +36,7 @@ public class CrudAdminModule : IDefinitionNodeModule
         }
     }
     
-    /// <inheritdoc/>
-    public void OnApplyingFallbackDefaults(EntityTypeDefinitionNode entity)
+    private void OnApplyingFallbackDefaults(EntityTypeDefinitionNode entity)
     {
         var metadata = entity.Using<CrudAdminEntityFeature>();
 
@@ -43,8 +46,7 @@ public class CrudAdminModule : IDefinitionNodeModule
         }
     }
 
-    /// <inheritdoc/>
-    public void OnApplyingModule(PropertyDefinitionNode property)
+    private void OnApplyingModule(PropertyDefinitionNode property)
     {
         var metadata = property.Using<CrudAdminPropertyFeature>();
 
@@ -55,8 +57,7 @@ public class CrudAdminModule : IDefinitionNodeModule
         }
     }
 
-    /// <inheritdoc/>
-    public void OnApplyingFallbackDefaults(PropertyDefinitionNode property)
+    private void OnApplyingFallbackDefaults(PropertyDefinitionNode property)
     {
         var metadata = property.Using<CrudAdminPropertyFeature>();
 

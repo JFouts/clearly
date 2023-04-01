@@ -16,7 +16,7 @@ public class CoreEntityModule : DefinitionNodeModule<EntityTypeDefinitionNode>
 
         if (string.IsNullOrWhiteSpace(entity.NodeKey))
         {
-            entity.NodeKey = entity.Type.Name;
+            entity.NodeKey = entity.Type.Name.ToCamelCase();
         }
     }
 }

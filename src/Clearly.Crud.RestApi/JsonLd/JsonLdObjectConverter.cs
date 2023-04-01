@@ -36,8 +36,7 @@ public class JsonLdObjectConverter<TEntity> : JsonConverter<TEntity>
         var ldContext = new JsonObject();
         var responseBody = new JsonObject();
 
-        // TODO: Consider this being already Lower on the definition
-        var nameKey = definition.NodeKey.ToLower();
+        var nameKey = definition.NodeKey.ToLowerInvariant();
 
         var typeJsonMetadata = definition.Using<JsonLdTypeFeature>();
         var vocab = $"{baseUrl}/schema/{nameKey}#";

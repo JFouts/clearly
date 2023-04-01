@@ -8,19 +8,15 @@
 }
 
 @code {
-    public bool IsValid { get; set; }
+    public bool IsValid => Input.Value.Type == JTokenType.Integer;
 
     public long Value {
         get
         {
-            if (Input.Value.Type == JTokenType.Integer)
+            if (IsValid)
             {
-                IsValid = true;
-
                 return Input.Value.Value<long>();
             }
-
-            IsValid = false;
 
             return 0;
         }

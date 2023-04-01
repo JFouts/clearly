@@ -24,9 +24,26 @@
 
   protected IEnumerable<DropDownOption> Options { get; set; } = Array.Empty<DropDownOption>();
 
+  @* protected override string Value 
+  { 
+    get => base.Value; 
+    set
+    {
+      Console.WriteLine($"SET {value}");
+      if (Configuration.DataSourceType =="EntityDataSource")
+      {
+        Input.Value = JObject.FromObject(new { id = value });
+      }
+      else
+      {
+        base.Value = value;
+      }
+    } 
+  } *@
+
   protected override void OnInitialized()
   {
-    base.OnInitialized();
+    // base.OnInitialized();
   }
 
   protected override async Task OnInitializedAsync()
@@ -39,10 +56,10 @@
     var data = await dataSourceReader.ReadFrom(dataSource);
 
     Options = data.Select(x => new DropDownOption
-    {
-      Value = x.Key,
-      Label = x.Value,
-    });
+      {
+        Value = x.Key,
+        Label = x.Value,
+      });
 
     if (Input.Value == null || Input.Value.Type == JTokenType.Null)
     {
@@ -61,3 +78,4 @@
     public string Label { get; set; } = string.Empty;
   }
 }
+
