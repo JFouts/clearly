@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Clearly.Core.Interfaces;
+﻿using Clearly.Core.Interfaces;
 
 namespace Clearly.EventRepository
 {
@@ -9,6 +6,6 @@ namespace Clearly.EventRepository
     {
         Task SaveNewStreamEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents);
         Task SaveEventsAsync<T>(Guid id, IEnumerable<IDomainEvent> domainEvents, long aggregateVersion);
-        Task<AggregateEventList> RetriveEventsAsync<T>(Guid id);
+        Task<AggregateEventList> RetrieveEventsAsync<T>(Guid id);
     }
 }

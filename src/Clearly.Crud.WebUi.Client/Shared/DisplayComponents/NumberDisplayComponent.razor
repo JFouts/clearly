@@ -1,0 +1,24 @@
+﻿@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+@if (IsValid)
+{
+    @Value
+}
+
+@code {
+    public bool IsValid => Input.Value.Type == JTokenType.Integer;
+
+    public long Value {
+        get
+        {
+            if (IsValid)
+            {
+                return Input.Value.Value<long>();
+            }
+
+            return 0;
+        }
+    }
+}

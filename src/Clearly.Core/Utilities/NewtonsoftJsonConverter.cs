@@ -15,16 +15,37 @@ public class NewtonsoftJsonConverter : IJsonConverter
 
     public object Deserialize(string json)
     {
-        return JsonConvert.DeserializeObject(json);
+        var response = JsonConvert.DeserializeObject(json);
+
+        if (response == null)
+        {
+            throw new JsonSerializationException("Invalid JSON, failed to deserialize.");
+        }
+
+        return response;
     }
 
     public object Deserialize(string json, Type type)
     {
-        return JsonConvert.DeserializeObject(json, type);
+        var response = JsonConvert.DeserializeObject(json, type);
+
+        if (response == null)
+        {
+            throw new JsonSerializationException("Invalid JSON, failed to deserialize.");
+        }
+
+        return response;
     }
 
     public T Deserialize<T>(string json)
     {
-        return JsonConvert.DeserializeObject<T>(json);
+        var response = JsonConvert.DeserializeObject<T>(json);
+
+        if (response == null)
+        {
+            throw new JsonSerializationException("Invalid JSON, failed to deserialize.");
+        }
+
+        return response;
     }
 }

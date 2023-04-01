@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Clearly.Core.Interfaces;
+﻿using Clearly.Core.Interfaces;
 using Clearly.Core.Logging;
 using Clearly.Core.Utilities.Interfaces;
 using Clearly.EventRepository.EventStore;
@@ -74,15 +72,21 @@ namespace Clearly.EventSubscription.EventStore
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, $"Exception occured processing event {@event.OriginalEventNumber} from stream {@event.OriginalStreamId}");
+                _logger?.LogError(exception, $"Exception occurred processing event {@event.OriginalEventNumber} from stream {@event.OriginalStreamId}");
             }
         }
 
         private IDomainEvent ConvertToDomainEvent(ResolvedEvent @event)
         {
             var eventType = _eventStoreSettings.EventTypes[@event.Event.EventType];
+            var @object = _jsonByteConverter.Deserialize(@event.Event.Data, eventType);
 
-            return _jsonByteConverter.Deserialize(@event.Event.Data, eventType) as IDomainEvent;
+            if (@object is IDomainEvent domainEvent)
+            {
+                return domainEvent;
+            }
+
+            throw new ArgumentException($"Event {@event.Event.EventId} was not of type IDomainEvent.", nameof(@event));
         }
 
         private static EventStoreEventStream GetEventStoreStream(IEventStream stream)

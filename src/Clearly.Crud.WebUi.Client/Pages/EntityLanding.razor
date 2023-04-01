@@ -1,0 +1,42 @@
+﻿@page "/entity"
+
+@using Clearly.Crud.EntityGraph
+
+@inject HttpClient http;
+
+<PageTitle>CRUD Admin</PageTitle>
+
+<h1>Site Entities</h1>
+
+<nav>
+    <ul>
+        @foreach (var entity in Entites)
+        {
+            var link = $"entity/{entity.NodeKey.ToLower()}";
+            <li>
+                <NavLink class="nav-link" href="@link" Match="NavLinkMatch.All">
+                    @entity.DisplayName
+                </NavLink>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code {
+    protected IEnumerable<TypeDefinitionNodeFlattened> Entites { get; set; } = Array.Empty<TypeDefinitionNodeFlattened>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await http.GetAsync($"/api/entity");
+
+        if (response.IsSuccessStatusCode)
+        {
+            Entites = await response.Content.ReadFromJsonAsync<IEnumerable<TypeDefinitionNodeFlattened>>()
+                ?? throw new Exception(); // TODO: Better Exception Handling
+        }
+        else
+        {
+            // TODO: Handle error
+        }
+    }
+}

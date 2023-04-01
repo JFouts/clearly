@@ -1,0 +1,81 @@
+﻿@using Clearly.Crud.EntityGraph
+@using Clearly.Crud.WebUi
+@using Clearly.Crud.WebUi.Core
+@using Newtonsoft.Json.Linq
+
+@inherits BaseStringEditorComponent
+
+@inject IDataSourceFactory dataSourceFactory
+@inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
+
+<div class="mb-3">
+  <label for="@PropertyDefinitionNode.NodeKey">@PropertyDefinitionNode.DisplayName</label>
+  <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="Value">
+    @foreach (var option in Options)
+    {
+      <option value="@option.Value">@option.Label</option>
+    }
+  </select>
+</div>
+
+@code
+{
+  protected CrudAdminDropDownFeature Configuration { get; set; } = new CrudAdminDropDownFeature();
+
+  protected IEnumerable<DropDownOption> Options { get; set; } = Array.Empty<DropDownOption>();
+
+  @* protected override string Value 
+  { 
+    get => base.Value; 
+    set
+    {
+      Console.WriteLine($"SET {value}");
+      if (Configuration.DataSourceType =="EntityDataSource")
+      {
+        Input.Value = JObject.FromObject(new { id = value });
+      }
+      else
+      {
+        base.Value = value;
+      }
+    } 
+  } *@
+
+  protected override void OnInitialized()
+  {
+    // base.OnInitialized();
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    Configuration = PropertyDefinitionNode.GetFeature<CrudAdminDropDownFeature>();
+
+    var dataSource = await dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
+    var data = await dataSourceReader.ReadFrom(dataSource);
+
+    Options = data.Select(x => new DropDownOption
+      {
+        Value = x.Key,
+        Label = x.Value,
+      });
+
+    if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+    {
+      var defaultValue = Options.FirstOrDefault();
+      if (defaultValue != null)
+      {
+        Value = defaultValue.Value;
+        this.StateHasChanged();
+      }
+    }
+  }
+
+  protected class DropDownOption
+  {
+    public string Value { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+  }
+}
+

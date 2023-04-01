@@ -16,7 +16,7 @@ namespace Clearly.EventRepository.EventStore.NamingConvention
 
         public Type GetEventType(string typeName)
         {
-            return Type.GetType(typeName);
+            return Type.GetType(typeName) ?? throw new KeyNotFoundException($"No Type with name {typeName} was found.");
         }
     }
 }

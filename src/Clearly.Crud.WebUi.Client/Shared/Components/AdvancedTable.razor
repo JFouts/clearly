@@ -1,0 +1,189 @@
+﻿@using Clearly.Crud.Search
+@using Clearly.Crud.WebUi.Client.Infrastructure
+@using Clearly.Crud.WebUi.Client.Models
+@using Clearly.Crud.WebUi.Core.Services
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Newtonsoft.Json.Linq
+
+@implements IDisposable
+
+@inject HttpClient http
+@inject IEntityApiService entityService
+@inject NavigationManager navigationManager;
+
+<section class="py-3">
+    <div class="mb-3">
+        <form method="get">
+            <input name="q" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                @foreach (var column in @TableDefinition.Columns)
+                {
+                    <th>@column.DisplayName</th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Results) 
+            {
+                var id = @record.GetValue("id") is JValue v ? (v.Value as string) ?? string.Empty : string.Empty;                
+                <tr>
+                    @foreach (var column in @TableDefinition.Columns)
+                    {
+                        var property = record.Property(column.Key.ToCamelCase());
+                        
+                        <td>
+                            @* TODO: Better error logging on Blazor app  *@
+                            @if (property != null)
+                            {
+                                <DynamicComponent Type="GetComponentType(column.DisplayComponent)" Parameters="GetParamaters(property)"></DynamicComponent>
+                            }
+                        </td>
+                    }
+                    <td><a href="entity/@TableDefinition.NameKey.ToLower()/edit/@id">Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="paging navigation">
+        <ul class="pagination justify-content-center">
+        
+            <li class="page-item @(IsDisabled(PreviousPage))">
+                <a class="page-link" href='@GetPageUrl(CurrentPage - 1)' aria-label="previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @foreach (int pageNumber in LinkedPages.Where(x => x > 0 && x <= PageCount).OrderBy(x => x))
+            {
+                <li class="page-item @(IsDisabled(pageNumber))">
+                    <a class="page-link" aria-label="page @pageNumber" href='@GetPageUrl(pageNumber)'>@pageNumber</a>
+                </li>
+            }
+        
+            <li class="page-item @(IsDisabled(NextPage))">
+                <a class="page-link" href='@GetPageUrl(CurrentPage + 1)' aria-label="next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</section>
+
+@code {
+    [QueryStringParameter]
+    public string Query { get; set; } = string.Empty;
+
+    [QueryStringParameter("page")]
+    public int CurrentPage { get; set; } = 1;
+
+    [QueryStringParameter]
+    public int PageSize { get; set; } = 24;
+
+    public int PageCount { get; set; }
+
+    public HashSet<int> LinkedPages = new ();
+
+    public int PreviousPage => CurrentPage - 1;
+
+    public int NextPage => CurrentPage + 1;
+
+    public Dictionary<string, object> GetParamaters(JProperty property)
+    {
+        return new Dictionary<string, object> { { nameof(BaseDisplayComponent.Input), property } };
+    }
+
+    [Parameter]
+    public TableDefinition TableDefinition { get; set; } = new TableDefinition();
+
+    public CrudSearchResult<JObject> Data { get; set; } = new CrudSearchResult<JObject>();
+
+    public IEnumerable<JObject> Results { get; set; } = Array.Empty<JObject>();
+
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    protected string GetPageUrl(int pageNumber) => navigationManager.GetUriWithQueryParameter("page", pageNumber);
+
+    // TODO: This doesn't work, we need to actually disable the links when this is true
+    protected bool IsDisabled(int pageNumber) => pageNumber == CurrentPage || pageNumber < 1 || pageNumber > PageCount;
+
+    protected Type GetComponentType(string type)
+    {
+        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+
+        if (componentType == null)
+        {
+            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
+        }
+
+        return componentType;
+    }
+
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+
+        navigationManager.LocationChanged += OnLocationChanged;
+        
+        await ReloadTable();
+    }
+
+    protected async void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        this.SetParametersFromQueryString(navigationManager);
+
+        await ReloadTable();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        this.SetParametersFromQueryString(navigationManager);
+
+        await ReloadTable();
+    }
+
+    private async Task ReloadTable()
+    {
+        Console.WriteLine($"Reloading table {TableDefinition.NameKey}");
+
+        if (string.IsNullOrWhiteSpace(TableDefinition.NameKey))
+        {
+            return;
+        }
+
+        var searchOptions = new CrudSearchOptions
+        {
+            SearchQuery = Query,
+            Skip = (CurrentPage - 1) * PageSize,
+            Take = PageSize,
+        };
+
+        Data = await entityService.Search(searchOptions, TableDefinition.NameKey);
+        Results = Data.Results;
+
+        // TODO: Move this to service
+        PageCount = ((Data.Count - 1) / PageSize) + 1;
+
+        // TODO: Handle changes
+        LinkedPages.Add(1);
+        LinkedPages.Add(PageCount);
+        LinkedPages.Add(CurrentPage);
+        LinkedPages.Add(CurrentPage - 1);
+        LinkedPages.Add(CurrentPage - 2);
+        LinkedPages.Add(CurrentPage + 1);
+        LinkedPages.Add(CurrentPage + 2);
+
+        StateHasChanged();
+    }
+}

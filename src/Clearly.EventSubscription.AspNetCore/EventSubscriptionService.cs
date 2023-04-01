@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Clearly.Core.Interfaces;
+﻿using Clearly.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Clearly.EventSubscription.AspNetCore
@@ -32,7 +29,8 @@ namespace Clearly.EventSubscription.AspNetCore
         {
             foreach (var subscription in _subscriptionProvider.GetSubscriptionDetails())
             {
-                _subscriptionHost.Subscribe(subscription.Stream, x => InvokeEventHandler(subscription, x));
+                // TODO: In C#11 we can make Stream required so that we don't have to ! it here.
+                _subscriptionHost.Subscribe(subscription.Stream!, x => InvokeEventHandler(subscription, x));
                 _statistics.NumberOfActiveSubscriptions++;
             }
         }
@@ -45,7 +43,8 @@ namespace Clearly.EventSubscription.AspNetCore
             using (var scope = _services.CreateScope())
             {
                 var handler = subscription.EventHandlers[@event.GetType()];
-                var instance = scope.ServiceProvider.GetRequiredService(subscription.Type);
+                // TODO: In C#11 we can make Type required so that we don't have to ! it here.
+                var instance = scope.ServiceProvider.GetRequiredService(subscription.Type!);
                 _statistics.LastProcessesTime = DateTime.UtcNow;
 
                 try

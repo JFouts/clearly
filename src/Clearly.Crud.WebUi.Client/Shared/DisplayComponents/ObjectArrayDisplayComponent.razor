@@ -1,0 +1,17 @@
+@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+@Value
+
+@code {
+    public bool IsValid { get; set; }
+
+    public string Value {
+        get
+        {
+            // TODO: This could be a lot better
+            return Input.Value.ToString();
+        }
+    }
+}

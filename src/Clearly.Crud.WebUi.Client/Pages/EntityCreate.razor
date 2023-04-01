@@ -1,0 +1,35 @@
+﻿@page "/entity/{entityName}/create"
+
+@using Clearly.Crud.EntityGraph
+
+@inject HttpClient http
+
+@inherits EntityEditorBase
+
+<PageTitle>CRUD Admin</PageTitle>
+
+@if (@EntityDefinition != null)
+{
+    <h1><span class="text-muted small">Create a new </span> @EntityDefinition.DisplayName</h1>
+    <EditForm class="default-focus" data-type="create" Model="Entity" OnValidSubmit="@OnSubmit">
+        @foreach (var field in EntityDefinition.Properties)
+        {
+            var feature = field.GetFeature<CrudAdminPropertyFeature>();
+
+            @if (feature.DisplayInEditor)
+            {
+                <div class='form-field'>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParameters(field)"></DynamicComponent>
+                </div>
+            }
+        }
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
+}
+
+@code {
+    protected override async Task<HttpResponseMessage> SaveJsonContent(StringContent content)
+    {
+        return await http.PostAsync($"/api/{EntityName}", content);
+    }
+}

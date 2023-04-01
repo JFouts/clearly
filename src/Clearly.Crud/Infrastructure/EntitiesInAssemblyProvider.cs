@@ -9,9 +9,10 @@ namespace Clearly.Crud.Infrastructure;
 /// <summary>
 /// Locates IEntity types within the registered assemblies
 /// </summary>
-internal class EntitiesInAssemblyProvider : ITypeProvider
+public class EntitiesInAssemblyProvider : ITypeProvider
 {
     private IEnumerable<Assembly> assemblies;
+    private IEnumerable<Type> types;
 
     /// <summary>
     /// Locates IEntity types within the registered assemblies
@@ -20,6 +21,11 @@ internal class EntitiesInAssemblyProvider : ITypeProvider
     public EntitiesInAssemblyProvider(IEnumerable<Assembly> assemblies)
     {
         this.assemblies = assemblies;
+
+        this.types = assemblies
+            .SelectMany(x => x.GetExportedTypes())
+            .Where(x => x.IsAssignableTo(typeof(IEntity)))
+            .ToList();
     }
 
     /// <summary>
@@ -28,8 +34,6 @@ internal class EntitiesInAssemblyProvider : ITypeProvider
     /// <returns>List of types from the registered assemblies.</returns>
     public IEnumerable<Type> GetTypes()
     {
-        return assemblies
-            .SelectMany(x => x.GetExportedTypes())
-            .Where(x => x.IsAssignableTo(typeof(IEntity)));
+        return types;
     }
 }

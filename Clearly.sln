@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clearly", "Clearly", "{87D82FF6-4A7D-419C-8788-235DD43AA666}"
 	ProjectSection(SolutionItems) = preProject
@@ -44,17 +44,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.EventRepository.Loc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.EventRepository.LocalMemory.AspNetCore", "src\Clearly.EventRepository.LocalMemory.AspNetCore\Clearly.EventRepository.LocalMemory.AspNetCore.csproj", "{D453005C-6E26-4871-86A8-ED93461E8AA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clearly.EventRepository.Test.Unit", "test\Clearly.EventRepository.Test.Unit\Clearly.EventRepository.Test.Unit.csproj", "{11761097-7C4A-4E37-B2D0-DC52736822C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.EventRepository.Test.Unit", "test\Clearly.EventRepository.Test.Unit\Clearly.EventRepository.Test.Unit.csproj", "{11761097-7C4A-4E37-B2D0-DC52736822C0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF5D8E92-CE77-4B79-B5EB-58AFDC25FA8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud", "src\Clearly.Crud\Clearly.Crud.csproj", "{12930175-055A-40F0-880F-12B81B7169FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clearly.Crud", "src\Clearly.Crud\Clearly.Crud.csproj", "{12930175-055A-40F0-880F-12B81B7169FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.WebUI", "src\Clearly.Crud.WebUI\Clearly.Crud.WebUI.csproj", "{63C6900B-B6C9-4590-9B4D-D2531761033E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clearly.Crud.WebUI", "src\Clearly.Crud.WebUI\Clearly.Crud.WebUI.csproj", "{63C6900B-B6C9-4590-9B4D-D2531761033E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.Test.Unit", "test\Clearly.Crud.Test.Unit\Clearly.Crud.Test.Unit.csproj", "{C5FD51F5-8095-4397-8BB1-8C15600F5262}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6F482D40-59BD-41FD-8189-10F7FB4A2AFB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crud", "Crud", "{1374B8C2-9F19-4F89-8456-F9802A540AB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clearly.Crud.Test.Unit", "test\Clearly.Crud.Test.Unit\Clearly.Crud.Test.Unit.csproj", "{C5FD51F5-8095-4397-8BB1-8C15600F5262}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.RestApi", "src\Clearly.Crud.RestApi\Clearly.Crud.RestApi.csproj", "{2D5DB67B-1FAB-4EFF-A1E9-8E1EAA68FFC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.WebUi.Client", "src\Clearly.Crud.WebUi.Client\Clearly.Crud.WebUi.Client.csproj", "{DF4FFF78-E817-4D3B-B1B1-6BB2B7EF8207}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clearly.Crud.WebUi.Core", "src\Clearly.Crud.WebUi.Core\Clearly.Crud.WebUi.Core.csproj", "{51A80218-ACF9-4720-9694-402BAA6B67CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +134,18 @@ Global
 		{C5FD51F5-8095-4397-8BB1-8C15600F5262}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5FD51F5-8095-4397-8BB1-8C15600F5262}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5FD51F5-8095-4397-8BB1-8C15600F5262}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D5DB67B-1FAB-4EFF-A1E9-8E1EAA68FFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D5DB67B-1FAB-4EFF-A1E9-8E1EAA68FFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D5DB67B-1FAB-4EFF-A1E9-8E1EAA68FFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D5DB67B-1FAB-4EFF-A1E9-8E1EAA68FFC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4FFF78-E817-4D3B-B1B1-6BB2B7EF8207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4FFF78-E817-4D3B-B1B1-6BB2B7EF8207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4FFF78-E817-4D3B-B1B1-6BB2B7EF8207}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4FFF78-E817-4D3B-B1B1-6BB2B7EF8207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51A80218-ACF9-4720-9694-402BAA6B67CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51A80218-ACF9-4720-9694-402BAA6B67CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51A80218-ACF9-4720-9694-402BAA6B67CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51A80218-ACF9-4720-9694-402BAA6B67CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -154,9 +170,13 @@ Global
 		{DB7C3758-9F00-4438-836D-1089DADE3AF3} = {9852050C-4AAA-48B8-8C6F-B4D133C55791}
 		{D453005C-6E26-4871-86A8-ED93461E8AA4} = {9852050C-4AAA-48B8-8C6F-B4D133C55791}
 		{11761097-7C4A-4E37-B2D0-DC52736822C0} = {D69A27D0-0850-4E7E-8206-CEB03BABB2BF}
-		{12930175-055A-40F0-880F-12B81B7169FF} = {EF5D8E92-CE77-4B79-B5EB-58AFDC25FA8E}
-		{63C6900B-B6C9-4590-9B4D-D2531761033E} = {EF5D8E92-CE77-4B79-B5EB-58AFDC25FA8E}
-		{C5FD51F5-8095-4397-8BB1-8C15600F5262} = {6F482D40-59BD-41FD-8189-10F7FB4A2AFB}
+		{12930175-055A-40F0-880F-12B81B7169FF} = {1374B8C2-9F19-4F89-8456-F9802A540AB4}
+		{63C6900B-B6C9-4590-9B4D-D2531761033E} = {1374B8C2-9F19-4F89-8456-F9802A540AB4}
+		{C5FD51F5-8095-4397-8BB1-8C15600F5262} = {D69A27D0-0850-4E7E-8206-CEB03BABB2BF}
+		{1374B8C2-9F19-4F89-8456-F9802A540AB4} = {20C43B6E-A331-4347-A9DC-70F6ACA64E49}
+		{2D5DB67B-1FAB-4EFF-A1E9-8E1EAA68FFC0} = {1374B8C2-9F19-4F89-8456-F9802A540AB4}
+		{DF4FFF78-E817-4D3B-B1B1-6BB2B7EF8207} = {1374B8C2-9F19-4F89-8456-F9802A540AB4}
+		{51A80218-ACF9-4720-9694-402BAA6B67CB} = {1374B8C2-9F19-4F89-8456-F9802A540AB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3136EB9B-DF53-474E-BF50-C0005DBC4C11}

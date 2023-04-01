@@ -1,0 +1,100 @@
+﻿
+
+@using Clearly.Crud.EntityGraph
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Clearly.Crud.WebUi
+@using Newtonsoft.Json.Linq
+
+@*TODO: This shares a lot of code with EntityCreate.razor... remove code duplication*@
+
+@inherits BaseDisplayComponent
+
+<div class="mb-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <div class="nav-link active">@PropertyDefinitionNode.DisplayName</div>
+        </li>
+    </ul>
+
+    <div id="@PropertyDefinitionNode.NodeKey" class="card card-body">
+        @foreach (var field in EntityDefinition.Properties)
+        {
+            var feature = field.GetFeature<CrudAdminPropertyFeature>();
+
+            @if (feature.DisplayInEditor)
+            {
+                <div class='form-field'>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParamaters(field)"></DynamicComponent>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    // TODO: How do we populate this?
+    private TypeDefinitionNodeFlattened EntityDefinition = new TypeDefinitionNodeFlattened();
+
+    protected JObject Value
+    {
+        get
+        {
+            if (Input.Value.Type == JTokenType.Object && Input.Value is JObject jObject)
+            {
+                return jObject;
+            }
+
+            return new JObject();
+        }
+
+        set
+        {
+            Input.Value = (JToken?)value ?? new JObject();
+        }
+    }
+
+    public Dictionary<string, object> GetParamaters(PropertyDefinitionNodeFlattened fieldDefinition)
+    {
+        var key = fieldDefinition.NodeKey.ToCamelCase();
+        var property = Value.Property(key);
+
+        if (property == null)
+        {
+            property = new JProperty(key, JValue.CreateNull());
+            Value.Add(property);
+        }
+
+        return new Dictionary<string, object>
+        {
+            { "Input", property },
+            { "PropertyDefinitionNode", fieldDefinition },
+            { "TypeDefinitionGraph", TypeDefinitionGraph },
+        };
+    }
+
+    protected override void OnInitialized()
+    {
+        EntityDefinition = TypeDefinitionGraph[PropertyDefinitionNode.TypeNodeKey];
+
+        if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+        {
+            Value = new JObject();
+        }
+
+        base.OnInitialized();
+    }
+
+    protected Type GetComponentType(string type)
+    {
+        var componentType = this.GetType().Assembly.GetTypes().FirstOrDefault(x => x.Name == type);
+
+        if (componentType == null)
+        {
+            throw new InvalidOperationException($"Cannot create component {type} because it does not exist.");
+        }
+
+        return componentType;
+    }
+}
+

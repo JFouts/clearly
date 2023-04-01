@@ -51,7 +51,7 @@ The first step is to get a reference to the assembly that will have your Domain 
 
 Then we call `AddCrudRestApi` which will add all the required services for the CRUD Rest API to run as well as calling the ASP.MET extension `AddControllers` to enable Controller based routing on your application. 
 
-Then we follow a standard application pipeline setup. Near the top of the pipeline we add `UseCrudErrorHandler` which will and middleware to the pipeline that will catch common exception types an map them to their corresponding HTTP status code.
+Then we follow a standard application pipeline setup. Near the top of the pipeline we add `UseCrudErrorHandler` which will add a middleware to the pipeline that will catch common exception types an map them to their corresponding HTTP status code.
 
 Then towards the end of the pipeline we call `MapControllers` this is the standard ASP.NET method for adding controller based routing to the pipeline and is required for Clearly CRUD to handle your API requests.
 
@@ -74,6 +74,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
+app.UseClearlyAdmin();
 
 app.Run();
 ```
@@ -84,7 +85,8 @@ Then we call `AddCrudWebUi` which will add all the required services for the CRU
 
 Then we follow a standard application pipeline setup.
 
-Then towards the end of the pipeline we call `MapControllers` this is the standard ASP.NET method for adding controller based routing to the pipeline and is required for Clearly CRUD to handle requests to the Admin UI.
+Then towards the end of the pipeline we call `UseClearlyAdmin` this will add the required blazor static files as well as map anything under the `/admin` route to the Clearly CRUD Admin UI blazor application. 
+
 
 ## Help Me Choose My Installation Options
 
@@ -92,7 +94,7 @@ Then towards the end of the pipeline we call `MapControllers` this is the standa
 
 One of the options for running Clearly CRUD is with the Admin interface and the API all in one service. This allows you to more easily package up your project for deployments and means you only need one  service running in the cloud or on your hosting environment.
 
-This can be a great option for small teams or small projects that are looking for efficeny by having everything in one place.
+This can be a great option for small teams or small projects that are looking for efficiency by having everything in one place.
 
 ### Admin and API Separated
 

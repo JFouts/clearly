@@ -1,0 +1,46 @@
+﻿@page "/entity/{entityName}"
+
+@using Clearly.Crud.EntityGraph
+@using Clearly.Crud.WebUi.Client.Models
+@using Clearly.Crud.WebUi.Core.Services
+
+@using Clearly.Crud.WebUi.Client.Shared.Components
+
+@inject HttpClient http
+@inject IEntityDefinitionApiService entityDefinitionService
+
+<PageTitle>CRUD Admin</PageTitle>
+
+<h1><span class="text-muted small">View all </span>  @EntityDefinition.DisplayName<span class="text-muted">(s)</span></h1>
+
+<div class="mb-3 d-flex justify-content-end">
+    <a href="entity/@EntityName/create" class="btn btn-primary">Add New</a>
+</div>
+
+<AdvancedTable TableDefinition="TableDefinition"></AdvancedTable>
+
+@code {
+    [Parameter]
+    public string EntityName { get; set; } = string.Empty;
+
+    protected TypeDefinitionNodeFlattened EntityDefinition { get; set; } = new TypeDefinitionNodeFlattened();
+
+    protected TableDefinition TableDefinition { get; set; } = new TableDefinition();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var entityGraph = await entityDefinitionService.GetById(EntityName);
+        EntityDefinition = entityGraph[EntityName];
+
+        TableDefinition = new TableDefinition
+        {
+            NameKey = EntityDefinition.NodeKey,
+            Columns = EntityDefinition.Properties.Select(x => new ColumnDefinition
+            {
+                DisplayName = x.DisplayName,
+                Key = x.NodeKey,
+                DisplayComponent = x.GetFeature<CrudAdminPropertyFeature>().DisplayComponentName
+            })
+        };
+    }
+}

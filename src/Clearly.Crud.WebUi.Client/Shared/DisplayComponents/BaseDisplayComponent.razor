@@ -1,0 +1,14 @@
+﻿
+@using Clearly.Crud.EntityGraph
+@using Newtonsoft.Json.Linq
+
+@code {
+    [Parameter]
+    public JProperty Input { get; set; } = new JProperty("null", JValue.CreateNull());
+
+    [Parameter]
+    public PropertyDefinitionNodeFlattened PropertyDefinitionNode { get; set; } = new PropertyDefinitionNodeFlattened();
+
+    [Parameter]
+    public Dictionary<string, TypeDefinitionNodeFlattened> TypeDefinitionGraph { get; set; } = new Dictionary<string, TypeDefinitionNodeFlattened>();
+}

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using Clearly.Core.Interfaces;
 
 namespace Clearly.EventSubscription.EventStore
@@ -52,9 +48,9 @@ namespace Clearly.EventSubscription.EventStore
                 .ToDictionary(x => x.GetParameters().Single().ParameterType, InvokeMethod);
         }
 
-        private static Func<object, IDomainEvent, Task?> InvokeMethod(MethodInfo method)
+        private static Func<object, IDomainEvent, Task> InvokeMethod(MethodInfo method)
         {
-            return (obj, @event) => (Task?)method.Invoke(obj, new object[]{@event});
+            return (obj, @event) => (Task?) method.Invoke(obj, new object[]{@event}) ?? throw new NullReferenceException($"{method.DeclaringType!.FullName}:{method.Name} returned a null Task.");
         }
 
         private static IEnumerable<MethodInfo> GetSubscriptionMethods(TypeInfo type)

@@ -52,8 +52,8 @@
                 "licenseName": "MIT",
                 "licenseFile": "LICENSE"
             },
-            "documentInterfaces": true,
-            "documentExposedElements": true,
+            "documentInterfaces": false,
+            "documentExposedElements": false,
             "documentInternalElements": false,
             "documentPrivateElements": false,
             "documentPrivateFields": false,

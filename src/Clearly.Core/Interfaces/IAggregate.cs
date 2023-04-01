@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 namespace Clearly.Core.Interfaces;
+
 public interface IAggregate<out TAggregate>
     where TAggregate : AggregateRoot
 {

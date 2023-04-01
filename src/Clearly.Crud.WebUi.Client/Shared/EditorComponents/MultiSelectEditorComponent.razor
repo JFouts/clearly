@@ -1,0 +1,93 @@
+﻿@using Clearly.Crud.EntityGraph
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Clearly.Crud.WebUi
+@using Clearly.Crud.WebUi.Core
+@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+@inject IDataSourceFactory dataSourceFactory
+@inject IDataSourceReader<KeyValuePair<string, string>> dataSourceReader;
+
+<div class="mb-3">
+  <label for="@PropertyDefinitionNode.NodeKey">@PropertyDefinitionNode.DisplayName</label>
+  <select class="form-select" id="@PropertyDefinitionNode.NodeKey" name="@PropertyDefinitionNode.NodeKey" @bind="SelectedKeys" multiple>
+    @foreach (var option in Options)
+    {
+      <option value="@option.Value">@option.Label</option>  
+    }
+  </select> 
+</div>
+
+@code
+{
+    protected string[] SelectedKeys
+    {
+        get
+        {
+            if (Input.Value is JArray jArray)
+            {
+                return jArray.Values<string>().OfType<string>().ToArray();
+                @* switch (Configuration.DataSourceType)
+                {
+                    case "StaticList":
+                        return jArray.Values<string>().OfType<string>().ToArray();
+                    case "EntityDataSource":
+                        Console.WriteLine(jArray.Children().Select(x => x["id"]?.Value<string>() ?? string.Empty).ToArray());
+                        return jArray.Children().Select(x => x["id"]?.Value<string>() ?? string.Empty).ToArray();
+                } *@
+            }
+
+            return Array.Empty<string>();
+        }
+
+        set
+        {
+            value ??= Array.Empty<string>();
+            Input.Value = JArray.FromObject(value);
+@*             
+            switch (Configuration.DataSourceType)
+            {
+                case "StaticList":
+                    Input.Value = JArray.FromObject(value);
+                    break;
+                case "EntityDataSource":
+                    Input.Value = JArray.FromObject(value.Select(x => JObject.FromObject(new { id = x })));
+                    break;
+                default:
+                    throw new Exception($"Unsupported DataSource for MultiSelectEditorComponent of {Configuration.DataSourceType}");
+            } *@
+        }
+    }
+
+    protected CrudAdminDropDownFeature Configuration { get; set; } = new CrudAdminDropDownFeature();
+
+    protected IEnumerable<MultiSelectOption> Options { get; set; } = Array.Empty<MultiSelectOption>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Configuration = PropertyDefinitionNode.GetFeature<CrudAdminDropDownFeature>();
+
+        var dataSource = await dataSourceFactory.Create(Configuration.DataSourceType, Configuration.DataSource);
+        var data = await dataSourceReader.ReadFrom(dataSource);
+
+        Options = data.Select(x => new MultiSelectOption
+        {
+            Value = x.Key,
+            Label = x.Value,
+        });
+        
+        if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+        {
+            SelectedKeys = Array.Empty<string>();
+        }
+    }
+
+    protected class MultiSelectOption
+    {
+        public string Value { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
+    }
+}

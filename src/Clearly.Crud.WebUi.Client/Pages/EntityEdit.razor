@@ -1,0 +1,45 @@
+﻿@page "/entity/{entityName}/edit/{id}"
+
+@using Clearly.Crud.EntityGraph
+@using Clearly.Crud.WebUi.Core.Services
+
+@inject HttpClient http
+@inject IEntityApiService service;
+
+@inherits EntityEditorBase
+
+<PageTitle>CRUD Admin</PageTitle>
+
+@if (@EntityDefinition != null)
+{
+    <h1><span class="text-muted small">Edit </span> @EntityDefinition.DisplayName</h1>
+    <EditForm class="default-focus" data-type="edit" Model="Entity" OnValidSubmit="@OnSubmit">
+        @foreach (var field in EntityDefinition.Properties)
+        {
+            var feature = field.GetFeature<CrudAdminPropertyFeature>();
+
+            @if (feature.DisplayInEditor)
+            {
+                <div class='form-field'>
+                    <DynamicComponent Type="GetComponentType(feature.EditorComponentName)" Parameters="GetParameters(field)"></DynamicComponent>
+                </div>
+            }
+        }
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        // TODO: Figure out how to do a Guid route param or make this Parse less error prone
+        Entity = await service.GetById(Guid.Parse(Id), EntityDefinition.NodeKey);
+    }
+
+    protected override async Task<HttpResponseMessage> SaveJsonContent(StringContent content)
+    {
+        return await http.PutAsync($"/api/{EntityName}/{Id}", content);
+    }
+}

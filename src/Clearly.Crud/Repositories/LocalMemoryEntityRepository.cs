@@ -11,11 +11,20 @@ using static System.Linq.Expressions.Expression;
 namespace Clearly.EntityRepository;
 
 // TODO: This doesn't belong in here
+
+/// <summary>
+/// An entity repository that uses local memory as it's data store.
+/// </summary>
+/// <remarks>
+/// This data store will clear when the application shuts down. This is intended to be used for testing purposes only.
+/// </remarks>
+/// <typeparam name="T">The data type of the Entity managed by this repository.</typeparam>
 public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
     where T : IEntity
 {
-    private static readonly ConcurrentDictionary<Guid, T> Table = new ConcurrentDictionary<Guid, T>();
+    private static readonly ConcurrentDictionary<Guid, T> Table = new ();
 
+    /// <inheritdoc/>
     public Task Delete(Guid id)
     {
         Table.TryRemove(id, out _);
@@ -23,6 +32,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     public Task<T> GetById(Guid id)
     {
         if (Table.TryGetValue(id, out var result))
@@ -33,6 +43,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
         throw new KeyNotFoundException($"Entity with id {id} was not found in table {typeof(T).Name}.");
     }
 
+    /// <inheritdoc/>
     public Task Insert(T obj)
     {
         Table.TryAdd(obj.Id, obj);
@@ -40,6 +51,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     public Task<CrudSearchResult<T>> Search(CrudSearchOptions options)
     {
         var result = new CrudSearchResult<T>
@@ -53,9 +65,9 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
         if (!string.IsNullOrWhiteSpace(options.SearchQuery))
         {
             Expression? condition = null;
-            var paramater = Parameter(typeof(T), "x");
+            var parameter = Parameter(typeof(T), "x");
 
-            // TODO: Configureable in Entity Defintion
+            // TODO: Configurable in Entity Definition
             foreach (var property in typeof(T).GetProperties())
             {
                 if (property.PropertyType.IsAssignableTo(typeof(string)))
@@ -64,11 +76,16 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
                     // Maybe there is a way for the expressions to be build when the entity definition is built
                     // Then they can just use a where clause in their repo.
                     var match = Call(
-                        Property(paramater, property),
-                        typeof(string).GetMethod("Contains", new [] { typeof(string), typeof(StringComparison) }), 
-                        new Expression[] {
+                        Property(parameter, property),
+                        typeof(string).GetMethod("Contains", new [] 
+                        { 
+                            typeof(string),
+                            typeof(StringComparison),
+                        }) !, 
+                        new Expression[]
+                        {
                             Constant(options.SearchQuery, typeof(string)),
-                            Constant(StringComparison.InvariantCultureIgnoreCase, typeof(StringComparison))
+                            Constant(StringComparison.InvariantCultureIgnoreCase, typeof(StringComparison)),
                         });
 
                     condition = condition == null ? match : Or(condition, match);
@@ -77,7 +94,7 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
 
             if (condition != null)
             {
-                query = query.Where((Expression<Func<T, bool>>)Lambda(condition, "WhereClause", new [] { paramater } ));
+                query = query.Where((Expression<Func<T, bool>>)Lambda(condition, "WhereClause", new [] { parameter }));
             }
         }
 
@@ -93,11 +110,13 @@ public class LocalMemoryEntityRepository<T> : IEntityRepository<T>
             query = query.Take(options.Take);
         }
 
-        result.Results = query.ToAsyncEnumerable();
-
+        result.Results = query;
+        
+        // TODO: result.Results = query.ToAsyncEnumerable();
         return Task.FromResult(result);
     }
 
+    /// <inheritdoc/>
     public Task Update(Guid id, T obj)
     {
         Table.AddOrUpdate(id, obj, (x, y) => obj);

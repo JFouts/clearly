@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Clearly.EventSubscription;
 
-namespace Clearly.EventSubscription
+public interface ISubscriptionProvider
 {
-    public interface ISubscriptionProvider
-    {
-        IEnumerable<SubscriptionDetail> GetSubscriptionDetails();
-    }
+    IEnumerable<SubscriptionDetail> GetSubscriptionDetails();
 }

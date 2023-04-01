@@ -3,7 +3,7 @@
 
 namespace Clearly.Crud;
 
-internal interface ITypeProvider
+public interface ITypeProvider
 {
     IEnumerable<Type> GetTypes();
 }

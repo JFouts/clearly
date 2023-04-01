@@ -1,0 +1,6 @@
+﻿@inherits BaseStringEditorComponent
+
+<div class="mb-3">
+    <label for="@PropertyDefinitionNode.NodeKey" class="form-label">@PropertyDefinitionNode.DisplayName</label>
+    <input id="@PropertyDefinitionNode.NodeKey" type="text" class="form-control" name="@PropertyDefinitionNode.NodeKey" placeholder="@PropertyDefinitionNode.DisplayName" @bind="Value" />
+</div>

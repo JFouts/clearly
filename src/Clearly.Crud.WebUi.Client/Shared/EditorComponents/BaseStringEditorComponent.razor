@@ -1,0 +1,49 @@
+﻿
+@using Clearly.Crud.WebUi.Client.Shared.DisplayComponents
+@using Newtonsoft.Json.Linq
+
+@inherits BaseDisplayComponent
+
+@code
+{
+    protected virtual string Value
+    {
+        get
+        {
+            if (Input.Value.Type == JTokenType.String)
+            {
+                return Input.Value.Value<string>() ?? string.Empty;
+            }
+
+            if (Input.Value.Type == JTokenType.Integer)
+            {
+                return Input.Value.Value<int>().ToString();
+            }
+
+            return string.Empty;
+        }
+
+        set
+        {
+            if (this.PropertyDefinitionNode.TypeNodeKey == "int32")
+            {
+                Input.Value = JValue.FromObject(int.TryParse(value, out var intValue) ? intValue : 0);
+            }
+            else
+            {
+                Input.Value = value;
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (Input.Value == null || Input.Value.Type == JTokenType.Null)
+        {
+            Value = string.Empty;
+        }
+        
+        base.OnInitialized();
+    }
+}
+

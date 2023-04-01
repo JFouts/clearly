@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Clearly.Core;
+﻿using Clearly.Core;
 using Clearly.Core.Interfaces;
 using Clearly.EventRepository;
 
@@ -34,7 +32,7 @@ namespace Clearly.EventSourcing
 
         public async Task<IEventSourcedAggregate<TAggregate>> RetrieveAsync(Guid id)
         {
-            var eventList = await _eventRepository.RetriveEventsAsync<TAggregate>(id);
+            var eventList = await _eventRepository.RetrieveEventsAsync<TAggregate>(id);
             var aggregate = new RecordedAggregate<TAggregate>(id, eventList.AggregateVersion, eventList.DomainEvents, this, _eventDispatcher);
             foreach (var @event in eventList.DomainEvents)
                 await _eventDispatcher.DispatchAsync(aggregate.State, @event);

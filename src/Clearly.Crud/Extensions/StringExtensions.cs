@@ -85,7 +85,10 @@ public static class StringExtensions
                 case ']':
                     // Escaped closing brackets at the end of a token should always go on the outside of the token
                     var closingBracketCount = 0;
-                    for (; i < len && template[i] == ']'; ++i, ++closingBracketCount);
+                    for (; i < len && template[i] == ']'; ++i, ++closingBracketCount) 
+                    { 
+                    }
+
                     --i;
                     
                     // if we have an off number of brackets then we are closing
